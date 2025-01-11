@@ -8,7 +8,6 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
-
   const isActive = (path: string) => pathname === path;
 
   return (
@@ -36,7 +35,14 @@ const Navbar: React.FC = () => {
               >
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
               </svg>
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <span 
+                className="text-xl font-bold"
+                style={{
+                  background: 'linear-gradient(to right, #4f46e5, #7c3aed)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
                 BatikDigitalizing
               </span>
             </Link>

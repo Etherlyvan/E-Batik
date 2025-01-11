@@ -19,7 +19,12 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-4xl md:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent whitespace-normal pb-4" // Menambahkan padding bawah
+            className="text-4xl md:text-6xl font-bold mb-6 leading-tight whitespace-normal pb-4"
+            style={{
+              background: 'linear-gradient(to right, #4f46e5, #7c3aed)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}
           >
             Selamat Datang <br /> Di Gallery Batik Digital
           </motion.h2>
