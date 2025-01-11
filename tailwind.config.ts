@@ -6,6 +6,10 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    'bg-clip-text',
+    'text-transparent'
+  ],
   theme: {
     extend: {
       colors: {
