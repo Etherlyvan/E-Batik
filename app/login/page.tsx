@@ -47,7 +47,7 @@ const Login: React.FC = () => {
             await login(email, password);
             router.replace('/');
         } catch (error) {
-            alert('Login failed. Please try again.');
+            alert('Login failed.' + error);
         } finally {
             setLoading(false);
         }
