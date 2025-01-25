@@ -5,17 +5,44 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import React from 'react';
 import { IoKeySharp, IoMail } from 'react-icons/io5';
+import { z } from 'zod';
+
+const loginSchema = z.object({
+    email: z.string().email({ message: 'Invalid email address' }),
+    password: z.string().min(1, { message: 'Password is required' }),
+});
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+        {}
+    );
     const router = useRouter();
     const { login } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrors({});
         setLoading(true);
+        const validationResult = loginSchema.safeParse({ email, password });
+
+        if (!validationResult.success) {
+            const errorMessages: { email?: string; password?: string } = {};
+            validationResult.error.errors.forEach((error) => {
+                if (error.path.includes('email')) {
+                    errorMessages.email = error.message;
+                }
+                if (error.path.includes('password')) {
+                    errorMessages.password = error.message;
+                }
+            });
+            setErrors(errorMessages);
+            setLoading(false);
+            return;
+        }
+
         try {
             await login(email, password);
             router.replace('/');
@@ -51,10 +78,22 @@ const Login: React.FC = () => {
                                 placeholder='Email'
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                required
-                                className='w-full h-12 rounded-md border border-gray-300 pl-10 pr-4 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                className={`w-full h-12 rounded-md border ${
+                                    errors.email
+                                        ? 'border-red-500'
+                                        : 'border-gray-300'
+                                } pl-10 pr-4 text-md focus:outline-none focus:ring-2 ${
+                                    errors.email
+                                        ? 'focus:ring-red-500'
+                                        : 'focus:ring-indigo-600'
+                                } focus:border-transparent`}
                             />
                         </div>
+                        {errors.email && (
+                            <p className='text-red-500 text-sm mt-1'>
+                                {errors.email}
+                            </p>
+                        )}
                     </div>
 
                     {/* Password Input */}
@@ -72,10 +111,22 @@ const Login: React.FC = () => {
                                 placeholder='Password'
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className='w-full h-12 rounded-md border border-gray-300 pl-10 pr-4 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                className={`w-full h-12 rounded-md border ${
+                                    errors.password
+                                        ? 'border-red-500'
+                                        : 'border-gray-300'
+                                } pl-10 pr-4 text-md focus:outline-none focus:ring-2 ${
+                                    errors.password
+                                        ? 'focus:ring-red-500'
+                                        : 'focus:ring-indigo-600'
+                                } focus:border-transparent`}
                             />
                         </div>
+                        {errors.password && (
+                            <p className='text-red-500 text-sm mt-1'>
+                                {errors.password}
+                            </p>
+                        )}
                     </div>
 
                     {/* Submit Button */}
