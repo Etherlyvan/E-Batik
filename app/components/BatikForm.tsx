@@ -1,11 +1,26 @@
 'use client';
 import React, { useState } from 'react';
 import { submitData } from '@/app/lib/submitdata';
+import { z } from 'zod';
+
+type FormErrors = {
+    foto?: string;
+    nama?: string;
+    tahun?: string;
+    tema?: string;
+    warna?: string;
+    teknik?: string;
+    jenisKain?: string;
+    pewarna?: string;
+    bentuk?: string;
+    histori?: string;
+    dimensi?: string;
+};
 
 interface FormData {
     foto: File | null;
     nama: string;
-    tahun: string;
+    tahun: number;
     tema: string;
     warna: string;
     teknik: string;
@@ -16,10 +31,29 @@ interface FormData {
     dimensi: string;
 }
 
+const formSchema = z.object({
+    foto: z.instanceof(File).refine((file) => file.size > 0, {
+        message: 'Foto is required',
+    }),
+    nama: z.string().min(1, { message: 'Nama is required' }),
+    tahun: z.coerce
+        .number()
+        .int()
+        .min(1, { message: 'Tahun is required and should be a valid number' }),
+    tema: z.string().min(1, { message: 'Tema is required' }),
+    warna: z.string().min(1, { message: 'Warna is required' }),
+    teknik: z.string().min(1, { message: 'Teknik is required' }),
+    jenisKain: z.string().min(1, { message: 'Jenis Kain is required' }),
+    pewarna: z.string().min(1, { message: 'Pewarna is required' }),
+    bentuk: z.string().min(1, { message: 'Bentuk is required' }),
+    histori: z.string().min(1, { message: 'Histori is required' }),
+    dimensi: z.string().min(1, { message: 'Dimensi is required' }),
+});
+
 const initialFormData: FormData = {
     foto: null,
     nama: '',
-    tahun: '',
+    tahun: 0,
     tema: '',
     warna: '',
     teknik: '',
@@ -34,6 +68,7 @@ const BatikForm: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState<FormErrors>({});
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,12 +94,27 @@ const BatikForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setErrors({});
+        const validationResult = formSchema.safeParse({ ...formData });
+
+        if (!validationResult.success) {
+            const errorMessages: { [key: string]: string } = {};
+
+            validationResult.error.errors.forEach((error) => {
+                const field = error.path[0];
+                errorMessages[field] = error.message;
+            });
+
+            setErrors(errorMessages);
+            setLoading(false);
+            return;
+        }
 
         try {
             const formDataToSend = new FormData();
             formDataToSend.append('foto', formData.foto as Blob);
             formDataToSend.append('nama', formData.nama);
-            formDataToSend.append('tahun', formData.tahun);
+            formDataToSend.append('tahun', formData.tahun.toString());
             formDataToSend.append('tema', formData.tema);
             formDataToSend.append('warna', formData.warna);
             formDataToSend.append('teknik', formData.teknik);
@@ -112,7 +162,13 @@ const BatikForm: React.FC = () => {
                                         />
                                     </div>
                                 )}
-                                <div className='w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
+                                <div
+                                    className={`w-full flex justify-center px-6 pt-5 pb-6 border-2 ${
+                                        errors.foto
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } border-dashed rounded-md`}
+                                >
                                     <div className='space-y-1 text-center'>
                                         <svg
                                             className='mx-auto h-12 w-12 text-gray-400'
@@ -137,7 +193,6 @@ const BatikForm: React.FC = () => {
                                                     name='foto'
                                                     onChange={handleFileChange}
                                                     accept='image/*'
-                                                    required
                                                 />
                                             </label>
                                             <p className='pl-1'>
@@ -149,6 +204,11 @@ const BatikForm: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
+                                {errors.foto && (
+                                    <p className='text-sm text-red-500 mt-2'>
+                                        {errors.foto}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -162,10 +222,18 @@ const BatikForm: React.FC = () => {
                                     name='nama'
                                     value={formData.nama}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.nama
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Masukkan nama batik'
                                 />
+                                {errors.nama && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.nama}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -177,10 +245,18 @@ const BatikForm: React.FC = () => {
                                     name='tahun'
                                     value={formData.tahun}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.tahun
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Contoh: 2024'
                                 />
+                                {errors.tahun && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.tahun}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -192,10 +268,18 @@ const BatikForm: React.FC = () => {
                                     name='tema'
                                     value={formData.tema}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.tema
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Tema batik'
                                 />
+                                {errors.tema && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.tema}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -207,10 +291,18 @@ const BatikForm: React.FC = () => {
                                     name='warna'
                                     value={formData.warna}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.warna
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Warna dominan'
                                 />
+                                {errors.warna && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.warna}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -222,10 +314,18 @@ const BatikForm: React.FC = () => {
                                     name='teknik'
                                     value={formData.teknik}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.teknik
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Teknik pembuatan'
                                 />
+                                {errors.teknik && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.teknik}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -237,10 +337,18 @@ const BatikForm: React.FC = () => {
                                     name='jenisKain'
                                     value={formData.jenisKain}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.jenisKain
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Jenis kain yang digunakan'
                                 />
+                                {errors.jenisKain && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.jenisKain}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -252,10 +360,18 @@ const BatikForm: React.FC = () => {
                                     name='pewarna'
                                     value={formData.pewarna}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.pewarna
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Jenis pewarna'
                                 />
+                                {errors.pewarna && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.pewarna}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -267,10 +383,18 @@ const BatikForm: React.FC = () => {
                                     name='bentuk'
                                     value={formData.bentuk}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.bentuk
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Bentuk motif'
                                 />
+                                {errors.bentuk && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.bentuk}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -282,10 +406,18 @@ const BatikForm: React.FC = () => {
                                     name='dimensi'
                                     value={formData.dimensi}
                                     onChange={handleChange}
-                                    required
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.dimensi
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Contoh: 200cm x 110cm'
                                 />
+                                {errors.dimensi && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.dimensi}
+                                    </p>
+                                )}
                             </div>
 
                             <div className='sm:col-span-2'>
@@ -296,11 +428,19 @@ const BatikForm: React.FC = () => {
                                     name='histori'
                                     value={formData.histori}
                                     onChange={handleChange}
-                                    required
                                     rows={4}
-                                    className='mt-2 w-full rounded-md border border-gray-300 p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
+                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                                        errors.histori
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                    } focus:border-transparent`}
                                     placeholder='Ceritakan sejarah dan makna batik ini...'
                                 />
+                                {errors.histori && (
+                                    <p className='mt-1 text-sm text-red-500'>
+                                        {errors.histori}
+                                    </p>
+                                )}
                             </div>
                         </div>
 

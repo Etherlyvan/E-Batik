@@ -6,25 +6,24 @@ import { useAuth } from '@/context/AuthContext';
 import BatikForm from '@/app/components/BatikForm';
 
 const AddBatikPage: React.FC = () => {
-  const { user } = useAuth();
-  const router = useRouter();
+    const { user } = useAuth();
+    const router = useRouter();
 
-  useEffect(() => {
+    useEffect(() => {
+        if (!user) {
+            router.replace('/login');
+        }
+    }, [user, router]);
+
     if (!user) {
-      router.replace('/login');
+        return null; // or a loading spinner
     }
-  }, [user, router]);
 
-  if (!user) {
-    return null; // or a loading spinner
-  }
-
-  return (
-    <div>
-      <h1>Add a new Batik</h1>
-      <BatikForm />
-    </div>
-  );
+    return (
+        <div>
+            <BatikForm />
+        </div>
+    );
 };
 
 export default AddBatikPage;
