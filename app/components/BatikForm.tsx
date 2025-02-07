@@ -4,7 +4,6 @@ import { submitData } from '@/app/lib/submitdata';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
-import heic2any from 'heic2any';
 
 type FormErrors = {
     foto?: string;
@@ -89,6 +88,7 @@ const BatikForm: React.FC = () => {
             setPreviewLoading(true);
             try {
                 // Convert .heic to .jpg
+                const heic2any = (await import('heic2any')).default;
                 const convertedBlobArray = await heic2any({
                     blob: file,
                     toType: 'image/jpeg',
