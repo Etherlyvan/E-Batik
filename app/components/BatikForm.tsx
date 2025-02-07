@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { submitData } from '@/app/lib/submitdata';
 import { z } from 'zod';
+import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
 type FormErrors = {
     foto?: string;
@@ -33,21 +35,21 @@ interface FormData {
 
 const formSchema = z.object({
     foto: z.instanceof(File).refine((file) => file.size > 0, {
-        message: 'Foto is required',
+        message: 'Foto harus diisi',
     }),
-    nama: z.string().min(1, { message: 'Nama is required' }),
+    nama: z.string().min(1, { message: 'Nama harus diisi' }),
     tahun: z.coerce
         .number()
         .int()
-        .min(1, { message: 'Tahun is required and should be a valid number' }),
-    tema: z.string().min(1, { message: 'Tema is required' }),
-    warna: z.string().min(1, { message: 'Warna is required' }),
-    teknik: z.string().min(1, { message: 'Teknik is required' }),
-    jenisKain: z.string().min(1, { message: 'Jenis Kain is required' }),
-    pewarna: z.string().min(1, { message: 'Pewarna is required' }),
-    bentuk: z.string().min(1, { message: 'Bentuk is required' }),
-    histori: z.string().min(1, { message: 'Histori is required' }),
-    dimensi: z.string().min(1, { message: 'Dimensi is required' }),
+        .min(1, { message: 'Tahun harus diisi dan harus angka yang valid' }),
+    tema: z.string().min(1, { message: 'Tema harus diisi' }),
+    warna: z.string().min(1, { message: 'Warna harus diisi' }),
+    teknik: z.string().min(1, { message: 'Teknik harus diisi' }),
+    jenisKain: z.string().min(1, { message: 'Jenis Kain harus diisi' }),
+    pewarna: z.string().min(1, { message: 'Pewarna harus diisi' }),
+    bentuk: z.string().min(1, { message: 'Bentuk harus diisi' }),
+    histori: z.string().min(1, { message: 'Histori harus diisi' }),
+    dimensi: z.string().min(1, { message: 'Dimensi harus diisi' }),
 });
 
 const initialFormData: FormData = {
@@ -68,6 +70,7 @@ const BatikForm: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [previewLoading, setPreviewLoading] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
     const handleChange = (
@@ -76,16 +79,60 @@ const BatikForm: React.FC = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]; // Get the first selected file
+        console.log(file?.type, file?.name);
+        if (!file) return;
+
+        if (file.name.toLowerCase().endsWith('.heic')) {
+            setPreviewLoading(true);
+            try {
+                // Convert .heic to .jpg
+                const heic2any = (await import('heic2any')).default;
+                const convertedBlobArray = await heic2any({
+                    blob: file,
+                    toType: 'image/jpeg',
+                });
+
+                const convertedBlob =
+                    convertedBlobArray instanceof Blob
+                        ? convertedBlobArray
+                        : convertedBlobArray[0];
+
+                const fileName = file.name.replace(/\.heic$/i, '.jpg');
+                const lastModified = new Date().getTime();
+
+                const convertedFile = new File([convertedBlob], fileName, {
+                    type: 'image/jpeg',
+                    lastModified,
+                });
+
+                const imageUrl = URL.createObjectURL(convertedFile);
+
+                setPreview(imageUrl);
+                setFormData({ ...formData, foto: convertedFile });
+            } catch (error) {
+                console.error('Error converting HEIC file:', error);
+            }
+
+            setPreviewLoading(false);
+        }
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setFormData({ ...formData, foto: file });
 
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            if (file.name.toLowerCase().endsWith('.heic')) {
+                await handleUpload(e);
+            } else {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setPreview(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+                setFormData({ ...formData, foto: file });
+            }
         } else {
             setPreview(null);
         }
@@ -153,7 +200,28 @@ const BatikForm: React.FC = () => {
                                 Foto Batik
                             </label>
                             <div className='mt-1 flex flex-col items-center'>
-                                {preview && (
+                                {previewLoading && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className='text-center mb-3'
+                                    >
+                                        <motion.div
+                                            animate={{ rotate: 360 }}
+                                            transition={{
+                                                duration: 2,
+                                                repeat: Infinity,
+                                                ease: 'linear',
+                                            }}
+                                        >
+                                            <Loader2 className='w-12 h-12 text-primary mx-auto mb-4' />
+                                        </motion.div>
+                                        <p className='text-gray-600 font-medium'>
+                                            Memuat Gambar...
+                                        </p>
+                                    </motion.div>
+                                )}
+                                {preview && !previewLoading && (
                                     <div className='mb-4'>
                                         <img
                                             src={preview}
