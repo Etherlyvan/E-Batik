@@ -17,10 +17,9 @@ datasource db {
 
 model Batik {
   id        Int      @id @default(autoincrement())
-  foto      String
+  kode      String?
   nama      String
   tahun     String
-  tema      String
   warna     String
   teknik    String
   jenisKain String
@@ -30,4 +29,29 @@ model Batik {
   dimensi   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  foto Foto[]
+  tema  Tema[]  @relation("BatikTema")
+  subTema SubTema[] @relation("BatikSubTema")
+}
+
+model Foto {
+    id      Int @id @default(autoincrement())
+    link    String
+    batikId Int
+    batik   Batik @relation(fields: [batikId], references: [id])
+}
+
+model Tema {
+    id          Int @id @default(autoincrement())
+    nama        String @unique
+    batik Batik[] @relation("BatikTema")
+    subTema     SubTema[]
+}
+
+model SubTema {
+  id      Int    @id @default(autoincrement())
+  nama    String @unique
+  temaId  Int
+  tema    Tema   @relation(fields: [temaId], references: [id])
+  batik Batik[] @relation("BatikSubTema")
 }

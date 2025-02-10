@@ -1,15 +1,20 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { submitData } from '@/app/lib/submitdata';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+
+import { DropdownFormComponent } from './DropdownFormComponent';
+import { SubTema } from '@prisma/client';
 
 type FormErrors = {
     foto?: string;
     nama?: string;
     tahun?: string;
     tema?: string;
+    subTema?: string;
     warna?: string;
     teknik?: string;
     jenisKain?: string;
@@ -20,10 +25,11 @@ type FormErrors = {
 };
 
 interface FormData {
-    foto: File | null;
+    foto: File[] | null;
     nama: string;
     tahun: number;
-    tema: string;
+    tema: string[];
+    subTema: string[];
     warna: string;
     teknik: string;
     jenisKain: string;
@@ -33,16 +39,28 @@ interface FormData {
     dimensi: string;
 }
 
+interface temaAPIResponse {
+    id: number;
+    nama: string;
+    subTema: SubTema[];
+}
+
 const formSchema = z.object({
-    foto: z.instanceof(File).refine((file) => file.size > 0, {
-        message: 'Foto harus diisi',
-    }),
+    foto: z
+        .array(z.instanceof(File))
+        .min(1, {
+            message: 'Minimal satu foto harus diunggah',
+        })
+        .refine((files) => files.every((file) => file.size > 0), {
+            message: 'Setiap foto harus memiliki ukuran lebih dari 0 byte',
+        }),
     nama: z.string().min(1, { message: 'Nama harus diisi' }),
     tahun: z.coerce
         .number()
         .int()
         .min(1, { message: 'Tahun harus diisi dan harus angka yang valid' }),
-    tema: z.string().min(1, { message: 'Tema harus diisi' }),
+    tema: z.array(z.string()).min(1, { message: 'Tema harus diisi' }),
+    subTema: z.array(z.string()).min(1, { message: 'Tema harus diisi' }),
     warna: z.string().min(1, { message: 'Warna harus diisi' }),
     teknik: z.string().min(1, { message: 'Teknik harus diisi' }),
     jenisKain: z.string().min(1, { message: 'Jenis Kain harus diisi' }),
@@ -53,10 +71,11 @@ const formSchema = z.object({
 });
 
 const initialFormData: FormData = {
-    foto: null,
+    foto: [],
     nama: '',
     tahun: 0,
-    tema: '',
+    tema: [],
+    subTema: [],
     warna: '',
     teknik: '',
     jenisKain: '',
@@ -68,10 +87,25 @@ const initialFormData: FormData = {
 
 const BatikForm: React.FC = () => {
     const [formData, setFormData] = useState<FormData>(initialFormData);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [previews, setPreviews] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [previewLoading, setPreviewLoading] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
+    const [temaList, setTemaList] = useState<temaAPIResponse[]>([]);
+
+    useEffect(() => {
+        const fetchTema = async () => {
+            try {
+                const response = await fetch('/api/tema');
+                const data = await response.json();
+                setTemaList(data);
+                console.log(data[0].subTema);
+            } catch (error) {
+                console.error('Error fetching tema:', error);
+            }
+        };
+        fetchTema();
+    }, []);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -79,63 +113,63 @@ const BatikForm: React.FC = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]; // Get the first selected file
-        console.log(file?.type, file?.name);
-        if (!file) return;
+    const handleUpload = async (file: File): Promise<string | null> => {
+        if (!file.name.toLowerCase().endsWith('.heic')) {
+            return URL.createObjectURL(file);
+        }
 
-        if (file.name.toLowerCase().endsWith('.heic')) {
-            setPreviewLoading(true);
-            try {
-                // Convert .heic to .jpg
-                const heic2any = (await import('heic2any')).default;
-                const convertedBlobArray = await heic2any({
-                    blob: file,
-                    toType: 'image/jpeg',
-                });
+        try {
+            const heic2any = (await import('heic2any')).default;
+            const convertedBlobArray = await heic2any({
+                blob: file,
+                toType: 'image/jpeg',
+            });
 
-                const convertedBlob =
-                    convertedBlobArray instanceof Blob
-                        ? convertedBlobArray
-                        : convertedBlobArray[0];
+            const convertedBlob =
+                convertedBlobArray instanceof Blob
+                    ? convertedBlobArray
+                    : convertedBlobArray[0];
 
-                const fileName = file.name.replace(/\.heic$/i, '.jpg');
-                const lastModified = new Date().getTime();
-
-                const convertedFile = new File([convertedBlob], fileName, {
+            const convertedFile = new File(
+                [convertedBlob],
+                file.name.replace(/\.heic$/i, '.jpg'),
+                {
                     type: 'image/jpeg',
-                    lastModified,
-                });
+                    lastModified: Date.now(),
+                }
+            );
 
-                const imageUrl = URL.createObjectURL(convertedFile);
-
-                setPreview(imageUrl);
-                setFormData({ ...formData, foto: convertedFile });
-            } catch (error) {
-                console.error('Error converting HEIC file:', error);
-            }
-
-            setPreviewLoading(false);
+            return URL.createObjectURL(convertedFile);
+        } catch (error) {
+            console.error('Error converting HEIC file:', error);
+            return null;
         }
     };
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
+    const handleFileChange = async (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const files = event.target.files;
+        if (!files) return;
 
-        if (file) {
-            if (file.name.toLowerCase().endsWith('.heic')) {
-                await handleUpload(e);
-            } else {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setPreview(reader.result as string);
-                };
-                reader.readAsDataURL(file);
-                setFormData({ ...formData, foto: file });
-            }
-        } else {
-            setPreview(null);
-        }
+        setPreviewLoading(true);
+
+        const imageUrls = await Promise.all(
+            Array.from(files).map(async (file) => await handleUpload(file))
+        );
+
+        // Ensure we don't add null values
+        setPreviews((prev) => [
+            ...prev,
+            ...imageUrls.filter((url) => url !== null),
+        ]);
+
+        setFormData((prev) => ({
+            ...prev,
+            foto: Array.from(files),
+        }));
+
+        setPreviewLoading(false);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -159,10 +193,20 @@ const BatikForm: React.FC = () => {
 
         try {
             const formDataToSend = new FormData();
-            formDataToSend.append('foto', formData.foto as Blob);
+
+            formData.foto!.forEach((foto, index) => {
+                formDataToSend.append(`foto[${index}]`, foto);
+            });
             formDataToSend.append('nama', formData.nama);
             formDataToSend.append('tahun', formData.tahun.toString());
-            formDataToSend.append('tema', formData.tema);
+            formData.tema.forEach((tema, index) => {
+                formDataToSend.append(`tema[${index}]`, tema);
+            });
+
+            // Append the subTema array as separate key-value pairs
+            formData.subTema.forEach((subTema, index) => {
+                formDataToSend.append(`subTema[${index}]`, subTema);
+            });
             formDataToSend.append('warna', formData.warna);
             formDataToSend.append('teknik', formData.teknik);
             formDataToSend.append('jenisKain', formData.jenisKain);
@@ -176,7 +220,7 @@ const BatikForm: React.FC = () => {
             console.log('Response data:', response);
             alert('Data batik berhasil disimpan!');
             setFormData(initialFormData);
-            setPreview(null);
+            // setPreview(null);
         } catch (error) {
             console.error('Error:', error);
             alert('Gagal menyimpan data. Silakan coba lagi.');
@@ -184,6 +228,32 @@ const BatikForm: React.FC = () => {
             setLoading(false);
         }
     };
+
+    const addNewTema = () => {
+        setFormData((prev) => ({
+            ...prev,
+            tema: [...prev.tema, ''],
+            subTema: [...prev.subTema, ''], // Tambahkan elemen kosong untuk tema baru
+        }));
+    };
+
+    // const handleTemaChange = (
+    //     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+    // ) => {
+    //     const value = e.target.value;
+    //     if (value === 'other') {
+    //         setShowOtherInput(true); // Switch to input mode
+    //         setFormData((prev) => ({ ...prev, tema: '' })); // Reset theme value
+    //     } else {
+    //         setShowOtherInput(false); // Keep dropdown mode
+    //         setFormData((prev) => ({ ...prev, tema: value }));
+    //     }
+    // };
+
+    // const resetToDropdown = () => {
+    //     setShowOtherInput(false);
+    //     setFormData((prev) => ({ ...prev, tema: '' }));
+    // };
 
     return (
         <div className='min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8'>
@@ -221,13 +291,38 @@ const BatikForm: React.FC = () => {
                                         </p>
                                     </motion.div>
                                 )}
-                                {preview && !previewLoading && (
-                                    <div className='mb-4'>
-                                        <img
-                                            src={preview}
-                                            alt='Preview'
-                                            className='h-48 w-auto object-contain rounded-lg'
-                                        />
+                                {/* Multiple Image Preview */}
+                                {previews.length > 0 && (
+                                    <div className='mb-4 grid grid-cols-4 gap-2'>
+                                        {previews.map((preview, index) => (
+                                            <div
+                                                key={index}
+                                                className='relative group'
+                                            >
+                                                <img
+                                                    src={preview}
+                                                    alt='Preview'
+                                                    className=' w-24 h-24 object-fill rounded-lg'
+                                                />
+
+                                                <motion.button
+                                                    type='button'
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() => {
+                                                        setPreviews((prev) =>
+                                                            prev.filter(
+                                                                (_, i) =>
+                                                                    i !== index
+                                                            )
+                                                        );
+                                                    }}
+                                                    className='absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+                                                >
+                                                    <Trash2 className='w-4 h-4' />
+                                                </motion.button>
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                                 <div
@@ -243,7 +338,6 @@ const BatikForm: React.FC = () => {
                                             stroke='currentColor'
                                             fill='none'
                                             viewBox='0 0 48 48'
-                                            aria-hidden='true'
                                         >
                                             <path
                                                 d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
@@ -253,7 +347,7 @@ const BatikForm: React.FC = () => {
                                             />
                                         </svg>
                                         <div className='flex text-sm text-gray-600'>
-                                            <label className='relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500'>
+                                            <label className='relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500'>
                                                 <span>Upload file</span>
                                                 <input
                                                     type='file'
@@ -261,6 +355,7 @@ const BatikForm: React.FC = () => {
                                                     name='foto'
                                                     onChange={handleFileChange}
                                                     accept='image/*'
+                                                    multiple
                                                 />
                                             </label>
                                             <p className='pl-1'>
@@ -323,29 +418,6 @@ const BatikForm: React.FC = () => {
                                 {errors.tahun && (
                                     <p className='mt-1 text-sm text-red-500'>
                                         {errors.tahun}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className='block text-sm font-medium text-gray-700'>
-                                    Tema
-                                </label>
-                                <input
-                                    type='text'
-                                    name='tema'
-                                    value={formData.tema}
-                                    onChange={handleChange}
-                                    className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
-                                        errors.tema
-                                            ? 'border-red-500'
-                                            : 'border-gray-300'
-                                    } focus:border-transparent`}
-                                    placeholder='Tema batik'
-                                />
-                                {errors.tema && (
-                                    <p className='mt-1 text-sm text-red-500'>
-                                        {errors.tema}
                                     </p>
                                 )}
                             </div>
@@ -487,6 +559,79 @@ const BatikForm: React.FC = () => {
                                     </p>
                                 )}
                             </div>
+
+                            <div className='sm:col-span-2'>
+                                {formData.tema.map((tema, index) => (
+                                    <div key={`tema-${index}`}>
+                                        <div>
+                                            <DropdownFormComponent
+                                                title='Tema'
+                                                formData={formData}
+                                                setFormData={setFormData}
+                                                list={temaList}
+                                                errors={errors}
+                                                index={index} // Pass index untuk mengatur tema tertentu
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <DropdownFormComponent
+                                                title='Sub Tema'
+                                                formData={formData}
+                                                setFormData={setFormData}
+                                                list={
+                                                    temaList.find(
+                                                        (t) => t.nama === tema
+                                                    )?.subTema || []
+                                                }
+                                                errors={errors}
+                                                index={index} // Pass index untuk mengatur tema tertentu
+                                            />
+                                        </div>
+                                        <div className='mt-4 mb-4'>
+                                            -------------
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* {formData.subTema.map((tema, index) => (
+                                    <div
+                                        className='w-1/2'
+                                        key={`subtema-${index}`}
+                                    >
+                                        <DropdownFormComponent
+                                            title='Sub Tema'
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            list={temaList[0].subTema}
+                                            errors={errors}
+                                            index={index} // Pass index untuk mengatur tema tertentu
+                                        />
+                                    </div>
+                                ))} */}
+
+                            {/* Tombol untuk menambah tema baru */}
+                            <div className='sm:col-span-2'>
+                                <button
+                                    type='button'
+                                    onClick={addNewTema}
+                                    className='mt-2 p-2 bg-indigo-600 text-white rounded-md'
+                                >
+                                    Add New Tema
+                                </button>
+                            </div>
+
+                            {/* {temaList.length > 0 ? (
+                                <DropdownFormComponent
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                    list={temaList[0].subTema}
+                                    errors={errors}
+                                />
+                            ) : (
+                                <p>Loading...</p>
+                            )} */}
 
                             <div className='sm:col-span-2'>
                                 <label className='block text-sm font-medium text-gray-700'>
