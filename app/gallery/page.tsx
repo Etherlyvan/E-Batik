@@ -8,11 +8,27 @@ import AddBatikButton from '@/app/components/button/addBatik';
 import BatikDetailPopup from '@/app/components/BatikDetailPopUp';
 import Pagination from '@/app/components/Pagination';
 
+interface Foto {
+    id: number;
+    link: string;
+    batikId: number;
+}
+
+interface Tema {
+    id: number;
+    nama: string;
+}
+interface SubTema {
+    id: number;
+    nama: string;
+}
+
 interface Batik {
     id: number;
-    foto: string;
+    foto: Foto[];
+    tema: Tema[];
+    subTema: SubTema[];
     nama: string;
-    tema: string;
     tahun: string;
     warna: string;
     teknik: string;
@@ -53,7 +69,6 @@ const Gallery = () => {
         try {
             const response = await fetch('/api/batik');
             const data = await response.json();
-
             if (Array.isArray(data)) {
                 setBatiks(data);
             } else {
@@ -125,7 +140,9 @@ const Gallery = () => {
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
         const matchesTema =
-            activeFilters.tema === 'all' || batik.tema === activeFilters.tema;
+            activeFilters.tema === 'all' ||
+            batik.tema.some((t) => t.nama === activeFilters.tema);
+
         const matchesTahun =
             !activeFilters.tahun || batik.tahun.includes(activeFilters.tahun);
         const matchesTeknik =

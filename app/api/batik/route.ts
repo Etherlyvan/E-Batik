@@ -3,123 +3,396 @@ import { NextRequest, NextResponse } from 'next/server';
 import cloudinary from '@/lib/cloudinary';
 import { prisma } from '@/lib/prismaClient';
 
-// Definisikan tipe respons upload Cloudinary
-interface CloudinaryUploadResult {
-  secure_url: string;
-  [key: string]: unknown; // Untuk menangkap properti lain yang mungkin ada
-}
+const uploadFilesToCloudinary = async (files: File[]) => {
+    const uploadPromises = files.map(async (file) => {
+        console.log(`Converting file ${file.name} to buffer`);
+        const buffer = await file.arrayBuffer();
 
-export async function POST(req: NextRequest) {
-  try {
-    const formData = await req.formData();
-    
-    console.log('Received form data:', formData);
+        console.log(`Uploading ${file.name} to Cloudinary`);
+        return new Promise<string>((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+                { folder: 'batik' },
+                (error, result) => {
+                    if (error) {
+                        console.error('Cloudinary upload error:', error);
+                        reject(error);
+                    } else {
+                        console.log('Cloudinary upload result:', result);
+                        resolve(result!.secure_url); // Pastikan mengambil secure_url
+                    }
+                }
+            );
+            stream.end(Buffer.from(buffer));
+        });
+    });
 
-    const foto = formData.get('foto') as File;
-    const nama = formData.get('nama') as string;
-    const tahun = formData.get('tahun') as string;
-    const tema = formData.get('tema') as string;
-    const warna = formData.get('warna') as string;
-    const teknik = formData.get('teknik') as string;
-    const jenisKain = formData.get('jenisKain') as string;
-    const pewarna = formData.get('pewarna') as string;
-    const bentuk = formData.get('bentuk') as string;
-    const histori = formData.get('histori') as string;
-    const dimensi = formData.get('dimensi') as string;
+    return Promise.all(uploadPromises); // Menunggu semua file terunggah
+};
 
-    if (!foto) {
-      console.error('Foto is required');
-      return NextResponse.json({ message: 'Foto is required' }, { status: 400 });
+const processTema = async (temas: string[]) => {
+    const temaData = [];
+
+    for (const tema of temas) {
+        const existingTema = await prisma.tema.findUnique({
+            where: { nama: tema },
+        });
+        console.log(
+            `Checking theme: ${tema}, Existing: ${
+                existingTema ? 'Found' : 'Not found'
+            }`
+        );
+
+        if (existingTema) {
+            // If the theme already exists, connect it
+            temaData.push({
+                where: { nama: tema },
+            });
+        } else {
+            // If the theme doesn't exist, create it
+            temaData.push({
+                create: { nama: tema },
+            });
+        }
     }
 
-    console.log('Converting file to buffer');
-    const buffer = await foto.arrayBuffer();
+    return temaData;
+};
 
-    console.log('Uploading to Cloudinary');
-    const uploadResult = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: 'batik' },
-        (error, result) => {
-          if (error) {
-            console.error('Cloudinary upload error:', error);
-            reject(error);
-          } else {
-            console.log('Cloudinary upload result:', result);
-            resolve(result as CloudinaryUploadResult);
-          }
+const processSubTema = async (subTemas: string[], temaIds: number[]) => {
+    const subTemaData = [];
+
+    for (const [index, subTema] of subTemas.entries()) {
+        const existingsubTema = await prisma.subTema.findUnique({
+            where: { nama: subTema },
+        });
+
+        if (existingsubTema) {
+            // If it exists, just add the temaId and nama to the data
+            // subTemaData.push({
+            //     where: { nama: subTema, temaId: temaIds[index] },
+            // });
+        } else {
+            // If it doesn't exist, create a new one
+            subTemaData.push({
+                nama: subTema,
+                temaId: temaIds[index],
+            });
         }
-      );
-      stream.end(Buffer.from(buffer));
-    });
+    }
 
-    console.log('Inserting data into Prisma');
-    const batik = await prisma.batik.create({
-      data: {
-        foto: uploadResult.secure_url,
-        nama,
-        tahun,
-        tema,
-        warna,
-        teknik,
-        jenisKain,
-        pewarna,
-        bentuk,
-        histori,
-        dimensi,
-      },
-    });
+    return subTemaData;
+};
 
-    console.log('Data successfully uploaded to Prisma:', batik);
-    return NextResponse.json({
-      message: 'Data successfully uploaded',
-      data: batik,
-    });
-  } catch (error) {
-    console.error('Error processing data:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ message: 'Server error', error: errorMessage }, { status: 500 });
-  }
+async function getTemaIdsByNames(
+    temaNames: string[]
+): Promise<number[] | null> {
+    try {
+        const temas = await prisma.tema.findMany({
+            where: {
+                nama: {
+                    in: temaNames, // Fetch multiple Tema by names
+                },
+            },
+        });
+
+        if (temas.length === 0) {
+            return null; // Return null if no Tema is found
+        }
+
+        // Return an array of Tema IDs
+        return temas.map((tema) => tema.id);
+    } catch (error) {
+        console.error('Error fetching Tema IDs:', error);
+        return null;
+    }
+}
+
+async function getSubTemaIdsByNames(
+    subTemaNames: string[]
+): Promise<number[] | null> {
+    try {
+        const subTemas = await prisma.subTema.findMany({
+            where: {
+                nama: {
+                    in: subTemaNames,
+                },
+            },
+        });
+
+        if (subTemas.length === 0) {
+            return null; // Return null if no Tema is found
+        }
+
+        // Return an array of Tema IDs
+        return subTemas.map((subTema) => subTema.id);
+    } catch (error) {
+        console.error('Error fetching Tema IDs:', error);
+        return null;
+    }
+}
+
+// export async function POST(req: NextRequest) {
+//     try {
+//         const formData = await req.formData();
+
+//         console.log('Received form data:', formData);
+
+//         const foto = formData.getAll('foto') as File[];
+//         const nama = formData.get('nama') as string;
+//         const tahun = formData.get('tahun') as string;
+//         const tema = formData.getAll('tema') as string[];
+//         const subTema = formData.getAll('subTema') as string[];
+//         const warna = formData.get('warna') as string;
+//         const teknik = formData.get('teknik') as string;
+//         const jenisKain = formData.get('jenisKain') as string;
+//         const pewarna = formData.get('pewarna') as string;
+//         const bentuk = formData.get('bentuk') as string;
+//         const histori = formData.get('histori') as string;
+//         const dimensi = formData.get('dimensi') as string;
+
+//         if (!foto) {
+//             console.error('Foto is required');
+//             return NextResponse.json(
+//                 { message: 'Foto is required' },
+//                 { status: 400 }
+//             );
+//         }
+
+//         console.log('Uploading all files...');
+//         const uploadedUrls = await uploadFilesToCloudinary(foto);
+//         const temaData = await processTema(tema);
+//         const temaIds = await getTemaIdsByNames(subTema);
+
+//         console.log('Inserting data into Prisma');
+//         const result = await prisma.$transaction(async (prisma) => {
+//             // Create Batik
+//             const batik = await prisma.batik.create({
+//                 data: {
+//                     nama,
+//                     tahun,
+//                     warna,
+//                     teknik,
+//                     jenisKain,
+//                     pewarna,
+//                     bentuk,
+//                     histori,
+//                     dimensi,
+//                     tema: { connectOrCreate: temaData },
+//                 },
+//             });
+
+//             // Create SubTemas
+//             try {
+//                 const subTemaRes = await prisma.subTema.createMany({
+//                     data: subTema.map((subTema, index) => ({
+//                         nama: subTema,
+//                         temaId: temaIds![index],
+//                     })),
+//                 });
+//                 console.log('Insert successful:', subTemaRes);
+//             } catch (error) {
+//                 console.error('Error inserting subTema:', error);
+//             }
+
+//             // Create Fotos
+//             await prisma.foto.createMany({
+//                 data: uploadedUrls.map((url) => ({
+//                     batikId: batik.id,
+//                     link: url,
+//                 })),
+//             });
+
+//             return batik; // Returning batik or any other value you want
+//         });
+
+//         console.log('Data successfully uploaded to Prisma:', result);
+//         return NextResponse.json({
+//             message: 'Data successfully uploaded',
+//             data: result,
+//         });
+//     } catch (error) {
+//         console.error('Error processing data:', error);
+//         const errorMessage =
+//             error instanceof Error ? error.message : 'Unknown error';
+//         return NextResponse.json(
+//             { message: 'Server error', error: errorMessage },
+//             { status: 500 }
+//         );
+//     }
+// }
+
+export async function POST(req: NextRequest) {
+    try {
+        const formData = await req.formData();
+
+        console.log('Received form data:', formData);
+
+        // const foto = formData.getAll('foto') as File[];
+        const nama = formData.get('nama') as string;
+        const tahun = formData.get('tahun') as string;
+        // const tema = formData.getAll('tema') as string[];
+        // const subTema = formData.getAll('subTema') as string[];
+        const warna = formData.get('warna') as string;
+        const teknik = formData.get('teknik') as string;
+        const jenisKain = formData.get('jenisKain') as string;
+        const pewarna = formData.get('pewarna') as string;
+        const bentuk = formData.get('bentuk') as string;
+        const histori = formData.get('histori') as string;
+        const dimensi = formData.get('dimensi') as string;
+
+        const tema: string[] = [];
+        const subTema: string[] = [];
+        const foto: File[] = [];
+
+        formData.forEach((value, key) => {
+            if (key.startsWith('tema[')) {
+                tema.push(value as string);
+            } else if (key.startsWith('subTema[')) {
+                subTema.push(value as string);
+            } else if (key.startsWith('foto[')) {
+                foto.push(value as File);
+            }
+        });
+
+        console.log('Parsed tema:', tema);
+        console.log('Parsed subTema:', subTema);
+
+        const temaData = await processTema(tema);
+        console.log('Processed tema:', temaData);
+        console.log('Inserting data into Prisma...');
+
+        const batik = await prisma.batik.create({
+            data: {
+                nama,
+                tahun,
+                warna,
+                teknik,
+                jenisKain,
+                pewarna,
+                bentuk,
+                histori,
+                dimensi,
+                tema: {
+                    connectOrCreate: tema.map((temaName) => ({
+                        where: { nama: temaName }, // Ensure 'nama' is unique
+                        create: { nama: temaName }, // Create if it doesn't exist
+                    })),
+                },
+            },
+        });
+
+        console.log('Fetching temaIds...');
+        const temaIds = await getTemaIdsByNames(tema);
+        console.log('temaIds:', temaIds);
+
+        if (!temaIds || temaIds.length !== subTema.length) {
+            throw new Error(
+                `temaIds and subTema must have the same length. {temaIds: ${temaIds}, subTema: ${subTema}}`
+            );
+        }
+
+        console.log('Uploading all files...');
+        const uploadedUrls = await uploadFilesToCloudinary(foto);
+        console.log('Uploaded URLs:', uploadedUrls);
+
+        const subTemaData = await processSubTema(subTema, temaIds);
+
+        console.log('Processed subTema:', subTemaData);
+        await prisma.subTema.createMany({
+            data: subTemaData,
+            skipDuplicates: true,
+        });
+
+        const subTemaIds = await getSubTemaIdsByNames(subTema); // This should return an array of IDs
+
+        await prisma.batik.update({
+            where: { id: batik.id },
+            data: {
+                subTema: {
+                    connect: subTemaIds!.map((id) => ({ id })), // Mapping to the correct object format
+                },
+            },
+        });
+
+        await prisma.foto.createMany({
+            data: uploadedUrls.map((url) => ({
+                batikId: batik.id,
+                link: url,
+            })),
+        });
+
+        console.log('Data successfully uploaded to Prisma:');
+        return NextResponse.json({
+            message: 'Data successfully uploaded',
+            // data: result,
+        });
+    } catch (error) {
+        console.error('Error processing data:', error);
+        return NextResponse.json({ message: 'Server error' }, { status: 500 });
+    }
 }
 
 export async function GET() {
-  try {
-    const batiks = await prisma.batik.findMany();
-    return NextResponse.json(batiks);
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ message: 'Server error', error: errorMessage }, { status: 500 });
-  }
+    try {
+        const batiks = await prisma.batik.findMany({
+            include: {
+                foto: true,
+                tema: true,
+                subTema: true,
+            },
+        });
+        return NextResponse.json(batiks);
+    } catch (error) {
+        const errorMessage =
+            error instanceof Error ? error.message : 'Unknown error';
+        return NextResponse.json(
+            { message: 'Server error', error: errorMessage },
+            { status: 500 }
+        );
+    }
 }
 
-
 export async function DELETE(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get('id');
+    const id = req.nextUrl.searchParams.get('id');
 
-  if (!id) {
-    return NextResponse.json({ message: 'ID is required' }, { status: 400 });
-  }
-
-  const numericId = Number(id);
-  if (isNaN(numericId)) {
-    return NextResponse.json({ message: 'ID is not a valid number' }, { status: 400 });
-  }
-
-  try {
-    const batik = await prisma.batik.findUnique({
-      where: { id: numericId },
-    });
-
-    if (!batik) {
-      return NextResponse.json({ message: 'Batik not found' }, { status: 404 });
+    if (!id) {
+        return NextResponse.json(
+            { message: 'ID is required' },
+            { status: 400 }
+        );
     }
 
-    await prisma.batik.delete({
-      where: { id: numericId },
-    });
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+        return NextResponse.json(
+            { message: 'ID is not a valid number' },
+            { status: 400 }
+        );
+    }
 
-    return NextResponse.json({ message: 'Batik deleted successfully' });
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ message: 'Server error', error: errorMessage }, { status: 500 });
-  }
+    try {
+        const batik = await prisma.batik.findUnique({
+            where: { id: numericId },
+        });
+
+        if (!batik) {
+            return NextResponse.json(
+                { message: 'Batik not found' },
+                { status: 404 }
+            );
+        }
+
+        await prisma.batik.delete({
+            where: { id: numericId },
+        });
+
+        return NextResponse.json({ message: 'Batik deleted successfully' });
+    } catch (error) {
+        const errorMessage =
+            error instanceof Error ? error.message : 'Unknown error';
+        return NextResponse.json(
+            { message: 'Server error', error: errorMessage },
+            { status: 500 }
+        );
+    }
 }
