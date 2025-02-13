@@ -13,6 +13,7 @@ interface GalleryCardProps {
     nama: string;
     tema: Tema[];
     tahun: string;
+    histori: string;
     onDelete: () => void;
     showDeleteButton: boolean;
 }
@@ -22,6 +23,7 @@ const GalleryCard = ({
     nama,
     tema,
     tahun,
+    histori,
     onDelete,
     showDeleteButton,
 }: GalleryCardProps) => {
@@ -46,15 +48,26 @@ const GalleryCard = ({
                 <h3 className='text-lg font-semibold text-gray-900 mb-1 line-clamp-1'>
                     {nama}
                 </h3>
-                <p className='text-sm text-gray-600 mb-1'>
-                    Tema:
+                <p className='text-sm text-gray-600 mb-1 flex flex-wrap gap-1'>
                     {tema.map((t) => (
-                        <span key={t.id} className='mr-2'>
+                        <span
+                            key={t.id}
+                            className='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2 py-1 dark:bg-blue-900 dark:text-blue-300'
+                        >
                             {t.nama}
                         </span>
                     ))}
                 </p>
-                <p className='text-sm text-gray-500'>Tahun: {tahun}</p>
+                <p>
+                    {histori.length > 100
+                        ? `${histori.slice(0, 100)}...`
+                        : histori}
+                </p>
+                <div className='mt-5 flex flex-row justify-end'>
+                    <span className='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300'>
+                        Tahun {tahun}
+                    </span>
+                </div>
             </div>
 
             {showDeleteButton && (
