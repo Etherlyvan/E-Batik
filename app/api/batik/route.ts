@@ -282,74 +282,77 @@ export async function POST(req: NextRequest) {
         const uploadedUrls = await uploadFilesToCloudinary(foto);
         console.log('Uploaded URLs:', uploadedUrls);
 
-        return await prisma.$transaction(async (tx) => {
-            console.log('Starting Prisma transaction...');
+        return await prisma.$transaction(
+            async (tx) => {
+                console.log('Starting Prisma transaction...');
 
-            // Insert Batik
-            const batik = await tx.batik.create({
-                data: {
-                    nama,
-                    tahun,
-                    warna,
-                    teknik,
-                    jenisKain,
-                    pewarna,
-                    bentuk,
-                    histori,
-                    dimensi,
-                    tema: {
-                        connectOrCreate: tema.map((temaName) => ({
-                            where: { nama: temaName },
-                            create: { nama: temaName },
-                        })),
+                // Insert Batik
+                const batik = await tx.batik.create({
+                    data: {
+                        nama,
+                        tahun,
+                        warna,
+                        teknik,
+                        jenisKain,
+                        pewarna,
+                        bentuk,
+                        histori,
+                        dimensi,
+                        tema: {
+                            connectOrCreate: tema.map((temaName) => ({
+                                where: { nama: temaName },
+                                create: { nama: temaName },
+                            })),
+                        },
                     },
-                },
-            });
+                });
 
-            console.log('Fetching temaIds...');
-            const temaIds = await getTemaIdsByNames(tema);
-            console.log('temaIds:', temaIds);
+                console.log('Fetching temaIds...');
+                const temaIds = await getTemaIdsByNames(tema);
+                console.log('temaIds:', temaIds);
 
-            if (!temaIds || temaIds.length !== subTema.length) {
-                throw new Error(
-                    `temaIds and subTema must have the same length. {temaIds: ${temaIds}, subTema: ${subTema}}`
+                if (!temaIds || temaIds.length !== subTema.length) {
+                    throw new Error(
+                        `temaIds and subTema must have the same length. {temaIds: ${temaIds}, subTema: ${subTema}}`
+                    );
+                }
+
+                const subTemaData = await processSubTema(subTema, temaIds);
+                console.log('Processed subTema:', subTemaData);
+
+                await tx.subTema.createMany({
+                    data: subTemaData,
+                    skipDuplicates: true,
+                });
+
+                const subTemaIds = await getSubTemaIdsByNames(subTema);
+
+                await tx.batik.update({
+                    where: { id: batik.id },
+                    data: {
+                        subTema: {
+                            connect: subTemaIds!.map((id) => ({ id })),
+                        },
+                    },
+                });
+
+                await tx.foto.createMany({
+                    data: uploadedUrls.map((url) => ({
+                        batikId: batik.id,
+                        link: url,
+                    })),
+                });
+
+                console.log(
+                    'Data successfully uploaded to Prisma within transaction.'
                 );
-            }
 
-            const subTemaData = await processSubTema(subTema, temaIds);
-            console.log('Processed subTema:', subTemaData);
-
-            await tx.subTema.createMany({
-                data: subTemaData,
-                skipDuplicates: true,
-            });
-
-            const subTemaIds = await getSubTemaIdsByNames(subTema);
-
-            await tx.batik.update({
-                where: { id: batik.id },
-                data: {
-                    subTema: {
-                        connect: subTemaIds!.map((id) => ({ id })),
-                    },
-                },
-            });
-
-            await tx.foto.createMany({
-                data: uploadedUrls.map((url) => ({
-                    batikId: batik.id,
-                    link: url,
-                })),
-            });
-
-            console.log(
-                'Data successfully uploaded to Prisma within transaction.'
-            );
-
-            return NextResponse.json({
-                message: 'Data successfully uploaded',
-            });
-        });
+                return NextResponse.json({
+                    message: 'Data successfully uploaded',
+                });
+            },
+            { timeout: 10000 }
+        );
     } catch (error) {
         console.error('Error processing data:', error);
         return NextResponse.json({ message: 'Server error' }, { status: 500 });
