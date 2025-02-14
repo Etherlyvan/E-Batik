@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import AddBatikButton from '@/app/components/button/addBatik';
 import BatikDetailPopup from '@/app/components/BatikDetailPopUp';
 import Pagination from '@/app/components/Pagination';
+import { useRouter } from 'next/navigation';
 
 interface Foto {
     id: number;
@@ -63,7 +64,7 @@ const Gallery = () => {
         tahun: '',
         teknik: '',
     });
-
+    const router = useRouter();
     const itemsPerPage = 12;
     const fetchBatiks = async () => {
         try {
@@ -112,10 +113,10 @@ const Gallery = () => {
         }
     };
 
-    const openPopup = (batik: Batik) => {
-        setSelectedBatik(batik);
-        setIsPopupOpen(true);
-    };
+    // const openPopup = (batik: Batik) => {
+    //     setSelectedBatik(batik);
+    //     setIsPopupOpen(true);
+    // };
 
     const closePopup = () => {
         setIsPopupOpen(false);
@@ -426,7 +427,12 @@ const Gallery = () => {
                                         className='transform-gpu'
                                     >
                                         <div
-                                            onClick={() => openPopup(batik)}
+                                            // onClick={() => openPopup(batik)}
+                                            onClick={() =>
+                                                router.push(
+                                                    `/batik/${batik.id}`
+                                                )
+                                            }
                                             className='cursor-pointer bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300'
                                         >
                                             <GalleryCard
@@ -434,6 +440,7 @@ const Gallery = () => {
                                                 nama={batik.nama}
                                                 tema={batik.tema}
                                                 tahun={batik.tahun}
+                                                histori={batik.histori}
                                                 onDelete={() =>
                                                     handleDelete(batik.id)
                                                 }

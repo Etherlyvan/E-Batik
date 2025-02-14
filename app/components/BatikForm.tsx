@@ -113,6 +113,37 @@ const BatikForm: React.FC = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const convertToJpg = async (file: File): Promise<File | null> => {
+        if (!file.name.toLowerCase().endsWith('.heic')) {
+            return file; // Return as-is if not HEIC
+        }
+
+        try {
+            const heic2any = (await import('heic2any')).default;
+            const convertedBlobArray = await heic2any({
+                blob: file,
+                toType: 'image/jpeg',
+            });
+
+            const convertedBlob =
+                convertedBlobArray instanceof Blob
+                    ? convertedBlobArray
+                    : convertedBlobArray[0];
+
+            return new File(
+                [convertedBlob],
+                file.name.replace(/\.heic$/i, '.jpg'),
+                {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                }
+            );
+        } catch (error) {
+            console.error('Error converting HEIC file:', error);
+            return null;
+        }
+    };
+
     const handleUpload = async (file: File): Promise<string | null> => {
         if (!file.name.toLowerCase().endsWith('.heic')) {
             return URL.createObjectURL(file);
@@ -164,9 +195,16 @@ const BatikForm: React.FC = () => {
             ...imageUrls.filter((url) => url !== null),
         ]);
 
+        const convertedFiles = await Promise.all(
+            Array.from(files).map(async (file) => {
+                const convertedFile = await convertToJpg(file);
+                return convertedFile || file; // Use converted file or original
+            })
+        );
+
         setFormData((prev) => ({
             ...prev,
-            foto: Array.from(files),
+            foto: convertedFiles,
         }));
 
         setPreviewLoading(false);
