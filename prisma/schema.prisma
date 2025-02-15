@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,10 +11,8 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
-
 model Batik {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   kode      String?
   nama      String
   tahun     String
@@ -27,31 +23,37 @@ model Batik {
   bentuk    String
   histori   String
   dimensi   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  foto Foto[]
-  tema  Tema[]  @relation("BatikTema")
-  subTema SubTema[] @relation("BatikSubTema")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  foto      Foto[]
+  tema      Tema[]    @relation("BatikTema")
+  subTema   SubTema[] @relation("BatikSubTema")
 }
 
 model Foto {
-    id      Int @id @default(autoincrement())
-    link    String
-    batikId Int
-    batik   Batik @relation(fields: [batikId], references: [id])
+  id      Int    @id @default(autoincrement())
+  link    String
+  batikId Int
+  batik   Batik  @relation(fields: [batikId], references: [id])
 }
 
 model Tema {
-    id          Int @id @default(autoincrement())
-    nama        String @unique
-    batik Batik[] @relation("BatikTema")
-    subTema     SubTema[]
+  id        Int       @id @default(autoincrement())
+  nama      String    @unique
+  subTema   SubTema[]
+  batiks    Batik[]   @relation("BatikTema")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model SubTema {
-  id      Int    @id @default(autoincrement())
-  nama    String @unique
-  temaId  Int
-  tema    Tema   @relation(fields: [temaId], references: [id])
-  batik Batik[] @relation("BatikSubTema")
+  id        Int      @id @default(autoincrement())
+  nama      String   @unique
+  temaId    Int
+  tema      Tema     @relation(fields: [temaId], references: [id])
+  batiks    Batik[]  @relation("BatikSubTema")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([nama, temaId])
 }

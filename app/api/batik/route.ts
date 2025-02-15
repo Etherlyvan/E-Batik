@@ -62,15 +62,16 @@ const processSubTema = async (subTemas: string[], temaIds: number[]) => {
     const subTemaData = [];
 
     for (const [index, subTema] of subTemas.entries()) {
-        const existingsubTema = await prisma.subTema.findUnique({
-            where: { nama: subTema },
+        const existingSubTema = await prisma.subTema.findFirst({
+            where: {
+                nama: subTema,  // Changed from subTema.nama to just subTema
+                temaId: temaIds[index]
+            }
         });
 
-        if (existingsubTema) {
-            // If it exists, just add the temaId and nama to the data
-            // subTemaData.push({
-            //     where: { nama: subTema, temaId: temaIds[index] },
-            // });
+        if (existingSubTema) {
+            // If it exists, skip adding to subTemaData since we don't need to create it
+            continue;
         } else {
             // If it doesn't exist, create a new one
             subTemaData.push({

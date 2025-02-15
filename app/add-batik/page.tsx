@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import BatikForm from '@/app/components/BatikForm';
+import BatikForm from '@/app/components/batik/BatikForm';
 
 const AddBatikPage: React.FC = () => {
     const { user } = useAuth();
