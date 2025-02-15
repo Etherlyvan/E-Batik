@@ -1,122 +1,81 @@
-import { SubTema as PrismaSubTema } from '@prisma/client';
-
-// export interface FormErrors {
-//     foto?: string;
-//     nama?: string;
-//     tahun?: string;
-//     tema?: string;
-//     subTema?: string;
-//     warna?: string;
-//     teknik?: string;
-//     jenisKain?: string;
-//     pewarna?: string;
-//     bentuk?: string;
-//     histori?: string;
-//     dimensi?: string;
-// }
-
-export interface FormData {
-    foto: File[];
-    nama: string;
-    tahun: number;
-    tema: string[];
-    subTema: string[];
-    warna: string;
-    teknik: string;
-    jenisKain: string;
-    pewarna: string;
-    bentuk: string;
-    histori: string;
-    dimensi: string;
-}
-
-export interface TemaAPIResponse {
+export interface Language {
+    id: number;
+    code: string;
+    name: string;
+    isDefault: boolean;
+  }
+  
+  export interface Tema {
     id: number;
     nama: string;
-    subTema: PrismaSubTema[];
-}
-
-export interface TextInputProps {
-    label: string;
-    name: keyof FormData;
-    value: string | number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    placeholder: string;
-    type?: string;
-    error?: string;
-}
-
-export interface TextAreaProps {
-    label: string;
-    name: keyof FormData;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    placeholder: string;
-    rows?: number;
-    error?: string;
-}
-
-export interface ImageUploadProps {
-    previews: string[];
-    setPreviews: React.Dispatch<React.SetStateAction<string[]>>;
-    handleFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    previewLoading: boolean;
-    error?: string;
-}
-
-// export interface DropdownFormComponentProps {
-//     title: 'Tema' | 'Sub Tema';
-//     formData: FormData;
-//     setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-//     list: TemaAPIResponse[] | PrismaSubTema[];
-//     errors: FormErrors;
-//     index: number;
-// }
-export interface ListItem {
-    id: string | number;
+    translations: TemaTranslation[];
+    subTema: SubTema[];
+  }
+  
+  export interface SubTema {
+    id: number;
     nama: string;
-}
-export interface DropdownFormComponentProps {
-    title: 'Tema' | 'Sub Tema';
-    formData: {
-        tema: string[];
-        subTema: string[];
-    };
-    setFormData: React.Dispatch<React.SetStateAction<FormData>>; // Using FormData instead of any
-    list: ListItem[];
-    errors: {
-        tema?: string;
-        subTema?: string;
-    };
-    index: number;
-}
-
-
-export interface TemaSectionProps {
-    formData: FormData;
-    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-    temaList: TemaAPIResponse[];
-    errors: FormErrors;
-    addNewTema: () => void;
-}
-
-export interface IBatikFormData {
-    foto: File[];
+    temaId: number;
+    translations: SubTemaTranslation[];
+  }
+  
+  export interface TemaTranslation {
+    id: number;
+    temaId: number;
+    languageId: number;
     nama: string;
-    tahun: number;
-    tema: string[];
-    subTema: string[];
+  }
+  
+  export interface SubTemaTranslation {
+    id: number;
+    subTemaId: number;
+    languageId: number;
+    nama: string;
+  }
+  
+  export interface BatikTranslation {
+    languageId: number;
     warna: string;
     teknik: string;
     jenisKain: string;
+    histori: string;
     pewarna: string;
     bentuk: string;
-    histori: string;
+  }
+  
+  export interface Foto {
+    id?: number;
+    link: string;
+    file?: File;
+  }
+  
+  export interface BatikFormData {
+    nama: string;
+    tahun: string;
     dimensi: string;
-}
-
-export type FormErrors = {
-    [K in keyof IBatikFormData]?: string;
-};
-
-
+    kode: string;
+    alamat: string;
+    seniman: string;
+    pointmap: string;
+    translations: Record<number, {
+      languageId: number;
+      warna?: string;
+      teknik?: string;
+      jenisKain?: string;
+      pewarna?: string;
+      bentuk?: string;
+      histori?: string;
+    }>;
+    foto: Array<{
+      url: string;
+      publicId?: string;
+    }>;
+    temaIds: number[];
+    subTemaIds: number[];
+  }
+  
+  export interface CloudinaryUploadResponse {
+    secure_url: string;
+    public_id: string;
+  }
+  

@@ -1,31 +1,45 @@
 import React from 'react';
-import { TextInputProps } from '../types';
+
+interface TextInputProps {
+  id: string;
+  name: string;
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  required?: boolean;
+  error?: string;
+}
 
 export const TextInput: React.FC<TextInputProps> = ({
-    label,
-    name,
-    value,
-    onChange,
-    placeholder,
-    type = 'text',
-    error,
+  id,
+  name,
+  label,
+  value,
+  onChange,
+  placeholder,
+  required = false,
+  error
 }) => {
-    return (
-        <div>
-            <label className='block text-sm font-medium text-gray-700'>
-                {label}
-            </label>
-            <input
-                type={type}
-                name={name as string}
-                value={value}
-                onChange={onChange}
-                className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
-                    error ? 'border-red-500' : 'border-gray-300'
-                } focus:border-transparent`}
-                placeholder={placeholder}
-            />
-            {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
-        </div>
-    );
+  return (
+    <div className="mb-4">
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        type="text"
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={`w-full px-3 py-2 border rounded-md ${
+          error ? 'border-red-500' : 'border-gray-300'
+        }`}
+        required={required}
+      />
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+    </div>
+  );
 };

@@ -1,31 +1,47 @@
 import React from 'react';
-import { TextAreaProps } from '../types';
+
+interface TextAreaProps {
+  id: string;
+  name: string;
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  placeholder?: string;
+  required?: boolean;
+  error?: string;
+  rows?: number;
+}
 
 export const TextArea: React.FC<TextAreaProps> = ({
-    label,
-    name,
-    value,
-    onChange,
-    placeholder,
-    rows = 4,
-    error,
+  id,
+  name,
+  label,
+  value,
+  onChange,
+  placeholder,
+  required = false,
+  error,
+  rows = 4
 }) => {
-    return (
-        <div>
-            <label className='block text-sm font-medium text-gray-700'>
-                {label}
-            </label>
-            <textarea
-                name={name as string}
-                value={value}
-                onChange={onChange}
-                rows={rows}
-                className={`mt-2 w-full rounded-md border p-2 text-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
-                    error ? 'border-red-500' : 'border-gray-300'
-                } focus:border-transparent`}
-                placeholder={placeholder}
-            />
-            {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
-        </div>
-    );
+  return (
+    <div className="mb-4">
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </label>
+      <textarea
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        rows={rows}
+        className={`w-full px-3 py-2 border rounded-md ${
+          error ? 'border-red-500' : 'border-gray-300'
+        }`}
+        required={required}
+      />
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+    </div>
+  );
 };

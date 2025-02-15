@@ -1,29 +1,10 @@
-'use client';
+import React from 'react';
+import { BatikForm } from '@/app/components/batik/BatikForm';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import BatikForm from '@/app/components/batik/BatikForm';
-
-const AddBatikPage: React.FC = () => {
-    const { user } = useAuth();
-    const router = useRouter();
-
-    useEffect(() => {
-        if (!user) {
-            router.replace('/login');
-        }
-    }, [user, router]);
-
-    if (!user) {
-        return null; // or a loading spinner
-    }
-
-    return (
-        <div>
-            <BatikForm />
-        </div>
-    );
-};
-
-export default AddBatikPage;
+export default function BatikFormPage() {
+  return (
+    <div className="min-h-screen bg-gray-100 py-8">
+      <BatikForm />
+    </div>
+  );
+}

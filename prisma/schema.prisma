@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,23 +8,43 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+
+
 model Batik {
   id        Int       @id @default(autoincrement())
   kode      String?
-  nama      String
+  alamat    String?
+  seniman   String?
+  pointmap  String?
+  nama      String    
   tahun     String
-  warna     String
-  teknik    String
-  jenisKain String
-  pewarna   String
-  bentuk    String
-  histori   String
   dimensi   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  foto      Foto[]
-  tema      Tema[]    @relation("BatikTema")
-  subTema   SubTema[] @relation("BatikSubTema")
+  
+  // Relations
+  translations BatikTranslation[]
+  foto         Foto[]
+  tema         Tema[]    @relation("BatikTema")
+  subTema      SubTema[] @relation("BatikSubTema")
+}
+
+model BatikTranslation {
+  id          Int      @id @default(autoincrement())
+  batikId     Int
+  languageId  Int
+  warna       String
+  teknik      String
+  jenisKain   String
+  histori     String
+  pewarna     String
+  bentuk      String
+  
+  // Relations
+  batik       Batik    @relation(fields: [batikId], references: [id], onDelete: Cascade)
+  language    Language @relation(fields: [languageId], references: [id])
+  
+  @@unique([batikId, languageId])
 }
 
 model Foto {
@@ -37,23 +54,65 @@ model Foto {
   batik   Batik  @relation(fields: [batikId], references: [id])
 }
 
+model TemaTranslation {
+  id          Int      @id @default(autoincrement())
+  temaId      Int
+  languageId  Int
+  nama        String
+  
+  // Relations
+  tema        Tema     @relation(fields: [temaId], references: [id], onDelete: Cascade)
+  language    Language @relation(fields: [languageId], references: [id])
+  
+  @@unique([temaId, languageId])
+}
+
+model SubTemaTranslation {
+  id          Int      @id @default(autoincrement())
+  subTemaId   Int
+  languageId  Int
+  nama        String
+  
+  // Relations
+  subTema     SubTema  @relation(fields: [subTemaId], references: [id], onDelete: Cascade)
+  language    Language @relation(fields: [languageId], references: [id])
+  
+  @@unique([subTemaId, languageId])
+}
+
+// And update your existing models to include the relations:
 model Tema {
-  id        Int       @id @default(autoincrement())
-  nama      String    @unique
-  subTema   SubTema[]
-  batiks    Batik[]   @relation("BatikTema")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id           Int               @id @default(autoincrement())
+  nama         String           @unique
+  translations TemaTranslation[]  // Add this line
+  subTema      SubTema[]
+  batiks       Batik[]          @relation("BatikTema")
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }
 
 model SubTema {
-  id        Int      @id @default(autoincrement())
-  nama      String   @unique
-  temaId    Int
-  tema      Tema     @relation(fields: [temaId], references: [id])
-  batiks    Batik[]  @relation("BatikSubTema")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int                  @id @default(autoincrement())
+  nama         String              @unique
+  temaId       Int
+  translations SubTemaTranslation[] // Add this line
+  tema         Tema                @relation(fields: [temaId], references: [id])
+  batiks       Batik[]             @relation("BatikSubTema")
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
 
   @@unique([nama, temaId])
+}
+
+// Update Language model to include the new relations
+model Language {
+  id                   Int                  @id @default(autoincrement())
+  code                 String              @unique
+  name                 String
+  isDefault           Boolean             @default(false)
+  batikTranslations   BatikTranslation[]
+  temaTranslations    TemaTranslation[]    // Add this line
+  subTemaTranslations SubTemaTranslation[] // Add this line
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 }
