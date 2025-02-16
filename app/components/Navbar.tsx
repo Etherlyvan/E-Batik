@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import LanguageSelector from './gallery/components/LanguageSelector';
 
 const Navbar: React.FC = () => {
     const pathname = usePathname();
@@ -53,6 +54,7 @@ const Navbar: React.FC = () => {
 
                     {/* Desktop Navigation */}
                     <div className='hidden sm:flex sm:items-center sm:space-x-8'>
+                        <LanguageSelector />
                         {[
                             { href: '/', label: 'Home' },
                             { href: '/gallery', label: 'Gallery' },

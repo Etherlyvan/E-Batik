@@ -2,8 +2,9 @@
 
 import ImageSlider from '@/app/components/ImageSlider';
 import { useEffect, useState, use } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { useLanguage } from '../../../context/LanguageContext';
+import { useRouter } from 'next/navigation';
 
 interface Foto {
     id: number;
@@ -75,8 +76,7 @@ export default function BatikDetail({ params }: BatikDetailProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const searchParams = useSearchParams();
-    const lang = searchParams.get('lang');
+    const { currentLanguage } = useLanguage();
 
     useEffect(() => {
         const fetchBatikDetail = async () => {
@@ -121,7 +121,7 @@ export default function BatikDetail({ params }: BatikDetailProps) {
                 Batik not found
             </div>
         );
-    const idx = lang === 'id' ? 0 : 1;
+    const idx = currentLanguage.code === 'id' ? 0 : 1;
 
     return (
         <div className='max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg'>

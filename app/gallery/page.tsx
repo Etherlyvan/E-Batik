@@ -1,4 +1,3 @@
-// app/gallery/page.tsx
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { Batik } from '@/types';
 import GalleryCard from '../components/gallery/components/GalleryCard';
-import LanguageSelector from '../components/gallery/components/LanguageSelector';
 import GalleryFilter from '../components/gallery/components/GalleryFilter';
 import { useLanguage } from '../components/gallery/hooks/useLanguage';
 import { useTranslation } from '../components/gallery/hooks/useTranslation';
@@ -113,9 +111,7 @@ const GalleryPage = () => {
     return (
         <div className='min-h-screen bg-gradient-to-b from-gray-50 to-gray-100'>
             <div className='max-w-7xl mx-auto py-8 px-4'>
-                <div className='flex justify-end mb-4'>
-                    <LanguageSelector />
-                </div>
+                <div className='flex justify-end mb-4'></div>
 
                 <div className='text-center mb-8'>
                     <h1 className='text-4xl font-bold text-gray-900 mb-4'>
@@ -162,9 +158,7 @@ const GalleryPage = () => {
                                     showDeleteButton={!!user}
                                     onDelete={() => handleDelete(batik.id)}
                                     onClick={() =>
-                                        router.push(
-                                            `/batik/${batik.id}?lang=${currentLanguage.code}`
-                                        )
+                                        router.push(`/batik/${batik.id}`)
                                     }
                                 />
                             ))}
