@@ -9,6 +9,28 @@ export const useFileHandling = ({ initialImages = [] }: UseFileHandlingProps = {
   const [images, setImages] = useState<Foto[]>(initialImages);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    type: 'success' | 'error';
+    message: string;
+  }>({
+    show: false,
+    type: 'success',
+    message: '',
+  });
+
+  const showAlert = (type: 'success' | 'error', message: string) => {
+    setAlert({
+      show: true,
+      type,
+      message,
+    });
+  };
+
+  const hideAlert = () => {
+    setAlert(prev => ({ ...prev, show: false }));
+  };
+
 
   const convertHeicToJpg = async (file: File): Promise<File> => {
     if (file.type === 'image/heic' || file.type === 'image/heif' || 
@@ -77,8 +99,11 @@ export const useFileHandling = ({ initialImages = [] }: UseFileHandlingProps = {
       );
 
       setImages(prev => [...prev, ...processedImages]);
+      showAlert('success', 'Gambar berhasil diunggah');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memproses gambar');
+        const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memproses gambar';
+        setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memproses gambar');
+        showAlert('error', errorMessage);
       console.error('File processing error:', err);
     } finally {
       setUploading(false);
@@ -126,11 +151,12 @@ export const useFileHandling = ({ initialImages = [] }: UseFileHandlingProps = {
           return { link: data.secure_url };
         })
       );
-      
+      showAlert('success', 'Gambar berhasil diunggah ke Cloudinary');
       return uploadedImages;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat upload';
       setError(errorMessage);
+      showAlert('error', errorMessage);
       throw new Error(errorMessage);
     } finally {
       setUploading(false);
@@ -141,9 +167,13 @@ export const useFileHandling = ({ initialImages = [] }: UseFileHandlingProps = {
     images,
     uploading,
     error,
+    setImages,
     handleFileChange,
     removeImage,
-    uploadImagesToCloudinary
+    uploadImagesToCloudinary,
+    alert,
+    hideAlert,
+    showAlert
   };
 };
 

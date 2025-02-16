@@ -7,6 +7,7 @@ import { TextArea } from './components/TextArea';
 import { ImageUpload } from './components/ImageUpload';
 import { TemaSection } from './components/TemaSection';
 import { useFormSubmission } from './hooks/useFormSubmission';
+import UploadAlert from './components/UploadAlert';
 
 export const BatikForm: React.FC = () => {
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -19,6 +20,7 @@ export const BatikForm: React.FC = () => {
     error,
     success,
     images,
+    uploading,
     handleInputChange,
     handleTranslationChange,
     handleTemaChange,
@@ -26,6 +28,8 @@ export const BatikForm: React.FC = () => {
     handleFileChange,
     removeImage,
     submitForm,
+    alert,     
+    hideAlert  
   } = useFormSubmission();
 
   // Fetch languages and temas
@@ -151,7 +155,18 @@ export const BatikForm: React.FC = () => {
               images={images}
               onFileChange={handleFileChange}
               onRemove={removeImage}
+              uploading={uploading}  // Add this
+            error={error}         // Add this if you have error state
+
+
             />
+            <UploadAlert
+                show={alert.show}
+                type={alert.type}
+                message={alert.message}
+                onClose={hideAlert}
+            />
+
           </div>
         </div>
 

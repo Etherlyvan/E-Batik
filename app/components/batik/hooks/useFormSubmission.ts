@@ -12,7 +12,7 @@ const [formData, setFormData] = useState<BatikFormData>({
     tahun: '',
     dimensi: '',
     translations: {},
-    foto: [], // This should match the Foto[] type
+    foto: [], 
     temaIds: [],
     subTemaIds: []
     });
@@ -26,7 +26,11 @@ const [formData, setFormData] = useState<BatikFormData>({
     removeImage, 
     uploadImagesToCloudinary,
     uploading,
-    error: uploadError
+    error: uploadError,
+    setImages,
+    alert,     // Add this
+    hideAlert, // Add this
+    showAlert  // Add this
   } = useFileHandling({ 
     initialImages: formData.foto?.map(img => ({
       link: img.url // Convert url to link
@@ -38,31 +42,36 @@ const [formData, setFormData] = useState<BatikFormData>({
   const validateForm = useCallback((): boolean => {
     if (!formData.nama.trim()) {
       setError('Nama batik harus diisi');
+      showAlert('error', 'Nama batik harus diisi');
       return false;
     }
     
     if (!formData.tahun.trim()) {
       setError('Tahun harus diisi');
+      showAlert('error', 'Tahun harus diisi');
       return false;
     }
     
     if (!formData.dimensi.trim()) {
       setError('Dimensi harus diisi');
+      showAlert('error', 'Dimensi harus diisi');
       return false;
     }
     
     if (images.length === 0) {
       setError('Minimal satu foto harus diupload');
+      showAlert('error', 'Minimal satu foto harus diupload');
       return false;
     }
     
     if (Object.keys(formData.translations).length === 0) {
       setError('Minimal satu terjemahan harus diisi');
+      showAlert('error', 'Minimal satu terjemahan harus diisi');
       return false;
     }
     
     return true;
-  }, [formData, images]);
+  }, [formData, images, showAlert]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -118,9 +127,11 @@ const [formData, setFormData] = useState<BatikFormData>({
       temaIds: [],
       subTemaIds: []
     });
+    setImages([]);
     setSuccess(false);
     setError(null);
-  }, []);
+    hideAlert();
+  }, [setImages, hideAlert]);
 
   const submitForm = useCallback(async () => {
     setError(null);
@@ -177,17 +188,18 @@ const translationsArray = Object.entries(formData.translations).map(([languageId
       }
       
       setSuccess(true);
+      showAlert('success', 'Data batik berhasil disimpan!');
       resetForm();
       
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
-      console.error('Submission error:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [formData, validateForm, uploadImagesToCloudinary, resetForm]);
-  
-  
+        const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
+        setError(errorMessage);
+        showAlert('error', errorMessage);
+        console.error('Submission error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }, [formData, validateForm, uploadImagesToCloudinary, resetForm, showAlert]);
   
   
   
@@ -206,6 +218,8 @@ const translationsArray = Object.entries(formData.translations).map(([languageId
     handleFileChange,
     removeImage,
     submitForm,
-    resetForm
+    resetForm,
+    alert,      // Add this
+    hideAlert   // Add this
   };
 };

@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { Loader } from 'lucide-react';
 import { Foto } from '../types';
 
 interface ImageUploadProps {
@@ -35,39 +36,51 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         onDragOver={handleDragOver}
       >
         <input
-        type="file"
-        id="file-upload"
-        multiple
-        accept="image/*,.heic,.heif"
-        className="hidden"
-        onChange={(e) => onFileChange(e.target.files)}
-        disabled={uploading}
+          type="file"
+          id="file-upload"
+          multiple
+          accept="image/*,.heic,.heif"
+          className="hidden"
+          onChange={(e) => onFileChange(e.target.files)}
+          disabled={uploading}
         />
         <label
           htmlFor="file-upload"
-          className="cursor-pointer text-blue-600 hover:text-blue-800"
+          className={`cursor-pointer text-blue-600 hover:text-blue-800 ${uploading ? 'pointer-events-none' : ''}`}
         >
           Klik untuk upload
         </label>
         <p className="text-sm text-gray-500 mt-2">atau drag & drop file gambar di sini</p>
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        {uploading && <p className="text-gray-500 text-sm mt-2">Sedang mengupload...</p>}
+        {uploading && (
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <Loader className="w-4 h-4 animate-spin text-blue-600" />
+            <p className="text-gray-500 text-sm">Sedang mengupload...</p>
+          </div>
+        )}
       </div>
 
       {images.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {images.map((image, index) => (
             <div key={index} className="relative group">
-              <img
-                src={image.link}
-                alt={`Preview ${index}`}
-                className="w-full h-32 object-cover rounded-md"
-              />
+              <div className="relative w-full h-32">
+                <img
+                  src={image.link}
+                  alt={`Preview ${index}`}
+                  className="w-full h-full object-cover rounded-md"
+                />
+                {uploading && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-md flex items-center justify-center">
+                    <Loader className="w-6 h-6 animate-spin text-white" />
+                  </div>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => onRemove(index)}
                 className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 
-                           opacity-0 group-hover:opacity-100 transition-opacity"
+                         opacity-0 group-hover:opacity-100 transition-opacity"
                 disabled={uploading}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
