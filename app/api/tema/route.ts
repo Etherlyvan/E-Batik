@@ -4,33 +4,26 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET - Fetch all temas with subtemas
 export async function GET() {
     try {
-      // Fetch temas with subtemas
       const temas = await prisma.tema.findMany({
         include: {
-          subTema: true
+          subTema: true,
+          translations: {
+            include: {
+              language: true
+            }
+          }
         }
       });
-  
-      // Transform the response
-      const transformedTemas = temas.map((tema) => ({
-        id: tema.id,
-        nama: tema.nama,
-        subTema: tema.subTema.map((subTema) => ({
-          id: subTema.id,
-          nama: subTema.nama,
-          temaId: subTema.temaId
-        }))
-      }));
-  
-      return NextResponse.json(transformedTemas);
+      
+      return NextResponse.json(temas);
     } catch (error) {
       console.error('Error fetching temas:', error);
       return NextResponse.json(
-        { message: 'Failed to fetch temas', error: String(error) },
+        { error: 'Internal Server Error' },
         { status: 500 }
       );
     }
-}
+  }
 // POST - Create a new tema
 export async function POST(req: NextRequest) {
   try {

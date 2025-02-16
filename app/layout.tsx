@@ -3,6 +3,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import Navbar from '@/app/components/Navbar';
 import { LanguageProvider } from '@/context/LanguageContext';
 
+
 export default function RootLayout({
     children,
 }: {

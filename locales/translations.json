@@ -7,8 +7,13 @@
         "filters": {
           "title": "Filter",
           "tema": "Tema Batik",
+          "subTema": "Sub-tema Batik",
           "tahun": "Tahun Pembuatan",
           "teknik": "Teknik Pembuatan",
+          "pewarna": "Pewarna",
+          "bentuk": "Bentuk",
+          "jenisKain": "Jenis Kain",
+          "select": "Pilih",
           "reset": "Reset semua filter"
         },
         "results": "Menampilkan {start}-{end} dari {total} batik",
@@ -26,8 +31,13 @@
         "filters": {
           "title": "Filter",
           "tema": "Batik Theme",
+          "subTema": "Batik Sub-theme",
           "tahun": "Year Created",
           "teknik": "Production Technique",
+          "pewarna": "Dye",
+          "bentuk": "Shape",
+          "jenisKain": "Fabric Type",
+          "select": "Select",
           "reset": "Reset all filters"
         },
         "results": "Showing {start}-{end} of {total} batiks",

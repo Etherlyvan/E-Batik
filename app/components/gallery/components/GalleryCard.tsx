@@ -20,7 +20,6 @@ const GalleryCard = ({
     onClick,
 }: GalleryCardProps) => {
     const { currentLanguage } = useLanguage();
-
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
         onDelete?.();
