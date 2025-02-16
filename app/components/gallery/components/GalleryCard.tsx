@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { motion } from 'framer-motion';
 import { Batik, Language } from '@/types';
 // import { useTranslation } from '@/app/components/gallery/hooks/useTranslation';
@@ -20,6 +21,7 @@ const GalleryCard = ({
     showDeleteButton = false,
     onClick,
 }: GalleryCardProps) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const translation = batik.translations.find(
         (t) => t.languageId === currentLanguage.id
     );
