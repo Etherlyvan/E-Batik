@@ -2,6 +2,8 @@
 
 import ImageSlider from '@/app/components/ImageSlider';
 import { useEffect, useState, use } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 interface Foto {
     id: number;
@@ -12,11 +14,22 @@ interface Foto {
 interface Tema {
     id: number;
     nama: string;
+    translations: {
+        id: number;
+        languageId: number;
+        nama: string;
+    }[];
 }
 
 interface SubTema {
     id: number;
     nama: string;
+    temaId: number;
+    translations: {
+        id: number;
+        languageId: number;
+        nama: string;
+    }[];
 }
 
 interface Batik {
@@ -33,6 +46,18 @@ interface Batik {
     bentuk: string;
     histori: string;
     dimensi: string;
+    translations: {
+        id: number;
+        languageId: number;
+        nama: string;
+        warna: string;
+        teknik: string;
+        jenisKain: string;
+        pewarna: string;
+        bentuk: string;
+        histori: string;
+        dimensi: string;
+    }[];
 }
 
 interface Params {
@@ -44,10 +69,14 @@ interface BatikDetailProps {
 }
 
 export default function BatikDetail({ params }: BatikDetailProps) {
+    const router = useRouter();
     const { id } = use(params);
     const [batik, setBatik] = useState<Batik | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const searchParams = useSearchParams();
+    const lang = searchParams.get('lang');
 
     useEffect(() => {
         const fetchBatikDetail = async () => {
@@ -63,6 +92,7 @@ export default function BatikDetail({ params }: BatikDetailProps) {
                 }
 
                 setBatik(filteredBatik);
+                console.log('Batik id:', filteredBatik);
             } catch (err) {
                 setError(
                     err instanceof Error ? err.message : 'An error occurred'
@@ -91,67 +121,95 @@ export default function BatikDetail({ params }: BatikDetailProps) {
                 Batik not found
             </div>
         );
+    const idx = lang === 'id' ? 0 : 1;
 
     return (
         <div className='max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg'>
+            <div
+                className='flex flex-row items-center cursor-pointer  hover:underline mb-5'
+                onClick={() => router.back()}
+            >
+                <ArrowLeft className='w-7 h-7 mr-1' />
+                <p>{idx == 1 ? 'Back' : 'Kembali'}</p>
+            </div>
             <ImageSlider images={batik.foto} />
             <div className='mt-6 space-y-4'>
                 <h1 className='text-3xl font-bold text-gray-900'>
                     {batik.nama}
                 </h1>
-                <p className='text-lg text-gray-700'>Tahun: {batik.tahun}</p>
+                <p className='text-lg font-medium text-gray-700'>
+                    {idx == 1 ? 'Year ' : 'Tahun '}: {batik.tahun}
+                </p>
 
                 <div className='grid grid-cols-2 gap-4'>
                     <p className='text-lg font-medium'>
-                        Warna:{' '}
-                        <span className='font-normal'>{batik.warna}</span>
+                        {idx == 1 ? 'Color: ' : 'Warna: '}
+                        <span className='font-normal'>
+                            {batik.translations[idx].warna}
+                        </span>
                     </p>
                     <p className='text-lg font-medium'>
-                        Teknik:{' '}
-                        <span className='font-normal'>{batik.teknik}</span>
+                        {idx == 1 ? 'Technique: ' : 'Teknik: '}
+                        <span className='font-normal'>
+                            {batik.translations[idx].teknik}
+                        </span>
                     </p>
                     <p className='text-lg font-medium'>
-                        Jenis Kain:{' '}
-                        <span className='font-normal'>{batik.jenisKain}</span>
+                        {idx == 1 ? 'Fabric Type: ' : 'Jenis Kain: '}
+                        <span className='font-normal'>
+                            {batik.translations[idx].jenisKain}
+                        </span>
                     </p>
                     <p className='text-lg font-medium'>
-                        Pewarna:{' '}
-                        <span className='font-normal'>{batik.pewarna}</span>
+                        {idx == 1 ? 'Dye: ' : 'Pewarna: '}
+                        <span className='font-normal'>
+                            {batik.translations[idx].pewarna}
+                        </span>
                     </p>
                     <p className='text-lg font-medium'>
-                        Bentuk:{' '}
-                        <span className='font-normal'>{batik.bentuk}</span>
+                        {idx == 1 ? 'Shape: ' : 'Bentuk: '}
+                        <span className='font-normal'>
+                            {batik.translations[idx].bentuk}
+                        </span>
                     </p>
                     <p className='text-lg font-medium'>
-                        Dimensi:{' '}
+                        {idx == 1 ? 'Dimension: ' : 'Dimensi: '}
                         <span className='font-normal'>{batik.dimensi}</span>
                     </p>
                 </div>
 
-                <p className='text-lg font-medium'>Histori:</p>
-                <p className='text-gray-700'>{batik.histori}</p>
+                <p className='text-lg font-medium'>
+                    {idx == 1 ? 'History: ' : 'Histori: '}
+                </p>
+                <p className='text-gray-700'>
+                    {batik.translations[idx].histori}
+                </p>
 
-                <div className='flex flex-wrap gap-2'>
-                    <span className='text-lg font-medium'>Tema:</span>
-                    {batik.tema.map((t) => (
-                        <span
-                            key={t.id}
-                            className='px-3 py-1 bg-blue-200 text-blue-800 rounded-md'
-                        >
-                            {t.nama}
-                        </span>
-                    ))}
-                </div>
-
-                <div className='flex flex-wrap gap-2'>
-                    <span className='text-lg font-medium'>Sub Tema:</span>
-                    {batik.subTema.map((st) => (
-                        <span
-                            key={st.id}
-                            className='px-3 py-1 bg-green-200 text-green-800 rounded-md'
-                        >
-                            {st.nama}
-                        </span>
+                <p className='text-lg font-medium'>
+                    {idx == 1 ? 'Theme and Sub Theme' : 'Tema dan Sub Tema'}
+                </p>
+                <div className='flex flex-col gap-7'>
+                    {batik.tema.map((tema) => (
+                        <div key={tema.id}>
+                            <span className='font-medium  px-3 py-1 bg-blue-200 text-blue-800 rounded-md'>
+                                {tema.translations[(idx + 1) % 2].nama}
+                            </span>
+                            <div className='flex flex-wrap gap-2 mt-2'>
+                                {batik.subTema
+                                    .filter((st) => st.temaId === tema.id) // Hanya sub tema yang sesuai
+                                    .map((st) => (
+                                        <span
+                                            key={st.id}
+                                            className='px-3 py-1 bg-green-200 text-green-800 rounded-md'
+                                        >
+                                            {
+                                                st.translations[(idx + 1) % 2]
+                                                    .nama
+                                            }
+                                        </span>
+                                    ))}
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>

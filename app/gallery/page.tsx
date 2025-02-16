@@ -12,6 +12,7 @@ import GalleryFilter from '../components/gallery/components/GalleryFilter';
 import { useLanguage } from '../components/gallery/hooks/useLanguage';
 import { useTranslation } from '../components/gallery/hooks/useTranslation';
 
+
 const GalleryPage = () => {
   const { user } = useAuth();
   const router = useRouter();
@@ -60,21 +61,24 @@ const GalleryPage = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm(t('gallery.deleteConfirm'))) {
-      try {
-        const response = await fetch(`/api/batik?id=${id}`, {
-          method: 'DELETE',
-        });
 
-        if (response.ok) {
-          setBatiks(batiks.filter(batik => batik.id !== id));
+
+
+  const handleDelete = async (id: number) => {
+        if (window.confirm(t('gallery.deleteConfirm'))) {
+            try {
+                const response = await fetch(`/api/batik?id=${id}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    setBatiks(batiks.filter((batik) => batik.id !== id));
+                }
+            } catch (error) {
+                console.error('Error deleting batik:', error);
+            }
         }
-      } catch (error) {
-        console.error('Error deleting batik:', error);
-      }
-    }
-  };
+    };
 
   // Also update the filteredBatiks function to include the new filters:
 const filteredBatiks = batiks.filter((batik) => {
@@ -200,7 +204,8 @@ const filteredBatiks = batiks.filter((batik) => {
                     currentLanguage={currentLanguage}
                     showDeleteButton={!!user}
                     onDelete={() => handleDelete(batik.id)}
-                    onClick={() => router.push(`/batik/${batik.id}`)}
+                    onClick={() => router.push(`/batik/${batik.id}?lang=${currentLanguage.code}`)}
+
                   />
                 ))}
               </motion.div>
@@ -224,6 +229,7 @@ const filteredBatiks = batiks.filter((batik) => {
       </div>
     </div>
   );
+
 };
 
 export default GalleryPage;
