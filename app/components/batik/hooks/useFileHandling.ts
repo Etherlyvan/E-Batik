@@ -99,7 +99,7 @@ export const useFileHandling = ({ initialImages = [] }: UseFileHandlingProps = {
       );
 
       setImages(prev => [...prev, ...processedImages]);
-      showAlert('success', 'Gambar berhasil diunggah');
+      showAlert('success', 'Data berhasil diunggah');
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memproses gambar';
         setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memproses gambar');

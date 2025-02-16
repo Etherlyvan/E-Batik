@@ -1,0 +1,45 @@
+{
+    "id": {
+      "gallery": {
+        "title": "Galeri Batik",
+        "subtitle": "Koleksi batik tradisional Indonesia yang menampilkan keindahan dan keragaman budaya nusantara",
+        "search": "Cari batik berdasarkan nama...",
+        "filters": {
+          "title": "Filter",
+          "tema": "Tema Batik",
+          "tahun": "Tahun Pembuatan",
+          "teknik": "Teknik Pembuatan",
+          "reset": "Reset semua filter"
+        },
+        "results": "Menampilkan {start}-{end} dari {total} batik",
+        "empty": {
+          "title": "Koleksi Kosong",
+          "message": "Belum ada data batik yang tersedia. Mulai tambahkan koleksi batik pertama Anda."
+        }
+      }
+    },
+    "en": {
+      "gallery": {
+        "title": "Batik Gallery",
+        "subtitle": "Collection of traditional Indonesian batik showcasing the beauty and diversity of archipelago culture",
+        "search": "Search batik by name...",
+        "filters": {
+          "title": "Filter",
+          "tema": "Batik Theme",
+          "tahun": "Year Created",
+          "teknik": "Production Technique",
+          "reset": "Reset all filters"
+        },
+        "results": "Showing {start}-{end} of {total} batiks",
+        "empty": {
+          "title": "Empty Collection",
+          "message": "No batik data available yet. Start adding your first batik collection."
+        }
+      }
+    },
+    "ja": {
+      "gallery": {
+        "comingSoon": "近日公開"
+      }
+    }
+  }
