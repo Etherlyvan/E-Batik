@@ -5,21 +5,12 @@ import { useRouter } from 'next/navigation';
 import { Search, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
-import { Batik } from '@/types';
+import { Batik, Tema } from '@/types';
 import GalleryCard from '../components/gallery/components/GalleryCard';
 import LanguageSelector from '../components/gallery/components/LanguageSelector';
 import GalleryFilter from '../components/gallery/components/GalleryFilter';
 import { useLanguage } from '../components/gallery/hooks/useLanguage';
 import { useTranslation } from '../components/gallery/hooks/useTranslation';
-
-const filterOptions = [
-  { value: 'all', label: 'Semua Tema' },
-  { value: 'Klasik', label: 'Klasik' },
-  { value: 'Modern', label: 'Modern' },
-  { value: 'Pesisir', label: 'Pesisir' },
-  { value: 'Pedalaman', label: 'Pedalaman' },
-  { value: 'Keraton', label: 'Keraton' },
-];
 
 const GalleryPage = () => {
   const { user } = useAuth();
@@ -28,31 +19,45 @@ const GalleryPage = () => {
   const { t } = useTranslation();
   
   const [batiks, setBatiks] = useState<Batik[]>([]);
+  const [temas, setTemas] = useState<Tema[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
   const [activeFilters, setActiveFilters] = useState({
-    tema: 'all',
+    tema: [] as string[],
+    subTema: [] as string[],
     tahun: '',
     teknik: '',
+    pewarna: '', 
+    bentuk: '', 
+    jenisKain: '' 
   });
 
   useEffect(() => {
-    const fetchBatiks = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/batik');
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setBatiks(data);
+        const [batiksResponse, temasResponse] = await Promise.all([
+          fetch('/api/batik'),
+          fetch('/api/tema')
+        ]);
+        
+        const batiksData = await batiksResponse.json();
+        const temasData = await temasResponse.json();
+        
+        if (Array.isArray(batiksData)) {
+          setBatiks(batiksData);
+        }
+        if (Array.isArray(temasData)) {
+          setTemas(temasData);
         }
       } catch (error) {
-        console.error('Error fetching batiks:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchBatiks();
+    fetchData();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -71,26 +76,46 @@ const GalleryPage = () => {
     }
   };
 
-  const filteredBatiks = batiks.filter((batik) => {
+  // Also update the filteredBatiks function to include the new filters:
+const filteredBatiks = batiks.filter((batik) => {
     const matchesSearchTerm = batik.nama
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     
-    const matchesTema =
-      activeFilters.tema === 'all' ||
-      batik.tema.some((t) => t.nama === activeFilters.tema);
-
+    const matchesTema = activeFilters.tema.length === 0 || 
+      batik.tema.some(t => activeFilters.tema.includes(t.id.toString()));
+  
+    const matchesSubTema = activeFilters.subTema.length === 0 || 
+      batik.subTema.some(st => activeFilters.subTema.includes(st.id.toString()));
+  
     const translation = batik.translations.find(
       t => t.languageId === currentLanguage.id
     );
-
+  
     const matchesTeknik = !activeFilters.teknik || 
       (translation?.teknik.toLowerCase().includes(activeFilters.teknik.toLowerCase()) ?? false);
-
+  
     const matchesTahun = !activeFilters.tahun || 
       batik.tahun.includes(activeFilters.tahun);
-
-    return matchesSearchTerm && matchesTema && matchesTeknik && matchesTahun;
+  
+    // Add new filter matches
+    const matchesPewarna = !activeFilters.pewarna ||
+      (translation?.pewarna?.toLowerCase().includes(activeFilters.pewarna.toLowerCase()) ?? false);
+  
+    const matchesBentuk = !activeFilters.bentuk ||
+      (translation?.bentuk?.toLowerCase().includes(activeFilters.bentuk.toLowerCase()) ?? false);
+  
+    const matchesJenisKain = !activeFilters.jenisKain ||
+      (translation?.jenisKain?.toLowerCase().includes(activeFilters.jenisKain.toLowerCase()) ?? false);
+  
+    return matchesSearchTerm && 
+           matchesTema && 
+           matchesSubTema && 
+           matchesTeknik && 
+           matchesTahun && 
+           matchesPewarna && 
+           matchesBentuk && 
+           matchesJenisKain;
   });
 
   if (isLoading) {
@@ -100,80 +125,102 @@ const GalleryPage = () => {
       </div>
     );
   }
-
+  
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <div className="max-w-7xl mx-auto py-8 px-4">
-        <div className="flex justify-end mb-4">
-          <LanguageSelector />
-        </div>
+    <div className="min-h-screen">
+      {/* Hero section full width */}
+      <div 
+        className="w-full bg-cover bg-center h-[400px] relative"
+        style={{ backgroundImage: "url('/images/gallery-hero-bg.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]"></div>
         
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t('gallery.title')}
-          </h1>
-          <p className="text-gray-600">
-            {t('gallery.subtitle')}
-          </p>
-        </div>
-
-        <div className="mb-8">
-          <div className="flex gap-4 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={t('gallery.search')}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20"
-              />
+        {/* Container untuk konten hero */}
+        <div className="absolute inset-0">
+          <div className="max-w-7xl mx-auto h-full px-4 relative z-10">
+            {/* Language selector */}
+            <div className="pt-6">
+              <LanguageSelector />
             </div>
-            <GalleryFilter
-              showFilters={showFilters}
-              setShowFilters={setShowFilters}
-              activeFilters={activeFilters}
-              setActiveFilters={setActiveFilters}
-              filterOptions={filterOptions}
-            />
+            
+            {/* Hero content */}
+            <div className="h-full flex flex-col justify-center items-center -mt-16">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-white mb-4">
+                  {t('gallery.title')}
+                </h1>
+                <p className="text-xl text-white/80">
+                  {t('gallery.subtitle')}
+                </p>
+              </div>
+
+              {/* Search bar */}
+              <div className="w-full max-w-2xl">
+                <div className="bg-white rounded-lg shadow-lg p-1 flex items-center">
+                  <Search className="ml-3 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder={t('gallery.search')}
+                    className="flex-1 px-3 py-3 focus:outline-none text-lg"
+                  />
+                  <button className="bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-3 rounded-r-md transition-colors">
+                    <Search className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <AnimatePresence mode="wait">
-          {filteredBatiks.length > 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-            >
-              {filteredBatiks.map((batik) => (
-                <GalleryCard
-                  key={batik.id}
-                  batik={batik}
-                  currentLanguage={currentLanguage}
-                  showDeleteButton={!!user}
-                  onDelete={() => handleDelete(batik.id)}
-                  onClick={() => router.push(`/batik/${batik.id}`)}
-                />
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center py-12"
-            >
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {t('gallery.empty.title')}
-              </h3>
-              <p className="text-gray-500">
-                {t('gallery.empty.message')}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Main content */}
+      <div className="w-full bg-gradient-to-b from-gray-50 to-gray-100">
+        <div className="max-w-7xl mx-auto py-8 px-4">
+        <GalleryFilter
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+            activeFilters={activeFilters}
+            setActiveFilters={setActiveFilters}
+            temaOptions={temas}
+          />
+          <AnimatePresence mode="wait">
+            {filteredBatiks.length > 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8"
+              >
+                {filteredBatiks.map((batik) => (
+                  <GalleryCard
+                    key={batik.id}
+                    batik={batik}
+                    currentLanguage={currentLanguage}
+                    showDeleteButton={!!user}
+                    onDelete={() => handleDelete(batik.id)}
+                    onClick={() => router.push(`/batik/${batik.id}`)}
+                  />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="text-center py-12 mt-8"
+              >
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {t('gallery.empty.title')}
+                </h3>
+                <p className="text-gray-500">
+                  {t('gallery.empty.message')}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
