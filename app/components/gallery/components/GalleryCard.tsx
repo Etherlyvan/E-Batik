@@ -1,9 +1,8 @@
 'use client';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { motion } from 'framer-motion';
 import { Batik, Language } from '@/types';
+import { useLanguage } from '../../../../context/LanguageContext';
 // import { useTranslation } from '@/app/components/gallery/hooks/useTranslation';
 
 interface GalleryCardProps {
@@ -16,20 +15,17 @@ interface GalleryCardProps {
 
 const GalleryCard = ({
     batik,
-    currentLanguage,
     onDelete,
     showDeleteButton = false,
     onClick,
 }: GalleryCardProps) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const translation = batik.translations.find(
-        (t) => t.languageId === currentLanguage.id
-    );
-
+    const { currentLanguage } = useLanguage();
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
         onDelete?.();
     };
+
+    const idx = currentLanguage.code == 'id' ? 1 : 0;
 
     return (
         <div
@@ -58,7 +54,7 @@ const GalleryCard = ({
                             key={t.id}
                             className='bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded'
                         >
-                            {t.nama}
+                            {t.translations[idx].nama}
                         </span>
                     ))}
                 </div>
