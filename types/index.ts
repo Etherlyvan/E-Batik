@@ -4,26 +4,31 @@ export interface Language {
     code: string;
     name: string;
     isDefault: boolean;
-  }
-  
-  export interface Foto {
+}
+
+export interface Foto {
     id: number;
     link: string;
     batikId: number;
-  }
-  
-  export interface Tema {
+}
+
+export interface Tema {
     id: number;
     nama: string;
-  }
-  
-  export interface SubTema {
+    translations: {
+        id: number;
+        languageId: number;
+        nama: string;
+    }[];
+}
+
+export interface SubTema {
     id: number;
     nama: string;
     temaId: number;
-  }
-  
-  export interface BatikTranslation {
+}
+
+export interface BatikTranslation {
     id: number;
     batikId: number;
     languageId: number;
@@ -34,9 +39,9 @@ export interface Language {
     pewarna: string;
     bentuk: string;
     language: Language;
-  }
-  
-  export interface Batik {
+}
+
+export interface Batik {
     id: number;
     kode?: string;
     alamat?: string;
@@ -49,5 +54,4 @@ export interface Language {
     foto: Foto[];
     tema: Tema[];
     subTema: SubTema[];
-  }
-  
+}
