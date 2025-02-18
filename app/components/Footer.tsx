@@ -9,7 +9,7 @@ export default function Footer() {
                 <div className='w-full md:w-3/4 flex flex-col items-start'>
                     <div className='flex flex-wrap justify-center md:justify-start space-x-2 mb-4 gap-10'>
                         <Image
-                            src='/images/LogoVercel.png'
+                            src='/vercel.svg'
                             alt='Artwork'
                             className='mb-4'
                             width={128}
