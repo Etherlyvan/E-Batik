@@ -23,6 +23,7 @@ async function main() {
         isDefault: false,
       },
     }),
+
   ])
 
   // Create themes with translations

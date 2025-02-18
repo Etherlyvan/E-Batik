@@ -34,5 +34,5 @@ interface GalleryTranslations {
   export interface Translations {
     id: BaseTranslationStructure;
     en: BaseTranslationStructure;
-    ja: JapaneseTranslationStructure;
+    jp: JapaneseTranslationStructure;
   }

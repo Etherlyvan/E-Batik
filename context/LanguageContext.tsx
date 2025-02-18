@@ -38,7 +38,7 @@ export const LanguageProvider = ({
     const availableLanguages: Language[] = [
         { id: 1, code: 'id', name: 'Indonesian', isDefault: true },
         { id: 2, code: 'en', name: 'English', isDefault: false },
-        { id: 3, code: 'ja', name: 'Japanese', isDefault: false },
+        { id: 3, code: 'jp', name: 'Japanese', isDefault: false },
     ];
 
     return (

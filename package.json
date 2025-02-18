@@ -21,6 +21,7 @@
     "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
+    "flag-icon-css": "^4.1.7",
     "formidable": "^3.5.2",
     "framer-motion": "^11.18.2",
     "heic2any": "^0.0.4",

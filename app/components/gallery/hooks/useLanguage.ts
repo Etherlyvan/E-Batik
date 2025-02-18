@@ -29,7 +29,7 @@ export const useLanguage = create<LanguageState>((set) => ({
     },
     {
       id: 3,
-      code: 'ja',
+      code: 'jp',
       name: 'Japanese',
       isDefault: false,
     }
