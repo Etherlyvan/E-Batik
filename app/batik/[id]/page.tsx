@@ -1,10 +1,10 @@
 'use client';
 
-import ImageSlider from '@/app/components/ImageSlider';
 import { useEffect, useState, use } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../../context/LanguageContext';
 import { useRouter } from 'next/navigation';
+import ImageSlider from '@/app/components/ImageSlider'; // Import ImageSlider
 
 interface Foto {
     id: number;
@@ -47,6 +47,7 @@ interface Batik {
     bentuk: string;
     histori: string;
     dimensi: string;
+    seniman?: string; // Optional field for artist
     translations: {
         id: number;
         languageId: number;
@@ -75,6 +76,7 @@ export default function BatikDetail({ params }: BatikDetailProps) {
     const [batik, setBatik] = useState<Batik | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showDetails, setShowDetails] = useState(false);
 
     const { currentLanguage } = useLanguage();
 
@@ -92,7 +94,6 @@ export default function BatikDetail({ params }: BatikDetailProps) {
                 }
 
                 setBatik(filteredBatik);
-                console.log('Batik id:', filteredBatik);
             } catch (err) {
                 setError(
                     err instanceof Error ? err.message : 'An error occurred'
@@ -124,94 +125,166 @@ export default function BatikDetail({ params }: BatikDetailProps) {
     const idx = currentLanguage.code === 'id' ? 0 : 1;
 
     return (
-        <div className='max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg'>
-            <div
-                className='flex flex-row items-center cursor-pointer  hover:underline mb-5'
-                onClick={() => router.back()}
+        <div
+            className="relative flex h-screen w-screen bg-[#E5D387]"
+            
+        >
+            {/* Tombol Back di pojok kiri atas */}
+            <button
+                className='absolute top-4 left-4 z-10 flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow-md'
+                onClick={() => router.push('/gallery')}
             >
-                <ArrowLeft className='w-7 h-7 mr-1' />
-                <p>{idx == 1 ? 'Back' : 'Kembali'}</p>
-            </div>
-            <ImageSlider images={batik.foto} />
-            <div className='mt-6 space-y-4'>
-                <h1 className='text-3xl font-bold text-gray-900'>
-                    {batik.nama}
-                </h1>
-                <p className='text-lg font-medium text-gray-700'>
-                    {idx == 1 ? 'Year ' : 'Tahun '}: {batik.tahun}
-                </p>
+                <ArrowLeft className='mr-2' />
+                {idx === 1 ? 'Back to Gallery' : 'Kembali ke Galeri'}
+            </button>
 
-                <div className='grid grid-cols-2 gap-4'>
-                    <p className='text-lg font-medium'>
-                        {idx == 1 ? 'Color: ' : 'Warna: '}
-                        <span className='font-normal'>
-                            {batik.translations[idx].warna}
-                        </span>
+            {/* Kolom Gambar */}
+            <div className='flex-1'>
+                <ImageSlider images={batik.foto} />
+            </div>
+
+            {/* Kolom Detail */}
+            <div className={`flex-1 flex flex-col ${showDetails ? 'justify-start' : 'justify-center'} p-12 bg-gray-100 overflow-y-auto max-h-screen  ` }
+            style={{
+                backgroundImage: "url('/images/old-papper-texture-background.png')",
+                backgroundSize: 'cover', // Menyesuaikan gambar agar menutupi seluruh area
+                backgroundPosition: 'center', // Memusatkan gambar
+                backgroundRepeat: 'no-repeat', // Mencegah pengulangan gambar
+            }}>
+                <div className='pt-8 space-y-6'>
+                    {/* Nama Batik */}
+                    <h1 className='text-3xl font-bold'>
+                        {batik.nama}
+                    </h1>
+
+                    {/* Seniman (jika ada) */}
+                    {batik.seniman && (
+                        <p className='text-lg'>
+                            {idx == 1 ? 'By ' : 'Oleh '} {batik.seniman}
+                        </p>
+                    )}
+
+                    {/* Histori */}
+                    <p className='text-lg'>
+                        {batik.translations[idx].histori}
                     </p>
-                    <p className='text-lg font-medium'>
-                        {idx == 1 ? 'Technique: ' : 'Teknik: '}
-                        <span className='font-normal'>
-                            {batik.translations[idx].teknik}
-                        </span>
-                    </p>
-                    <p className='text-lg font-medium'>
-                        {idx == 1 ? 'Fabric Type: ' : 'Jenis Kain: '}
-                        <span className='font-normal'>
-                            {batik.translations[idx].jenisKain}
-                        </span>
-                    </p>
-                    <p className='text-lg font-medium'>
-                        {idx == 1 ? 'Dye: ' : 'Pewarna: '}
-                        <span className='font-normal'>
-                            {batik.translations[idx].pewarna}
-                        </span>
-                    </p>
-                    <p className='text-lg font-medium'>
-                        {idx == 1 ? 'Shape: ' : 'Bentuk: '}
-                        <span className='font-normal'>
-                            {batik.translations[idx].bentuk}
-                        </span>
-                    </p>
-                    <p className='text-lg font-medium'>
-                        {idx == 1 ? 'Dimension: ' : 'Dimensi: '}
-                        <span className='font-normal'>{batik.dimensi}</span>
-                    </p>
+
+                    {/* Tombol Full Description */}
+                    <button
+                        className="flex items-center bg-[#391917] text-white px-4 py-2 rounded hover:bg-[#5a2b2b]"
+                        onClick={() => setShowDetails(!showDetails)}
+                    >
+                        {showDetails ? (
+                            <>
+                                {idx === 1 ? 'Hide Description' : 'Sembunyikan Deskripsi'}
+                                <ArrowLeft className="ml-2" />
+                            </>
+                        ) : (
+                            <>
+                                {idx === 1 ? 'Full Description' : 'Deskripsi Lengkap'}
+                                <ArrowRight className="ml-2" />
+                            </>
+                        )}
+                    </button>
                 </div>
 
-                <p className='text-lg font-medium'>
-                    {idx == 1 ? 'History: ' : 'Histori: '}
-                </p>
-                <p className='text-gray-700'>
-                    {batik.translations[idx].histori}
-                </p>
+                {/* Detail Lengkap */}
+                {showDetails && (
+                    <div className='mt-6 space-y-6'>
 
-                <p className='text-lg font-medium'>
-                    {idx == 1 ? 'Theme and Sub Theme' : 'Tema dan Sub Tema'}
-                </p>
-                <div className='flex flex-col gap-7'>
-                    {batik.tema.map((tema) => (
-                        <div key={tema.id}>
-                            <span className='font-medium  px-3 py-1 bg-blue-200 text-blue-800 rounded-md'>
-                                {tema.translations[(idx + 1) % 2].nama}
-                            </span>
-                            <div className='flex flex-wrap gap-2 mt-2'>
-                                {batik.subTema
-                                    .filter((st) => st.temaId === tema.id) // Hanya sub tema yang sesuai
-                                    .map((st) => (
-                                        <span
-                                            key={st.id}
-                                            className='px-3 py-1 bg-green-200 text-green-800 rounded-md'
-                                        >
-                                            {
-                                                st.translations[(idx + 1) % 2]
-                                                    .nama
-                                            }
-                                        </span>
-                                    ))}
+
+                        {/* Tema dan Subtema */}
+                        <div className='space-y-4'>
+                            {batik.tema.map((tema) => {
+                                const temaTranslation = tema.translations.find(
+                                    (translation) =>
+                                        translation.languageId === (idx === 1 ? 2 : 1)
+                                );
+
+                                const relatedSubTema = batik.subTema.filter(
+                                    (subTema) => subTema.temaId === tema.id
+                                );
+
+                                return (
+                                    <div key={tema.id} 
+                                        className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887]'>
+                                        <h3 className='text-xl font-serif font-semibold border-b-2 border-[#DEB887] pb-2 mb-4 text-[#8B4513]'>
+                                            {idx === 1 ? 'Theme: ' : 'Tema: '}
+                                            {temaTranslation?.nama || tema.nama}
+                                        </h3>
+                                        <ul className='grid grid-cols-1 md:grid-cols-2 gap-3 mt-2'>
+                                            {relatedSubTema.map((subTema) => {
+                                                const subTemaTranslation = subTema.translations.find(
+                                                    (translation) =>
+                                                        translation.languageId === (idx === 1 ? 2 : 1)
+                                                );
+                                                return (
+                                                    <li
+                                                        key={subTema.id}
+                                                        className='bg-white p-3 rounded-md shadow-md border border-[#DEB887] hover:shadow-lg transition-shadow duration-300'
+                                                    >
+                                                        {subTemaTranslation?.nama || subTema.nama}
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Informasi Tambahan */}
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                            <div className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887] hover:shadow-xl transition-shadow duration-300'>
+                                <h3 className='text-lg font-serif font-semibold flex items-center text-[#8B4513]'>
+                                    <span className='mr-2'>🎨</span>
+                                    {idx == 1 ? 'Color: ' : 'Warna: '}
+                                </h3>
+                                <p className='mt-2 text-gray-700'>{batik.translations[idx].warna}</p>
+                            </div>
+
+                            <div className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887] hover:shadow-xl transition-shadow duration-300'>
+                                <h3 className='text-lg font-serif font-semibold flex items-center text-[#8B4513]'>
+                                    <span className='mr-2'>🛠️</span>
+                                    {idx == 1 ? 'Technique: ' : 'Teknik: '}
+                                </h3>
+                                <p className='mt-2 text-gray-700'>{batik.translations[idx].teknik}</p>
+                            </div>
+
+                            <div className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887] hover:shadow-xl transition-shadow duration-300'>
+                                <h3 className='text-lg font-serif font-semibold flex items-center text-[#8B4513]'>
+                                    <span className='mr-2'>🧵</span>
+                                    {idx == 1 ? 'Fabric Type: ' : 'Jenis Kain: '}
+                                </h3>
+                                <p className='mt-2 text-gray-700'>{batik.translations[idx].jenisKain}</p>
+                            </div>
+
+                            <div className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887] hover:shadow-xl transition-shadow duration-300'>
+                                <h3 className='text-lg font-serif font-semibold flex items-center text-[#8B4513]'>
+                                    <span className='mr-2'>🌈</span>
+                                    {idx == 1 ? 'Dye: ' : 'Pewarna: '}
+                                </h3>
+                                <p className='mt-2 text-gray-700'>{batik.translations[idx].pewarna}</p>
+                            </div>
+
+                            <div className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887] hover:shadow-xl transition-shadow duration-300'>
+                                <h3 className='text-lg font-serif font-semibold flex items-center text-[#8B4513]'>
+                                    <span className='mr-2'>🔺</span>
+                                    {idx == 1 ? 'Shape: ' : 'Bentuk: '}
+                                </h3>
+                                <p className='mt-2 text-gray-700'>{batik.translations[idx].bentuk}</p>
+                            </div>
+
+                            <div className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887] hover:shadow-xl transition-shadow duration-300'>
+                                <h3 className='text-lg font-serif font-semibold flex items-center text-[#8B4513]'>
+                                    <span className='mr-2'>📏</span>
+                                    {idx == 1 ? 'Dimension: ' : 'Dimensi: '}
+                                </h3>
+                                <p className='mt-2 text-gray-700'>{batik.dimensi}</p>
                             </div>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );
