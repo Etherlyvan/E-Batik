@@ -10,6 +10,8 @@ import GalleryCard from '../components/gallery/components/GalleryCard';
 import GalleryFilter from '../components/gallery/components/GalleryFilter';
 import { useLanguage } from '../components/gallery/hooks/useLanguage';
 import { useTranslation } from '../components/gallery/hooks/useTranslation';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const GalleryPage = () => {
     const { user } = useAuth();
@@ -151,6 +153,7 @@ const GalleryPage = () => {
 
     return (
         <div className='min-h-screen'>
+            <Navbar />
             {/* Hero section full width */}
             <div
                 className='w-full bg-cover bg-center h-[400px] relative'
@@ -251,6 +254,7 @@ const GalleryPage = () => {
                     </AnimatePresence>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };
