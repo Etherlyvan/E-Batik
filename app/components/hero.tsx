@@ -9,24 +9,24 @@ const Hero = () => {
     const router = useRouter();
 
     return (
-        <div className='max-w-screen-2xl mx-auto min-h-[80vh] flex flex-col md:flex-row items-center'>
-            {/* Bagian kiri: Kata kata sambutan dan lanjutan */}
+        <div className='max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center py-5'>
+            {/* Left side: Welcome message and description */}
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className='flex-1 text-center md:text-left'
+                className='flex-1 text-center md:text-left px-4 md:px-0'
             >
-                {/* Kata kata sambutan */}
-                <div className='mt-2 md:mt-10'>
+                {/* Welcome message */}
+                <div className='mt-2 md:mt-6'>
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.8 }}
-                        className='text-4xl md:text-6xl font-bold mb-6 leading-tight whitespace-normal pb-4'
+                        className=' text-3xl md:text-7xl font-bold mb-6 leading-tight whitespace-normal pb-4'
                         style={{
                             background:
-                                'linear-gradient(to right, #4f46e5, #7c3aed)',
+                                'linear-gradient(to right, #C76A39, #E1AD01)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                         }}
@@ -35,25 +35,25 @@ const Hero = () => {
                             <>
                                 <span>Selamat Datang</span>
                                 <br />
-                                <span>Di Gallery Batik Digital</span>
+                                <span>Di Gallery Batik Digital </span>
                             </>
                         ) : (
                             <>
                                 <span>Welcome To</span>
                                 <br />
-                                <span>Digital Batik Gallery</span>
+                                <span>Digital Batik Gallery </span>
                             </>
                         )}
                     </motion.h2>
                 </div>
-                {/* Kata Kata Lanjutan */}
+                {/* Additional message */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.8 }}
                     className='mt-4 md:mt-6'
                 >
-                    <h2 className='text-xl md:text-2xl tracking-wide leading-relaxed mb-4 text-gray-700'>
+                    <h2 className='text-lg md:text-xl tracking-wide leading-relaxed mb-4 text-[#3A3A3A]'>
                         {currentLanguage.code === 'id' ? (
                             <>
                                 Jelajahi koleksi Batik dari seluruh Indonesia.
@@ -73,7 +73,7 @@ const Hero = () => {
                             </>
                         )}
                     </h2>
-                    {/* Tambahan tombol CTA */}
+                    {/* Call-to-action buttons */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -83,28 +83,29 @@ const Hero = () => {
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className='px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold
-                         shadow-lg hover:shadow-indigo-500/50 transition-all duration-300'
+                            className='px-6 py-3 rounded-full bg-gradient-to-r from-[#C76A39] to-[#E1AD01] text-white font-semibold
+         shadow-lg hover:shadow-[#E1AD01]/50 transition-all duration-300'
                             onClick={() => router.push('/gallery')}
                         >
-                            {currentLanguage.code == 'id'
+                            {currentLanguage.code === 'id'
                                 ? 'Mulai Jelajahi'
                                 : 'Start Exploring'}
                         </motion.button>
+
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className='px-8 py-3 rounded-full border-2 border-indigo-600 text-indigo-600 font-semibold
-                         hover:bg-indigo-50 transition-all duration-300'
+                            className='px-6 py-3 rounded-full border-2 border-[#C76A39] text-[#C76A39] font-semibold
+         hover:bg-[#F8F9FA] transition-all duration-300'
                         >
-                            {currentLanguage.code == 'id'
+                            {currentLanguage.code === 'id'
                                 ? 'Pelajari Lebih Lanjut'
                                 : 'Learn More'}
                         </motion.button>
                     </motion.div>
                 </motion.div>
             </motion.div>
-            {/* Bagian kanan: Gambar besar */}
+            {/* Right side: Large image */}
             <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -113,7 +114,7 @@ const Hero = () => {
             >
                 <div className='relative'>
                     {/* Decorative background circle */}
-                    <div className='absolute -z-10 w-[400px] h-[400px] bg-gradient-to-r from-indigo-200 to-purple-200 rounded-full blur-3xl opacity-30' />
+                    <div className='absolute -z-10 w-[300px] h-[300px] bg-gradient-to-r from-indigo-200 to-purple-200 rounded-full blur-3xl opacity-30' />
                     <Image
                         src='/hero_image.svg'
                         alt='Gambar Perpustakaan'
