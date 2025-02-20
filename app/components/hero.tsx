@@ -53,7 +53,7 @@ const Hero = () => {
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        opacity: 0.9, // Adjust the opacity as needed
+                        opacity: 1, // Adjust the opacity as needed
                     }}
             >
                 <AnimatePresence mode="wait">
@@ -70,7 +70,7 @@ const Hero = () => {
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             backgroundRepeat: 'no-repeat',
-                            opacity: 0.8,
+                            opacity: 1,
                         }}
                     >
                         <div className="absolute inset-0 bg-black opacity-10"></div>
