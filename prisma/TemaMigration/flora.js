@@ -1,4 +1,4 @@
-export default flora = {
+const flora = {
     nama: 'flora',
     translations: {
         id: 'Flora',
@@ -313,5 +313,31 @@ export default flora = {
                 en: 'Pine Tree',
             },
         },
+
+        {
+            nama: 'daun-sukun',
+            translations: { id: 'Daun pohon Sukun', en: 'Breadfruit Leaf' },
+        },
+        {
+            nama: 'buah-sukun',
+            translations: { id: 'Buah pohon Sukun', en: 'Breadfruit' },
+        },
+        {
+            nama: 'akar-sukun',
+            translations: { id: 'Akar pohon Sukun', en: 'Breadfruit Root' },
+        },
+        { nama: 'ukel', translations: { id: 'Ukel', en: 'Ukel' } },
+        {
+            nama: 'tumbuhan-laut',
+            translations: { id: 'Tumbuhan Laut', en: 'Sea Plants' },
+        },
+        { nama: 'teratai', translations: { id: 'Teratai', en: 'Lotus' } },
+        { nama: 'trembesi', translations: { id: 'Trembesi', en: 'Rain Tree' } },
+        {
+            nama: 'bunga-sukun',
+            translations: { id: 'Bunga pohon Sukun', en: 'Breadfruit Flower' },
+        },
     ],
 };
+
+export default flora;

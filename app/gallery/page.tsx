@@ -2,7 +2,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Loader2 } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { Batik, Tema } from '@/types';
@@ -34,45 +34,54 @@ const GalleryPage = () => {
         jenisKain: '',
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [batiksResponse, temasResponse] = await Promise.all([
-                    fetch('/api/batik'),
-                    fetch('/api/tema'),
-                ]);
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const [batiksResponse, temasResponse] = await Promise.all([
+                fetch('/api/batik'),
+                fetch('/api/tema'),
+            ]);
 
-                const batiksData = await batiksResponse.json();
-                const temasData = await temasResponse.json();
+            const batiksData = await batiksResponse.json();
+            const temasData = await temasResponse.json();
 
-                if (Array.isArray(batiksData)) {
-                    setBatiks(batiksData);
-                }
-                if (Array.isArray(temasData)) {
-                    setTemas(temasData);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setIsLoading(false);
+            if (Array.isArray(batiksData)) {
+                setBatiks(batiksData);
             }
-        };
+            if (Array.isArray(temasData)) {
+                setTemas(temasData);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
     }, []);
 
     const handleDelete = async (id: number) => {
-        if (window.confirm(t('gallery.deleteConfirm'))) {
+        if (window.confirm('Apakah Anda yakin ingin menghapus batik ini?')) {
+            setIsLoading(true);
             try {
                 const response = await fetch(`/api/batik?id=${id}`, {
                     method: 'DELETE',
                 });
 
                 if (response.ok) {
-                    setBatiks(batiks.filter((batik) => batik.id !== id));
+                    //   setBatiks(batiks.filter(batik => batik.id !== id));
+                    fetchData();
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.message || 'Gagal menghapus batik');
                 }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
-                console.error('Error deleting batik:', error);
+                alert('Terjadi kesalahan saat menghapus batik');
+            } finally {
+                setIsLoading(false);
             }
         }
     };
@@ -143,18 +152,19 @@ const GalleryPage = () => {
         );
     });
 
-    if (isLoading) {
-        return (
-            <div className='min-h-screen flex items-center justify-center'>
-                <Loader2 className='w-8 h-8 animate-spin text-primary' />
-            </div>
-        );
-    }
-
     return (
         <div className='min-h-screen'>
+            {/* {isLoading && (
+                <div>
+                    <LoadingOverlay />
+                    <div className='relative z-0'>
+                        <Navbar />
+                    </div>
+                </div>
+            )} */}
+
             <Navbar />
-            {/* Hero section full width */}
+
             <div
                 className='w-full bg-cover bg-center h-[400px] relative'
                 style={{
@@ -203,7 +213,6 @@ const GalleryPage = () => {
                 </div>
             </div>
 
-            {/* Main content */}
             <div className='w-full bg-gradient-to-b from-gray-50 to-gray-100'>
                 <div className='max-w-7xl mx-auto py-8 px-4'>
                     <GalleryFilter
@@ -214,7 +223,16 @@ const GalleryPage = () => {
                         temaOptions={temas}
                     />
                     <AnimatePresence mode='wait'>
-                        {filteredBatiks.length > 0 ? (
+                        {isLoading ? (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className='flex justify-center items-center h-40'
+                            >
+                                <div className='w-12 h-12 border-4 border-[#5a2b2b] border-t-transparent rounded-full animate-spin'></div>
+                            </motion.div>
+                        ) : filteredBatiks.length > 0 ? (
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -229,9 +247,7 @@ const GalleryPage = () => {
                                         showDeleteButton={!!user}
                                         onDelete={() => handleDelete(batik.id)}
                                         onClick={() =>
-                                            router.push(
-                                                `/batik/${batik.id}?lang=${currentLanguage.code}`
-                                            )
+                                            router.push(`/batik/${batik.id}`)
                                         }
                                     />
                                 ))}

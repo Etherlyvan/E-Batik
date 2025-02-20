@@ -10,7 +10,6 @@ import Navbar from './components/Navbar';
 
 export default function Home() {
     const [batiks, setBatiks] = useState<Batik[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,17 +24,11 @@ export default function Home() {
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
-            } finally {
-                setIsLoading(false);
             }
         };
 
         fetchData();
     }, []);
-
-    if (isLoading) {
-        return <div></div>;
-    }
 
     return (
         <div className='min-h-screen'>
