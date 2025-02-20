@@ -1,130 +1,137 @@
+'use client';
+
 import Image from 'next/image';
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useLanguage } from '../../context/LanguageContext';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Hero = () => {
-    const { currentLanguage } = useLanguage();
-    const router = useRouter();
+    const [backgroundImages, setBackgroundImages] = useState<string[]>([]);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    useEffect(() => {
+        const fetchHeroPhotos = async () => {
+            try {
+                const response = await fetch('/api/hero');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch hero photos');
+                }
+
+                const data = await response.json();
+                const imageLinks = data.map((item: { link: string }) => item.link);
+                setBackgroundImages(imageLinks);
+            } catch (error) {
+                console.error('Error fetching hero photos:', error);
+            }
+        };
+
+        fetchHeroPhotos();
+    }, []);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => {
+                return backgroundImages.length > 0
+                    ? (prevIndex + 1) % backgroundImages.length
+                    : 0;
+            });
+        }, 3000);
+
+        return () => clearInterval(intervalId);
+    }, [backgroundImages]);
+
+    const currentImage =
+        backgroundImages.length > 0
+            ? backgroundImages[currentImageIndex]
+            : '/images/gallery-hero-bg.jpg';
 
     return (
-        <div className='max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center py-5'>
-            {/* Left side: Welcome message and description */}
-            <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className='flex-1 text-center md:text-left px-4 md:px-0'
+        <div className="relative w-full h-screen overflow-hidden">
+            {/* Diagonal overlay */}
+            <div className="absolute top-0 left-0 w-full h-full clip-diagonal"
+                    style={{
+                        backgroundImage: 'url(/images/backgroundd.svg)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        opacity: 0.9, // Adjust the opacity as needed
+                    }}
             >
-                {/* Welcome message */}
-                <div className='mt-2 md:mt-6'>
-                    <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
-                        className=' text-3xl md:text-7xl font-bold mb-6 leading-tight whitespace-normal pb-4'
+                <AnimatePresence mode="wait">
+                    {/* Background with sliding animation */}
+                    <motion.div
+                        key={currentImage}
+                        initial={{ x: '-100%' }} // Start from the left
+                        animate={{ x: 0 }} // Slide to the center
+                        exit={{ x: '100%' }} // Slide out to the right
+                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        className="absolute top-0 left-0 w-full h-full clip-diagonal"
                         style={{
-                            background:
-                                'linear-gradient(to right, #C76A39, #E1AD01)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
+                            backgroundImage: `url(${currentImage})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            opacity: 0.8,
                         }}
                     >
-                        {currentLanguage.code === 'id' ? (
-                            <>
-                                <span>Selamat Datang</span>
-                                <br />
-                                <span>Di Gallery Batik Digital </span>
-                            </>
-                        ) : (
-                            <>
-                                <span>Welcome To</span>
-                                <br />
-                                <span>Digital Batik Gallery </span>
-                            </>
-                        )}
-                    </motion.h2>
-                </div>
-                {/* Additional message */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.8 }}
-                    className='mt-4 md:mt-6'
-                >
-                    <h2 className='text-lg md:text-xl tracking-wide leading-relaxed mb-4 text-[#3A3A3A]'>
-                        {currentLanguage.code === 'id' ? (
-                            <>
-                                Jelajahi koleksi Batik dari seluruh Indonesia.
-                                <br />
-                                Akses mudah kapan saja, di mana saja.
-                                <br />
-                                Temukan Seni tanpa batas di ujung jari Anda.
-                            </>
-                        ) : (
-                            <>
-                                Explore Batik collections from all over
-                                Indonesia.
-                                <br />
-                                Easy access anytime, anywhere.
-                                <br />
-                                Discover boundless art at your fingertips.
-                            </>
-                        )}
-                    </h2>
-                    {/* Call-to-action buttons */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.9, duration: 0.8 }}
-                        className='mt-6 space-x-4'
-                    >
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className='px-6 py-3 rounded-full bg-gradient-to-r from-[#C76A39] to-[#E1AD01] text-white font-semibold
-         shadow-lg hover:shadow-[#E1AD01]/50 transition-all duration-300'
-                            onClick={() => router.push('/gallery')}
-                        >
-                            {currentLanguage.code === 'id'
-                                ? 'Mulai Jelajahi'
-                                : 'Start Exploring'}
-                        </motion.button>
-
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className='px-6 py-3 rounded-full border-2 border-[#C76A39] text-[#C76A39] font-semibold
-         hover:bg-[#F8F9FA] transition-all duration-300'
-                        >
-                            {currentLanguage.code === 'id'
-                                ? 'Pelajari Lebih Lanjut'
-                                : 'Learn More'}
-                        </motion.button>
+                        <div className="absolute inset-0 bg-black opacity-10"></div>
                     </motion.div>
+                </AnimatePresence>
+            </div>
+
+            {/* Content */}
+            <div className="relative max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center justify-end h-full px-4 md:px-20 gap-x-12"
+            style={{
+                backgroundImage: 'url(/images/backgroundd.svg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                opacity: 0.9, // Adjust the opacity as needed
+            }}>
+                <motion.div
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="flex-1 flex flex-col md:flex-row justify-end items-end w-full gap-x-12"
+                >
+                    <div className="text-right flex flex-col justify-center items-end">
+                        <h1 className="text-3xl md:text-4xl font-bold text-black mb-2 leading-tight">
+                            Welcome to
+                        </h1>
+                        <h2 className="text-5xl md:text-6xl font-extrabold text-black mb-4 leading-tight">
+                            1<sup>st</sup> Batik Gallery!
+                        </h2>
+                        <p className="text-base md:text-lg text-gray-700 mb-2 text-right max-w-lg">
+                            With tens of thousands of Batik Database from more than 120 Boutique, we are the Indonesian&apos;s largest database of Batik!
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center space-y-2 mt-2 md:mt-0">
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                            <Image
+                                src="/vercel.svg"
+                                alt="ABC Logo"
+                                width={50}
+                                height={30}
+                                className="object-contain"
+                            />
+                            <Image
+                                src="/images/LogoUB.png"
+                                alt="NBC Logo"
+                                width={50}
+                                height={30}
+                                className="object-contain"
+                            />
+                            <Image
+                                src="/images/LogoRU 1.png"
+                                alt="Fox Logo"
+                                width={30}
+                                height={30}
+                                className="object-contain"
+                            />
+                        </div>
+                    </div>
                 </motion.div>
-            </motion.div>
-            {/* Right side: Large image */}
-            <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className='flex justify-center items-center mt-6 md:mt-0'
-            >
-                <div className='relative'>
-                    {/* Decorative background circle */}
-                    <div className='absolute -z-10 w-[300px] h-[300px] bg-gradient-to-r from-indigo-200 to-purple-200 rounded-full blur-3xl opacity-30' />
-                    <Image
-                        src='/hero_image.svg'
-                        alt='Gambar Perpustakaan'
-                        width={500}
-                        height={333}
-                        className='max-w-full h-auto drop-shadow-2xl'
-                        priority
-                    />
-                </div>
-            </motion.div>
+            </div>
         </div>
     );
 };

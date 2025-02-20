@@ -1,31 +1,31 @@
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 
 const InfoDataComponent = () => {
-    const stats = [
-        { value: 2000, label: 'Batik Terdigitalisasi' },
-        { value: 70, label: 'Tempat Batik' },
-        { value: 90, label: 'Tema Batik' },
-        { value: 120, label: 'Tim Pengembang' },
-    ];
+    // const stats = [
+    //     { value: 2000, label: 'Batik Terdigitalisasi' },
+    //     { value: 70, label: 'Tempat Batik' },
+    //     { value: 90, label: 'Tema Batik' },
+    //     { value: 120, label: 'Tim Pengembang' },
+    // ];
 
-    const [counters, setCounters] = useState(stats.map(() => 0));
+    // const [counters, setCounters] = useState(stats.map(() => 0));
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCounters((prevCounters) =>
-                prevCounters.map((count, index) =>
-                    count < stats[index].value ? count + 10 : stats[index].value
-                )
-            );
-        }, 10);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setCounters((prevCounters) =>
+    //             prevCounters.map((count, index) =>
+    //                 count < stats[index].value ? count + 10 : stats[index].value
+    //             )
+    //         );
+    //     }, 10);
 
-        return () => clearInterval(interval);
-    }, []);
+    //     return () => clearInterval(interval);
+    // }, []);
 
     return (
         <div className='font-sans w-full'>
             {/* Stats Section */}
-            <section className='w-full py-10'>
+            {/* <section className='w-full py-10'>
                 <div className='max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center'>
                     {stats.map((stat, index) => (
                         <div key={index} className='flex flex-col items-center'>
@@ -39,7 +39,7 @@ const InfoDataComponent = () => {
                         </div>
                     ))}
                 </div>
-            </section>
+            </section> */}
 
             {/* Hero Section */}
             <section className='bg-[#5a2b2b] text-white py-16 w-full'>

@@ -33,7 +33,7 @@ export default function Home() {
     return (
         <div className='min-h-screen'>
             <Navbar />
-            <main className='flex flex-col items-center sm:items-start gap-6 pt-10'>
+            <main className='flex flex-col items-center sm:items-start  '>
                 <Hero />
                 <InfoDataComponent />
                 <InfiniteSlider batiks={batiks} />
