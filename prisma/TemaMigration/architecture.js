@@ -1,4 +1,4 @@
-export default architecture = {
+const architecture = {
     nama: 'arsitektur',
     translations: {
         id: 'Arsitektur',
@@ -49,3 +49,5 @@ export default architecture = {
         },
     ],
 };
+
+export default architecture;

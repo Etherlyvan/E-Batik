@@ -1,7 +1,8 @@
 // app/api/batik/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
+import cloudinary from '@/lib/cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -138,6 +139,73 @@ export async function GET() {
         console.error('Error fetching batiks:', error);
         return NextResponse.json(
             { error: 'Internal Server Error' },
+            { status: 500 }
+        );
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    const id = req.nextUrl.searchParams.get('id');
+
+    if (!id) {
+        return NextResponse.json(
+            { message: 'ID is required' },
+            { status: 400 }
+        );
+    }
+
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+        return NextResponse.json(
+            { message: 'ID is not a valid number' },
+            { status: 400 }
+        );
+    }
+
+    try {
+        // Cari Batik beserta foto-foto terkaitnya
+        const batik = await prisma.batik.findUnique({
+            where: { id: numericId },
+            include: { foto: true }, // Pastikan ada relasi ke foto di model Prisma
+        });
+
+        if (!batik) {
+            return NextResponse.json(
+                { message: 'Batik not found' },
+                { status: 404 }
+            );
+        }
+
+        // Hapus foto dari Cloudinary
+        for (const photo of batik.foto) {
+            try {
+                await cloudinary.uploader.destroy(photo.link); // Gunakan publicId yang disimpan di database
+            } catch (cloudinaryError) {
+                console.error(
+                    'Error deleting photo from Cloudinary:',
+                    cloudinaryError
+                );
+            }
+        }
+
+        // Hapus foto dari database
+        await prisma.foto.deleteMany({
+            where: { batikId: numericId },
+        });
+
+        // Hapus Batik dari database
+        await prisma.batik.delete({
+            where: { id: numericId },
+        });
+
+        return NextResponse.json({ message: 'Batik deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting batik:', error);
+        return NextResponse.json(
+            {
+                message: 'Server error',
+                error: error instanceof Error ? error.message : 'Unknown error',
+            },
             { status: 500 }
         );
     }

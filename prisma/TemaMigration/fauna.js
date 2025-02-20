@@ -1,4 +1,4 @@
-export default fauna = {
+const fauna = {
     nama: 'fauna',
     translations: {
         id: 'Fauna',
@@ -173,5 +173,23 @@ export default fauna = {
                 en: 'Bee',
             },
         },
+        {
+            nama: 'ikan-mujair',
+            translations: { id: 'Ikan Mujair', en: 'Tilapia Fish' },
+        },
+        {
+            nama: 'burung-cendrawasih',
+            translations: { id: 'Burung Cendrawasih', en: 'Bird of Paradise' },
+        },
+        {
+            nama: 'ikan-mujair',
+            translations: { id: 'Ikan Mujair', en: 'Tilapia Fish' },
+        },
+        {
+            nama: 'burung-cendrawasih',
+            translations: { id: 'Burung Cendrawasih', en: 'Bird of Paradise' },
+        },
     ],
 };
+
+export default fauna;

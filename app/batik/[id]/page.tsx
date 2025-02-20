@@ -6,6 +6,7 @@ import { useLanguage } from '../../../context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import ImageSlider from '@/app/components/ImageSlider'; // Import ImageSlider
 import Navbar from '@/app/components/Navbar';
+import LoadingOverlay from '@/app/components/LoadingOverlay';
 
 interface Foto {
     id: number;
@@ -107,10 +108,7 @@ export default function BatikDetail({ params }: BatikDetailProps) {
         fetchBatikDetail();
     }, [id]);
 
-    if (loading)
-        return (
-            <div className='text-center text-lg font-semibold'>Loading...</div>
-        );
+    if (loading) return <LoadingOverlay bgColor='bg-white' />;
     if (error)
         return (
             <div className='text-center text-red-500 font-semibold'>

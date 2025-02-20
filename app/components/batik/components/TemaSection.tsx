@@ -55,11 +55,11 @@ export const TemaSection: React.FC<TemaSectionProps> = ({
             <h3 className='text-lg font-medium'>
                 {currentLanguage.code == 'id' ? 'Tema' : 'Theme'}
             </h3>
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-6'>
                 {temas.map((tema) => (
                     <div key={tema.id} className='flex flex-col'>
                         {/* Tema Checkbox */}
-                        <div className='flex items-center'>
+                        <div className='flex items-center space-x-2'>
                             <input
                                 type='checkbox'
                                 id={`tema-${tema.id}`}
@@ -67,7 +67,7 @@ export const TemaSection: React.FC<TemaSectionProps> = ({
                                 onChange={(e) =>
                                     handleTemaChange(tema.id, e.target.checked)
                                 }
-                                className='mr-2'
+                                className='w-4 h-4'
                             />
                             <label
                                 htmlFor={`tema-${tema.id}`}
@@ -77,12 +77,13 @@ export const TemaSection: React.FC<TemaSectionProps> = ({
                             </label>
                         </div>
 
+                        {/* SubTema */}
                         {selectedTemaIds.includes(tema.id) && (
-                            <div className='flex flex-wrap gap-3 ml-5 mt-2'>
+                            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 ml-6 mt-2'>
                                 {tema.subTema.map((subTema) => (
                                     <div
                                         key={subTema.id}
-                                        className='flex items-center'
+                                        className='flex items-center space-x-2'
                                     >
                                         <input
                                             type='checkbox'
@@ -96,13 +97,17 @@ export const TemaSection: React.FC<TemaSectionProps> = ({
                                                     e.target.checked
                                                 )
                                             }
-                                            className='mr-2'
+                                            className='w-4 h-4'
                                         />
                                         <label
                                             htmlFor={`subtema-${subTema.id}`}
                                             className='text-sm'
                                         >
-                                            {subTema.translations[idx].nama}
+                                            {subTema.translations.find(
+                                                (item) =>
+                                                    item.languageId ===
+                                                    currentLanguage.id
+                                            )?.nama || 'Unknown'}
                                         </label>
                                     </div>
                                 ))}
