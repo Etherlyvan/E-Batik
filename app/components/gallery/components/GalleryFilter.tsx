@@ -195,11 +195,34 @@ const GalleryFilter: React.FC<GalleryFilterProps> = ({
     const tahunOptions = Array.from({ length: 25 }, (_, i) =>
         (2000 + i).toString()
     );
-    const teknikOptions = ['Cap', 'Tulis', 'Kombinasi', 'Printing'];
-    const pewarnaOptions = ['Sintetis', 'Alam', 'Kombinasi'];
-    const bentukOptions = ['Geometris', 'Non-Geometris', 'Kombinasi'];
-    const jenisKainOptions = ['Katun', 'Sutra', 'Rayon', 'Linen'];
 
+    // Ambil opsi dari translasi
+    const teknikOptions = [
+        t('gallery.filters.teknikOptions.cap'),
+        t('gallery.filters.teknikOptions.tulis'),
+        t('gallery.filters.teknikOptions.kombinasi'),
+        t('gallery.filters.teknikOptions.printing'),
+    ];
+    
+    const pewarnaOptions = [
+        t('gallery.filters.pewarnaOptions.sintetis'),
+        t('gallery.filters.pewarnaOptions.alam'),
+        t('gallery.filters.pewarnaOptions.kombinasi'),
+    ];
+    
+    const bentukOptions = [
+        t('gallery.filters.bentukOptions.geometris'),
+        t('gallery.filters.bentukOptions.nonGeometris'),
+        t('gallery.filters.bentukOptions.kombinasi'),
+    ];
+    
+    const jenisKainOptions = [
+        t('gallery.filters.jenisKainOptions.katun'),
+        t('gallery.filters.jenisKainOptions.sutra'),
+        t('gallery.filters.jenisKainOptions.rayon'),
+        t('gallery.filters.jenisKainOptions.linen'),
+    ];
+    
     if (!showFilters) return null;
 
     return (

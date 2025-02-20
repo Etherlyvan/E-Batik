@@ -16,6 +16,7 @@ export default function RootLayout({
                         <main className='flex-1 w-full mt-16'>{children}</main>
                     </body>
                 </AuthProvider>
+                
             </LanguageProvider>
         </html>
     );
