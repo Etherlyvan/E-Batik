@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 import cloudinary from '@/lib/cloudinary';
-import { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
@@ -209,20 +208,5 @@ export async function DELETE(req: NextRequest) {
             },
             { status: 500 }
         );
-    }
-}
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    try {
-        const batikPhotos = await prisma.foto.findMany({
-            select: {
-                link: true, // Ambil hanya URL gambar
-            },
-        });
-
-        res.status(200).json(batikPhotos);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to fetch batik photos' });
     }
 }
