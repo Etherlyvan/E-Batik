@@ -17,6 +17,10 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     error,
     uploading = false,
 }) => {
+    if (images.length != 0) {
+        error = null;
+    }
+
     const handleDrop = useCallback(
         (e: React.DragEvent<HTMLDivElement>) => {
             e.preventDefault();
