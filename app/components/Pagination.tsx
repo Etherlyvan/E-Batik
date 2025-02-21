@@ -20,8 +20,28 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, setCur
     }
   };
 
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const renderPageNumbers = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => handlePageClick(i)}
+          className={`px-3 py-1 border ${i === currentPage ? 'bg-gray-300' : 'bg-white hover:bg-gray-100'}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pages;
+  };
+
   return (
-    <div className="flex justify-center items-center mt-8">
+    <div className="flex justify-center items-center mt-8 space-x-1">
       <button
         onClick={handlePrevious}
         disabled={currentPage === 1}
@@ -29,7 +49,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, setCur
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
-      <span className="px-4 py-2 border-t border-b">{currentPage} dari {totalPages}</span>
+      {renderPageNumbers()}
       <button
         onClick={handleNext}
         disabled={currentPage === totalPages}

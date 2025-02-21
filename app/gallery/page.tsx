@@ -1,4 +1,3 @@
-// app/gallery/page.tsx
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,6 +11,7 @@ import { useLanguage } from '../components/gallery/hooks/useLanguage';
 import { useTranslation } from '../components/gallery/hooks/useTranslation';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Pagination from '../components/Pagination';
 
 const GalleryPage = () => {
     const { user } = useAuth();
@@ -33,6 +33,8 @@ const GalleryPage = () => {
         bentuk: '',
         jenisKain: '',
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -71,13 +73,12 @@ const GalleryPage = () => {
                 });
 
                 if (response.ok) {
-                    //   setBatiks(batiks.filter(batik => batik.id !== id));
                     fetchData();
                 } else {
                     const errorData = await response.json();
                     alert(errorData.message || 'Gagal menghapus batik');
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
                 alert('Terjadi kesalahan saat menghapus batik');
             } finally {
@@ -86,7 +87,6 @@ const GalleryPage = () => {
         }
     };
 
-    // Also update the filteredBatiks function to include the new filters:
     const filteredBatiks = batiks.filter((batik) => {
         const matchesSearchTerm = batik.nama
             .toLowerCase()
@@ -118,7 +118,6 @@ const GalleryPage = () => {
         const matchesTahun =
             !activeFilters.tahun || batik.tahun.includes(activeFilters.tahun);
 
-        // Add new filter matches
         const matchesPewarna =
             !activeFilters.pewarna ||
             (translation?.pewarna
@@ -152,17 +151,15 @@ const GalleryPage = () => {
         );
     });
 
+    const paginatedBatiks = filteredBatiks.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const totalPages = Math.ceil(filteredBatiks.length / itemsPerPage);
+
     return (
         <div className='min-h-screen'>
-            {/* {isLoading && (
-                <div>
-                    <LoadingOverlay />
-                    <div className='relative z-0'>
-                        <Navbar />
-                    </div>
-                </div>
-            )} */}
-
             <Navbar />
 
             <div
@@ -173,13 +170,10 @@ const GalleryPage = () => {
             >
                 <div className='absolute inset-0 bg-black/50 backdrop-blur-[1px]'></div>
 
-                {/* Container untuk konten hero */}
                 <div className='absolute inset-0'>
                     <div className='max-w-7xl mx-auto h-full px-4 relative z-10'>
-                        {/* Language selector */}
                         <div className='pt-6'></div>
 
-                        {/* Hero content */}
                         <div className='h-full flex flex-col justify-center items-center -mt-16'>
                             <div className='text-center mb-8'>
                                 <h1 className='text-4xl font-bold text-white mb-4'>
@@ -190,7 +184,6 @@ const GalleryPage = () => {
                                 </p>
                             </div>
 
-                            {/* Search bar */}
                             <div className='w-full max-w-2xl'>
                                 <div className='bg-white rounded-lg shadow-lg p-1 flex items-center'>
                                     <Search className='ml-3 h-5 w-5 text-gray-400' />
@@ -232,26 +225,35 @@ const GalleryPage = () => {
                             >
                                 <div className='w-12 h-12 border-4 border-[#5a2b2b] border-t-transparent rounded-full animate-spin'></div>
                             </motion.div>
-                        ) : filteredBatiks.length > 0 ? (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8'
-                            >
-                                {filteredBatiks.map((batik) => (
-                                    <GalleryCard
-                                        key={batik.id}
-                                        batik={batik}
-                                        currentLanguage={currentLanguage}
-                                        showDeleteButton={!!user}
-                                        onDelete={() => handleDelete(batik.id)}
-                                        onClick={() =>
-                                            router.push(`/batik/${batik.id}`)
-                                        }
-                                    />
-                                ))}
-                            </motion.div>
+                        ) : paginatedBatiks.length > 0 ? (
+                            <>
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8'
+                                >
+                                    {paginatedBatiks.map((batik) => (
+                                        <GalleryCard
+                                            key={batik.id}
+                                            batik={batik}
+                                            currentLanguage={currentLanguage}
+                                            showDeleteButton={!!user}
+                                            onDelete={() =>
+                                                handleDelete(batik.id)
+                                            }
+                                            onClick={() =>
+                                                router.push(`/batik/${batik.id}`)
+                                            }
+                                        />
+                                    ))}
+                                </motion.div>
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    setCurrentPage={setCurrentPage}
+                                />
+                            </>
                         ) : (
                             <motion.div
                                 initial={{ opacity: 0 }}
