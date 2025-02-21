@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -48,116 +47,97 @@ const Hero = () => {
             ? backgroundImages[currentImageIndex]
             : '/images/gallery-hero-bg.jpg';
 
-    return (
-        <div className='relative w-full h-screen overflow-hidden'>
-            {/* Diagonal overlay */}
-            <div
-                className='absolute top-0 left-0 w-full h-full clip-diagonal'
-                style={{
-                    backgroundImage: 'url(/images/backgroundd.svg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    opacity: 1, // Adjust the opacity as needed
-                }}
-            >
-                <AnimatePresence mode='wait'>
-                    {/* Background with sliding animation */}
-                    <motion.div
-                        key={currentImage}
-                        initial={{ x: '-100%' }} // Start from the left
-                        animate={{ x: 0 }} // Slide to the center
-                        exit={{ x: '100%' }} // Slide out to the right
-                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+            return (
+                // Mengubah h-screen menjadi h-[85vh] atau nilai yang lebih kecil
+                <div className='relative w-full h-[80vh] overflow-hidden'> 
+                    {/* Diagonal overlay */}
+                    <div
                         className='absolute top-0 left-0 w-full h-full clip-diagonal'
                         style={{
-                            backgroundImage: `url(${currentImage})`,
+                            backgroundImage: 'url(/images/corner-patttern-like-the-image.jpg)',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             backgroundRepeat: 'no-repeat',
                             opacity: 1,
                         }}
                     >
-                        <div className='absolute inset-0 bg-black opacity-10'></div>
-                    </motion.div>
-                </AnimatePresence>
-            </div>
-
-            {/* Content */}
-            <div
-                className='relative max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center justify-end h-full px-4 md:px-20 gap-x-12'
-                style={{
-                    backgroundImage: 'url(/images/backgroundd.svg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    opacity: 0.9, // Adjust the opacity as needed
-                }}
-            >
-                <motion.div
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className='flex-1 flex flex-col md:flex-row justify-end items-end w-full gap-x-12'
-                >
-                    <div className='text-right flex flex-col justify-center items-end'>
-                        <h1 className='text-3xl md:text-4xl font-bold text-black mb-2 leading-tight'>
-                            {currentLanguage.code === 'id'
-                                ? 'Selamat Datang di'
-                                : 'Welcome to'}
-                        </h1>
-                        <h2 className='text-5xl md:text-6xl font-extrabold text-black mb-4 leading-tight'>
-                            {currentLanguage.code === 'en' ? (
-                                <>
-                                    1<sup>st</sup> Batik Gallery!
-                                </>
-                            ) : (
-                                'Galeri Batik Pertama!'
-                            )}
-                        </h2>
-                        <p className='text-base md:text-lg text-gray-700 mb-2 text-right max-w-lg'>
-                            {currentLanguage.code === 'id'
-                                ? `Dengan ribuan desain Batik dari butik Jawa Timur, kami adalah database Batik terbesar di Indonesia!`
-                                : `With thousands of Batik designs from East Java boutiques, we are Indonesia's largest Batik database!`}
-                        </p>
+                        <AnimatePresence mode='wait'>
+                            {/* Background with sliding animation */}
+                            <motion.div
+                                key={currentImage}
+                                initial={{ x: '-100%' }}
+                                animate={{ x: 0 }}
+                                exit={{ x: '100%' }}
+                                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                className='absolute top-0 left-0 w-full h-full clip-diagonal'
+                                style={{
+                                    backgroundImage: `url(${currentImage})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    opacity: 1,
+                                }}
+                            >
+                                <div className='absolute inset-0 bg-black opacity-10'></div>
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
-
-                    <div className='flex flex-col items-center justify-center space-y-2 mt-2 md:mt-0'>
-                        <div className='flex flex-col items-center justify-center space-y-2'>
-                            <Image
-                                src='/images/LogoApp.png'
-                                alt='ABC Logo'
-                                width={50}
-                                height={30}
-                                className='object-contain'
-                            />
-                            <Image
-                                src='/images/LogoLIH.png'
-                                alt='ABC Logo'
-                                width={50}
-                                height={30}
-                                className='object-contain'
-                            />
-                            <Image
-                                src='/images/LogoUB.png'
-                                alt='NBC Logo'
-                                width={50}
-                                height={30}
-                                className='object-contain'
-                            />
-                            <Image
-                                src='/images/LogoRU 1.png'
-                                alt='Fox Logo'
-                                width={30}
-                                height={30}
-                                className='object-contain'
-                            />
-                        </div>
+            
+                    {/* Content Container */}
+                    <div
+                        className='relative w-full h-full flex flex-col md:flex-row items-center 
+                        justify-end px-4 sm:px-6 md:px-8 lg:px-20'
+                        style={{
+                            backgroundImage: 'url(/images/corner-patttern-like-the-image.jpg)',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            opacity: 0.9,
+                        }}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8 }}
+                            className='flex-1 flex flex-col md:flex-row justify-center items-end w-full 
+                            gap-x-4 sm:gap-x-8 lg:gap-x-12 px-2 sm:px-4'
+                        >
+                            <div className='text-right flex flex-col justify-center items-end w-full
+                                py-4 sm:py-6 md:py-8' // Menambahkan padding vertical yang lebih kecil
+                            >
+                                {/* Welcome Text */}
+                                <h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl 
+                                font-bold text-black mb-1 sm:mb-2 leading-tight tracking-tight'>
+                                    {currentLanguage.code === 'id'
+                                        ? 'Selamat Datang di'
+                                        : 'Welcome to'}
+                                </h1>
+            
+                                {/* Main Title */}
+                                <h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl 
+                                font-extrabold text-black mb-2 sm:mb-3 md:mb-4 leading-tight tracking-tight'>
+                                    {currentLanguage.code === 'en' ? (
+                                        <>
+                                            1<sup className='text-lg sm:text-xl md:text-2xl'>st</sup> Batik Database!
+                                        </>
+                                    ) : (
+                                        'Galeri Batik Pertama!'
+                                    )}
+                                </h2>
+            
+                                {/* Description - Mengurangi margin bottom */}
+                                <p className='text-sm sm:text-base md:text-lg lg:text-xl 
+                                text-gray-700 mb-1 sm:mb-2 text-right max-w-[280px] sm:max-w-[340px] 
+                                md:max-w-[400px] lg:max-w-lg leading-relaxed'>
+                                    {currentLanguage.code === 'id'
+                                        ? "Dengan ribuan desain Batik dari butik Jawa Timur, kami adalah database Batik terbesar di Indonesia!"
+                                        : "With thousands of Batik designs from East Java boutiques, we are Indonesia's largest Batik database!"}
+                                </p>
+                            </div>
+                        </motion.div>
                     </div>
-                </motion.div>
-            </div>
-        </div>
-    );
+                </div>
+            );
 };
 
 export default Hero;

@@ -8,12 +8,23 @@ html {
     padding: 0;
     overflow-x: hidden;
 }
+/* Mobile First Approach */
 .clip-diagonal {
-    clip-path: polygon(0 0, 100% 0, 100% 0%, 0 90%);
+    clip-path: polygon(0 0, 35% 0, 110% 0%, 0 35%);
     z-index: 1;
+    transition: clip-path 0.3s ease-in-out;
 }
 
-.clip-diagonal-reverse {
-    clip-path: polygon(0 70%, 100% 0, 100% 100%, 0 100%);
-    z-index: -2;
+/* Tablet (portrait) - 768px */
+@media screen and (min-width: 768px) {
+    .clip-diagonal {
+        clip-path: polygon(0 0, 40% 0, 95% 0%, 0 51%);
+    }
+}
+
+/* Desktop - 1024px */
+@media screen and (min-width: 1024px) {
+    .clip-diagonal {
+        clip-path: polygon(0 0, 50% 0, 66% 0%, 0 100%);
+    }
 }
