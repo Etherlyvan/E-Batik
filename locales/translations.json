@@ -1,7 +1,7 @@
 {
   "id": {
     "gallery": {
-      "title": "Galeri Batik",
+      "title": "Database Batik",
       "subtitle": "Koleksi batik tradisional Indonesia yang menampilkan keindahan dan keragaman budaya nusantara",
       "search": "Cari batik berdasarkan nama...",
       "filters": {
@@ -47,7 +47,7 @@
   },
   "en": {
     "gallery": {
-      "title": "Batik Gallery",
+      "title": "Batik Database",
       "subtitle": "Collection of traditional Indonesian batik showcasing the beauty and diversity of archipelago culture",
       "search": "Search batik by name...",
       "filters": {

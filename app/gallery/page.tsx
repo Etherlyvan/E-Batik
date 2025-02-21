@@ -208,13 +208,15 @@ const GalleryPage = () => {
 
             <div className='w-full bg-gradient-to-b from-gray-50 to-gray-100'>
                 <div className='max-w-7xl mx-auto py-8 px-4'>
-                    <GalleryFilter
-                        showFilters={showFilters}
-                        setShowFilters={setShowFilters}
-                        activeFilters={activeFilters}
-                        setActiveFilters={setActiveFilters}
-                        temaOptions={temas}
-                    />
+                    <div className='bg-white p-6 rounded-lg shadow-md'>
+                        <GalleryFilter
+                            showFilters={showFilters}
+                            setShowFilters={setShowFilters}
+                            activeFilters={activeFilters}
+                            setActiveFilters={setActiveFilters}
+                            temaOptions={temas}
+                        />
+                    </div>
                     <AnimatePresence mode='wait'>
                         {isLoading ? (
                             <motion.div
