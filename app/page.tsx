@@ -17,7 +17,6 @@ export default function Home() {
                 const batiksResponse = await fetch('/api/batik');
 
                 const batiksData = await batiksResponse.json();
-                console.log('fsfsf', batiksData);
 
                 if (Array.isArray(batiksData)) {
                     setBatiks(batiksData);

@@ -89,7 +89,7 @@ export const BatikForm: React.FC = () => {
     }, []);
 
     if (isLoading) {
-        return <div></div>;
+        return <LoadingOverlay />;
     }
 
     return (
@@ -176,7 +176,7 @@ export const BatikForm: React.FC = () => {
                     <TextInput
                         id='pointmap'
                         name='pointmap'
-                        label='Link Google Maps'
+                        label='Domisili'
                         value={formData.pointmap ?? ''}
                         onChange={handleInputChange}
                     />
