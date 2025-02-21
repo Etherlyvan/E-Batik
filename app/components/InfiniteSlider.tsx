@@ -1,5 +1,6 @@
 'use client';
 
+import { useLanguage } from '@/context/LanguageContext';
 import { Batik } from '@/types';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -10,16 +11,21 @@ interface SliderProps {
 
 export default function InfiniteSlider(props: SliderProps) {
     const { batiks } = props;
+    const { currentLanguage } = useLanguage();
 
     return (
         <section className='w-full py-8'>
             {/* Title */}
             <div className='text-center mb-6'>
                 <h2 className='text-2xl font-bold text-[#C76A39] tracking-wide'>
-                    Artistic Showcase
+                    {currentLanguage.code === 'en'
+                        ? 'Batik Showcase'
+                        : 'Pameran Batik'}
                 </h2>
                 <p className='text-[#3A3A3A] mt-2 font-medium'>
-                    Explore our stunning collection of Batik artworks.
+                    {currentLanguage.code === 'en'
+                        ? 'Explore stunning collection of Batik artworks.'
+                        : 'Jelajahi koleksi karya seni batik yang memukau'}
                 </p>
             </div>
 

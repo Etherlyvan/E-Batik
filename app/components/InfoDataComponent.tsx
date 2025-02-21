@@ -1,47 +1,12 @@
 // import { useEffect, useState } from 'react';
 
+import { useLanguage } from '@/context/LanguageContext';
+
 const InfoDataComponent = () => {
-    // const stats = [
-    //     { value: 2000, label: 'Batik Terdigitalisasi' },
-    //     { value: 70, label: 'Tempat Batik' },
-    //     { value: 90, label: 'Tema Batik' },
-    //     { value: 120, label: 'Tim Pengembang' },
-    // ];
-
-    // const [counters, setCounters] = useState(stats.map(() => 0));
-
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         setCounters((prevCounters) =>
-    //             prevCounters.map((count, index) =>
-    //                 count < stats[index].value ? count + 10 : stats[index].value
-    //             )
-    //         );
-    //     }, 10);
-
-    //     return () => clearInterval(interval);
-    // }, []);
+    const { currentLanguage } = useLanguage();
 
     return (
         <div className='font-sans w-full'>
-            {/* Stats Section */}
-            {/* <section className='w-full py-10'>
-                <div className='max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center'>
-                    {stats.map((stat, index) => (
-                        <div key={index} className='flex flex-col items-center'>
-                            <span className='text-4xl font-bold text-[#5a2b2b]'>
-                                {counters[index]}
-                                <span className='text-[#c4a484]'>+</span>
-                            </span>
-                            <span className='mt-2 px-4 py-1 bg-[#c4a484] text-[#5a2b2b] rounded-lg text-sm font-medium'>
-                                {stat.label}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-            </section> */}
-
-            {/* Hero Section */}
             <section className='bg-[#5a2b2b] text-white py-16 w-full'>
                 <div className='max-w-7xl mx-auto px-8 md:px-16 lg:px-24 text-center'>
                     {/* Logo SVG */}
@@ -57,17 +22,26 @@ const InfoDataComponent = () => {
                     </div>
 
                     <h1 className='text-3xl font-bold text-[#e5d0b5]'>
-                        Explore Our Exquisite Batik Collections: A Journey
-                        Through Art and Culture
+                        {currentLanguage.code === 'id'
+                            ? 'Jelajahi Koleksi Batik Kami yang Indah: Sebuah Perjalanan Melalui Seni dan Budaya'
+                            : 'Explore Our Exquisite Batik Collections: A Journey Through Art and Culture'}
                     </h1>
 
                     <div className='mt-8 grid grid-cols-1 md:grid-cols-3 gap-6'>
                         {[
                             {
-                                title: 'Discover the Rich Heritage of Batik',
+                                title:
+                                    currentLanguage.code === 'id'
+                                        ? 'Temukan Kekayaan Warisan Batik'
+                                        : 'Discover the Rich Heritage of Batik',
                                 description:
-                                    'Immerse yourself in the beauty of traditional and contemporary Batik.',
-                                linkText: 'View',
+                                    currentLanguage.code === 'id'
+                                        ? 'Rasakan keindahan Batik tradisional dan kontemporer.'
+                                        : 'Immerse yourself in the beauty of traditional and contemporary Batik.',
+                                linkText:
+                                    currentLanguage.code === 'id'
+                                        ? 'Lihat'
+                                        : 'View',
                                 icon: (
                                     <svg
                                         xmlns='http://www.w3.org/2000/svg'
@@ -80,10 +54,18 @@ const InfoDataComponent = () => {
                                 ),
                             },
                             {
-                                title: 'Experience the Artistry of Batik',
+                                title:
+                                    currentLanguage.code === 'id'
+                                        ? 'Rasakan Keindahan Seni Batik'
+                                        : 'Experience the Artistry of Batik',
                                 description:
-                                    'Each piece tells a story, reflecting the rich culture of Indonesia.',
-                                linkText: 'Explore',
+                                    currentLanguage.code === 'id'
+                                        ? 'Setiap motif menceritakan kisah yang mencerminkan budaya Indonesia.'
+                                        : 'Each piece tells a story, reflecting the rich culture of Indonesia.',
+                                linkText:
+                                    currentLanguage.code === 'id'
+                                        ? 'Jelajahi'
+                                        : 'Explore',
                                 icon: (
                                     <svg
                                         xmlns='http://www.w3.org/2000/svg'
@@ -96,10 +78,18 @@ const InfoDataComponent = () => {
                                 ),
                             },
                             {
-                                title: 'Join Us in Celebrating Batik',
+                                title:
+                                    currentLanguage.code === 'id'
+                                        ? 'Bergabung dalam Melestarikan Batik'
+                                        : 'Join Us in Celebrating Batik',
                                 description:
-                                    'Be part of our journey to preserve and promote Batik heritage.',
-                                linkText: 'Join',
+                                    currentLanguage.code === 'id'
+                                        ? 'Jadilah bagian dari perjalanan kami dalam melestarikan dan mempromosikan warisan Batik.'
+                                        : 'Be part of our journey to preserve and promote Batik heritage.',
+                                linkText:
+                                    currentLanguage.code === 'id'
+                                        ? 'Bergabung'
+                                        : 'Join',
                                 icon: (
                                     <svg
                                         xmlns='http://www.w3.org/2000/svg'

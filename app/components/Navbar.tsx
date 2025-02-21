@@ -29,11 +29,11 @@ const Navbar: React.FC = () => {
                     >
                         <Link href='/' className='flex items-center space-x-2'>
                             <Image
-                                src='/vercel.svg'
+                                src='/images/LogoApp.png'
                                 alt='Logo'
-                                width={40}
-                                height={40}
-                                className='h-10 w-10 object-contain'
+                                width={90}
+                                height={90}
+                                className='h-30 w-30 object-contain'
                                 priority
                             />
                         </Link>
