@@ -130,8 +130,8 @@ const Hero = () => {
                                 text-gray-700 mb-1 sm:mb-2 text-right max-w-[280px] sm:max-w-[340px] 
                                 md:max-w-[400px] lg:max-w-lg leading-relaxed'>
                                     {currentLanguage.code === 'id'
-                                        ? "Dengan ribuan desain Batik dari butik Jawa Timur, kami adalah database Batik terbesar di Indonesia!"
-                                        : "With thousands of Batik designs from East Java boutiques, we are Indonesia's largest Batik database!"}
+                                        ? "Dengan ratusan desain Batik dari butik diJawa Timur, kami adalah database Batik terbesar di Indonesia!"
+                                        : "With hundreds of Batik designs from boutiques in East Java, we are Indonesia's largest Batik database!"}
                                 </p>
                             </div>
                         </motion.div>

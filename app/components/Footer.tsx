@@ -61,7 +61,7 @@ export default function Footer() {
             <div className='border-t border-[#E1AD01] mt-6 pt-4'>
                 <div className='container mx-auto flex flex-col md:flex-row justify-between items-center'>
                     <p className='text-sm mb-4 md:mb-0 text-[#3A3A3A] font-medium'>
-                        Copyright &copy; 2025 University of Brawijaya. All Rights
+                        Copyright &copy; 2025 Batik Sphere. All Rights
                         Reserved.
                     </p>
                     <ul className='flex space-x-6 font-medium'>
