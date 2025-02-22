@@ -121,7 +121,7 @@ const Hero = () => {
                                             1<sup className='text-lg sm:text-xl md:text-2xl'>st</sup> Batik Database!
                                         </>
                                     ) : (
-                                        'Galeri Batik Pertama!'
+                                        'Database Batik Pertama!'
                                     )}
                                 </h2>
             
