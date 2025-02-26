@@ -51,12 +51,77 @@ const InfoDataComponent = () => {
         return () => clearInterval(interval);
     }, [slides.length]);
 
+    // Animation variants for staggered text effects
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2
+            }
+        },
+        exit: {
+            opacity: 0,
+            transition: {
+                staggerChildren: 0.05,
+                staggerDirection: -1
+            }
+        }
+    };
+
+    const titleVariants = {
+        hidden: { y: -20, opacity: 0 },
+        show: { 
+            y: 0, 
+            opacity: 1,
+            transition: { 
+                duration: 0.5,
+                ease: [0.43, 0.13, 0.23, 0.96]
+            }
+        },
+        exit: { 
+            y: -10, 
+            opacity: 0,
+            transition: { 
+                duration: 0.3
+            }
+        }
+    };
+
+    const descriptionVariants = {
+        hidden: { opacity: 0, y: 20 },
+        show: { 
+            opacity: 1, 
+            y: 0,
+            transition: { 
+                duration: 0.7,
+                ease: [0.43, 0.13, 0.23, 0.96]
+            }
+        },
+        exit: { 
+            opacity: 0, 
+            y: 10,
+            transition: { 
+                duration: 0.3
+            }
+        }
+    };
+
+
+
+
     return (
         <div className='font-sans w-full'>
-            <section className='bg-[#5a2b2b] text-white py-16 w-full'>
+            <section className='bg-[#5a2b2b] text-white py-16 w-full overflow-hidden'>
                 <div className='max-w-7xl mx-auto px-8 md:px-16 lg:px-24 text-center'>
                     <div className='flex justify-center mb-6'>
-                        <div className='relative w-[90px] h-[90px]'>
+                        <motion.div 
+                            className='relative w-[90px] h-[90px]'
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                        >
                             <Image
                                 src='/images/LogoApp.png'
                                 alt='Logo'
@@ -65,27 +130,57 @@ const InfoDataComponent = () => {
                                 priority
                                 sizes="90px"
                             />
-                        </div>
+                        </motion.div>
                     </div>
 
-                    <div className='mt-8'>
-                        <AnimatePresence>
+                    <div className='mt-8 relative min-h-[160px]'>
+                        <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentIndex}
-                                initial={{ opacity: 0, x: 100 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -100 }}
-                                transition={{ duration: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }} // Smoother easing
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="show"
+                                exit="exit"
                                 className='space-y-4'
                             >
-                                <h2 className='text-lg font-semibold text-[#e5d0b5]'>
+                                <motion.h2 
+                                    variants={titleVariants}
+                                    className='text-xl font-semibold text-[#e5d0b5] mb-4'
+                                >
                                     {slides[currentIndex].title}
-                                </h2>
-                                <p className='text-md text-[#e5d0b5]'>
+                                </motion.h2>
+                                
+                                <motion.p 
+                                    variants={descriptionVariants}
+                                    className='text-md text-[#e5d0b5] max-w-2xl mx-auto leading-relaxed'
+                                >
                                     {slides[currentIndex].description}
-                                </p>
+                                </motion.p>
                             </motion.div>
                         </AnimatePresence>
+
+  
+
+                        {/* Slide indicator dots */}
+                        <div className="flex justify-center mt-6 space-x-2">
+                            {slides.map((_, index) => (
+                                <motion.button
+                                    key={index}
+                                    onClick={() => setCurrentIndex(index)}
+                                    className={`w-2 h-2 rounded-full ${currentIndex === index ? 'bg-[#e5d0b5]' : 'bg-[#8a5858]'}`}
+                                    whileHover={{ scale: 1.2 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    animate={{
+                                        scale: currentIndex === index ? [1, 1.2, 1] : 1,
+                                        transition: {
+                                            duration: 0.5,
+                                            repeat: currentIndex === index ? Infinity : 0,
+                                            repeatType: "reverse"
+                                        }
+                                    }}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
