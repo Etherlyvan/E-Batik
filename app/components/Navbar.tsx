@@ -69,6 +69,15 @@ const Navbar: React.FC = () => {
                             </Link>
                         ))}
 
+                        {user && (
+                            <Link
+                                href='/add-batik'
+                                className='text-sm font-medium text-[#5a2b2b] hover:text-[#c4a484] transition-colors duration-300'
+                            >
+                                Add Batik
+                            </Link>
+                        )}
+
                         {/* Language Selector */}
                         <div className='ml-auto'>
                             <LanguageSelector />

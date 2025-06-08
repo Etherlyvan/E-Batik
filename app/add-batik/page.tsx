@@ -1,20 +1,25 @@
 'use client';
-// import { useEffect } from 'react';
-import { BatikForm } from '@/app/components/batik/BatikForm';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import Navbar from '../components/Navbar';
-// import { useAuth } from '@/context/AuthContext';
-// import { useRouter } from 'next/navigation';
+import { BatikForm } from '@/app/components/batik/BatikForm';
 
 export default function BatikFormPage() {
-    // const { user } = useAuth();
-    // const router = useRouter();
-    // useEffect(() => {
-    //     if (!user) {
-    //         router.push('/login');
-    //     }
-    // }, [user, router]);
+    const { user, isLoading } = useAuth();
+    const router = useRouter();
 
-    // if (!user) return null;
+    useEffect(() => {
+        if (!isLoading && !user) {
+            router.push('/login');
+        }
+    }, [user, isLoading, router]);
+
+    if (isLoading) {
+        return <p className='text-center p-4'>Loading ...</p>;
+    }
+
+    if (!user) return null;
 
     return (
         <div className='min-h-screen bg-gray-100 py-8'>

@@ -7,6 +7,7 @@ import { Batik } from '@/types';
 import InfoDataComponent from './components/InfoDataComponent';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
+import StatsCounter from './components/StatsCounter';
 
 export default function Home() {
     const [batiks, setBatiks] = useState<Batik[]>([]);
@@ -32,9 +33,10 @@ export default function Home() {
     return (
         <div className='min-h-screen'>
             <Navbar />
-            <main className='flex flex-col items-center sm:items-start  '>
+            <main className='flex flex-col items-center sm:items-start'>
                 <Hero />
                 <InfoDataComponent />
+                <StatsCounter />
                 <InfiniteSlider batiks={batiks} />
             </main>
             <Footer />

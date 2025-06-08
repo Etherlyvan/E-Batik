@@ -161,13 +161,25 @@ export default function BatikDetail({ params }: BatikDetailProps) {
 
                         {/* Seniman (jika ada) */}
                         {batik.seniman && (
-                            <p className='text-lg'>
-                                {idx == 1 ? 'By ' : 'Oleh '} {batik.seniman}
-                            </p>
+                            <div className='bg-gray-100 p-4 rounded-xl shadow-md w-fit'>
+                                <div className='text-lg text-gray-800'>
+                                    <p>
+                                        {idx === 1 ? 'Made By' : 'Dibuat Oleh'}
+                                    </p>
+                                    <p className='text-xl font-serif font-semibold border-b-2 border-[#DEB887] pb-2 mb-4 text-[#8B4513]'>
+                                        📍 {batik.seniman}
+                                    </p>
+                                    <p className='mt-5'>
+                                        {batik.alamat} {batik.endpoint}
+                                    </p>
+                                </div>
+                            </div>
                         )}
 
                         {/* Histori */}
-                        <p className='text-lg'>{batik.translations[idx].histori}</p>
+                        <p className='text-lg'>
+                            {batik.translations[idx].histori}
+                        </p>
 
                         {/* Tombol Full Description */}
                         <button
@@ -198,11 +210,12 @@ export default function BatikDetail({ params }: BatikDetailProps) {
                             {/* Tema dan Subtema */}
                             <div className='space-y-4'>
                                 {batik.tema.map((tema) => {
-                                    const temaTranslation = tema.translations.find(
-                                        (translation) =>
-                                            translation.languageId ===
-                                            (idx === 1 ? 2 : 1)
-                                    );
+                                    const temaTranslation =
+                                        tema.translations.find(
+                                            (translation) =>
+                                                translation.languageId ===
+                                                (idx === 1 ? 2 : 1)
+                                        );
 
                                     const relatedSubTema = batik.subTema.filter(
                                         (subTema) => subTema.temaId === tema.id
@@ -214,27 +227,34 @@ export default function BatikDetail({ params }: BatikDetailProps) {
                                             className='bg-[#FDF5E6] shadow-lg rounded-lg p-6 border border-[#DEB887]'
                                         >
                                             <h3 className='text-xl font-serif font-semibold border-b-2 border-[#DEB887] pb-2 mb-4 text-[#8B4513]'>
-                                                {idx === 1 ? 'Theme: ' : 'Tema: '}
-                                                {temaTranslation?.nama || tema.nama}
+                                                {idx === 1
+                                                    ? 'Theme: '
+                                                    : 'Tema: '}
+                                                {temaTranslation?.nama ||
+                                                    tema.nama}
                                             </h3>
                                             <ul className='grid grid-cols-1 md:grid-cols-2 gap-3 mt-2'>
-                                                {relatedSubTema.map((subTema) => {
-                                                    const subTemaTranslation =
-                                                        subTema.translations.find(
-                                                            (translation) =>
-                                                                translation.languageId ===
-                                                                (idx === 1 ? 2 : 1)
+                                                {relatedSubTema.map(
+                                                    (subTema) => {
+                                                        const subTemaTranslation =
+                                                            subTema.translations.find(
+                                                                (translation) =>
+                                                                    translation.languageId ===
+                                                                    (idx === 1
+                                                                        ? 2
+                                                                        : 1)
+                                                            );
+                                                        return (
+                                                            <li
+                                                                key={subTema.id}
+                                                                className='bg-white p-3 rounded-md shadow-md border border-[#DEB887] hover:shadow-lg transition-shadow duration-300'
+                                                            >
+                                                                {subTemaTranslation?.nama ||
+                                                                    subTema.nama}
+                                                            </li>
                                                         );
-                                                    return (
-                                                        <li
-                                                            key={subTema.id}
-                                                            className='bg-white p-3 rounded-md shadow-md border border-[#DEB887] hover:shadow-lg transition-shadow duration-300'
-                                                        >
-                                                            {subTemaTranslation?.nama ||
-                                                                subTema.nama}
-                                                        </li>
-                                                    );
-                                                })}
+                                                    }
+                                                )}
                                             </ul>
                                         </div>
                                     );
@@ -304,21 +324,12 @@ export default function BatikDetail({ params }: BatikDetailProps) {
                                         {batik.dimensi}
                                     </p>
                                 </div>
-                                
-
-
                             </div>
                         </div>
                     )}
                 </div>
-                
-                
-                
-            
             </div>
-                <Footer />
-
+            <Footer />
         </div>
-
     );
 }
