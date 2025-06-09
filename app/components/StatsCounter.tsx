@@ -1,14 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const StatsCounter = () => {
     const stats = [
-        { value: 500, label: 'Batik Terdigitalisasi' },
-        { value: 50, label: 'Tempat Batik' },
-        { value: 90, label: 'Tema Batik' },
-        { value: 10, label: 'Tim Pengembang' },
+        { value: 500, label: ['Digitalized Batik', 'Batik Terdigitalisasi'] },
+        { value: 30, label: ['Batik boutique', 'Butik Batik'] },
+        {
+            value: 90,
+            label: ['Batik Theme and SubTheme', 'Tema dan Subtema Batik'],
+        },
+        { value: 10, label: ['Team Member', 'Anggota Tim'] },
     ];
+
+    const { currentLanguage } = useLanguage();
+    const idx = currentLanguage.code === 'en' ? 0 : 1;
 
     const [counters, setCounters] = useState(stats.map(() => 0));
 
@@ -47,7 +54,7 @@ const StatsCounter = () => {
                                 <span className='text-[#c4a484] ml-1'>+</span>
                             </p>
                             <p className='rounded-lg bg-[#c4a484] text-[#5a2b2b] px-2 py-2 text-center text-xs font-medium md:px-[12px] md:py-[8px] md:text-sm'>
-                                {stat.label}
+                                {stat.label[idx]}
                             </p>
                         </div>
                     ))}
