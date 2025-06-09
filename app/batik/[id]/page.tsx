@@ -51,6 +51,8 @@ interface Batik {
     histori: string;
     dimensi: string;
     seniman?: string; // Optional field for artist
+    alamat?: string; // Optional field for address
+    endpoint?: string; // Optional field for endpoint
     translations: {
         id: number;
         languageId: number;
