@@ -1,31 +1,41 @@
 // components/museum/FirstPersonPlayer.tsx
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useKeyboardControls } from '@react-three/drei';
+import { RigidBody, CapsuleCollider } from '@react-three/rapier';
 import { Vector3, Euler } from 'three';
 
 interface FirstPersonPlayerProps {
   viewMode: 'fps' | 'orbit';
   isPointerLocked: boolean;
+  onFloorChange: (floor: number) => void;
+  currentFloor: number;
 }
 
-export function FirstPersonPlayer({ viewMode, isPointerLocked }: FirstPersonPlayerProps) {
+export function FirstPersonPlayer({ 
+  viewMode, 
+  isPointerLocked, 
+  onFloorChange,
+  currentFloor 
+}: FirstPersonPlayerProps) {
   const { camera } = useThree();
   
+  const playerRef = useRef<any>(null);
   const [, get] = useKeyboardControls();
   
-  // Player state dengan initial values yang benar
-  const position = useRef(new Vector3(0, 1.6, 5));
-  const velocity = useRef(new Vector3(0, 0, 0));
-  const direction = useRef(new Vector3(0, 0, 0));
-  const rotation = useRef(new Euler(0, 0, 0));
-  const moveSpeed = useRef(8);
-  const mouseSensitivity = useRef(0.001); // Kurangi sensitivity
-  const isGrounded = useRef(true);
+  // Player rotation state
+  const rotationRef = useRef({ x: 0, y: 0 });
+  const velocityRef = useRef({ x: 0, z: 0 });
+  
+  // Movement parameters
+  const moveSpeed = 8;
+  const sprintMultiplier = 1.8;
+  const mouseSensitivity = 0.002;
+  const maxVerticalAngle = Math.PI / 2.2;
 
-  // Mouse movement handling dengan perbaikan
+  // Enhanced mouse movement - PROPER FPS CONTROLS
   useEffect(() => {
     if (viewMode !== 'fps') return;
 
@@ -34,100 +44,165 @@ export function FirstPersonPlayer({ viewMode, isPointerLocked }: FirstPersonPlay
 
       const { movementX, movementY } = event;
       
-      // Batasi pergerakan mouse untuk menghindari gerakan berlebihan
-      const maxMovement = 100;
-      const clampedX = Math.max(-maxMovement, Math.min(maxMovement, movementX));
-      const clampedY = Math.max(-maxMovement, Math.min(maxMovement, movementY));
+      // Apply mouse movement to rotation
+      rotationRef.current.y -= movementX * mouseSensitivity;
+      rotationRef.current.x -= movementY * mouseSensitivity;
       
-      rotation.current.y -= clampedX * mouseSensitivity.current;
-      rotation.current.x -= clampedY * mouseSensitivity.current;
+      // Clamp vertical rotation
+      rotationRef.current.x = Math.max(
+        -maxVerticalAngle, 
+        Math.min(maxVerticalAngle, rotationRef.current.x)
+      );
       
-      // Limit vertical rotation lebih ketat
-      rotation.current.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, rotation.current.x));
+      // Apply rotation to camera immediately for responsive feel
+      camera.rotation.x = rotationRef.current.x;
+      camera.rotation.y = rotationRef.current.y;
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Floor switching with E key
+      if (event.key === 'E' || event.key === 'e') {
+        switchFloor(1); // Go up
+      }
+      if (event.key === 'Q' || event.key === 'q') {
+        switchFloor(-1); // Go down
+      }
+      // Reset position
+      if (event.key === 'R' || event.key === 'r') {
+        resetPlayerPosition();
+      }
     };
 
     document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, [viewMode, isPointerLocked]);
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [viewMode, isPointerLocked, camera]);
 
+  // Floor switching system - ELEVATOR STYLE
+  const switchFloor = (direction: number) => {
+    const maxFloors = 5; // Adjust based on your batik count
+    const newFloor = Math.max(0, Math.min(maxFloors - 1, currentFloor + direction));
+    
+    if (newFloor !== currentFloor && playerRef.current) {
+      const newY = 1.6 + (newFloor * 10); // 10 units between floors
+      
+      // Smooth transition to new floor
+      playerRef.current.setTranslation({ x: 0, y: newY, z: 0 }, true);
+      playerRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+      
+      onFloorChange(newFloor);
+    }
+  };
+
+  // Reset player to center of current floor
+  const resetPlayerPosition = () => {
+    if (playerRef.current) {
+      const currentY = 1.6 + (currentFloor * 10);
+      playerRef.current.setTranslation({ x: 0, y: currentY, z: 0 }, true);
+      playerRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+      
+      // Reset rotation
+      rotationRef.current = { x: 0, y: 0 };
+      camera.rotation.set(0, 0, 0);
+    }
+  };
+
+  // PROPER FPS MOVEMENT SYSTEM
   useFrame((state, delta) => {
-    if (viewMode !== 'fps') return;
+    if (viewMode !== 'fps' || !playerRef.current) return;
 
-    const { forward, back, left, right, jump, run } = get();
+    const { forward, back, left, right, run } = get();
     
-    // Calculate movement direction
-    direction.current.set(0, 0, 0);
+    // Get current physics state
+    const currentPos = playerRef.current.translation();
+    const currentVel = playerRef.current.linvel();
     
-    if (forward) direction.current.z -= 1;
-    if (back) direction.current.z += 1;
-    if (left) direction.current.x -= 1;
-    if (right) direction.current.x += 1;
-    
-    // Normalize direction
-    if (direction.current.length() > 0) {
-      direction.current.normalize();
+    // Check bounds and reset if outside
+    if (Math.abs(currentPos.x) > 15 || Math.abs(currentPos.z) > 15 || currentPos.y < -5) {
+      resetPlayerPosition();
+      return;
     }
     
-    // Apply rotation to movement direction
-    direction.current.applyEuler(new Euler(0, rotation.current.y, 0));
+    // Calculate movement direction based on camera rotation
+    const direction = new Vector3(0, 0, 0);
     
-    // Calculate speed (with running)
-    const speed = run ? moveSpeed.current * 1.8 : moveSpeed.current;
+    if (forward) direction.z -= 1;
+    if (back) direction.z += 1;
+    if (left) direction.x -= 1;
+    if (right) direction.x += 1;
     
-    // Apply movement dengan smooth delta
-    const smoothDelta = Math.min(delta, 0.1); // Cap delta untuk menghindari jump besar
-    const newPosition = position.current.clone();
-    newPosition.x += direction.current.x * speed * smoothDelta;
-    newPosition.z += direction.current.z * speed * smoothDelta;
-    
-    // Collision detection yang lebih akurat
-    const wallLimit = 8.5; // Sedikit lebih kecil dari dinding
-    const centerLimit = 1.2; // Hindari pedestal di tengah
-    
-    // Cek collision dengan dinding
-    if (Math.abs(newPosition.x) < wallLimit && Math.abs(newPosition.z) < wallLimit) {
-      // Cek collision dengan pedestal di tengah
-      if (Math.abs(newPosition.x) > centerLimit || Math.abs(newPosition.z) > centerLimit) {
-        position.current.x = newPosition.x;
-        position.current.z = newPosition.z;
-      }
+    if (direction.length() > 0) {
+      direction.normalize();
+      
+      // Apply camera Y rotation to movement direction
+      const rotationMatrix = new Euler(0, rotationRef.current.y, 0);
+      direction.applyEuler(rotationMatrix);
     }
     
-    // Simple gravity and jumping
-    if (jump && isGrounded.current) {
-      velocity.current.y = 10; // Jump force
-      isGrounded.current = false;
-    }
+    // Calculate speed
+    const currentSpeed = run ? moveSpeed * sprintMultiplier : moveSpeed;
     
-    // Apply gravity
-    velocity.current.y -= 25 * smoothDelta;
-    position.current.y += velocity.current.y * smoothDelta;
+    // Apply movement with smooth interpolation
+    const targetVelocityX = direction.x * currentSpeed;
+    const targetVelocityZ = direction.z * currentSpeed;
     
-    // Ground collision
-    if (position.current.y <= 1.6) {
-      position.current.y = 1.6;
-      velocity.current.y = 0;
-      isGrounded.current = true;
-    }
+    // Smooth velocity interpolation for better control
+    velocityRef.current.x = lerp(velocityRef.current.x, targetVelocityX, delta * 10);
+    velocityRef.current.z = lerp(velocityRef.current.z, targetVelocityZ, delta * 10);
     
-    // Update camera dengan smooth interpolation
-    camera.position.lerp(position.current, 0.1);
-    camera.rotation.x = rotation.current.x;
-    camera.rotation.y = rotation.current.y;
-    camera.rotation.z = rotation.current.z;
+    // Apply velocity to physics body
+    playerRef.current.setLinvel({
+      x: velocityRef.current.x,
+      y: currentVel.y, // Keep existing Y velocity (gravity)
+      z: velocityRef.current.z
+    }, true);
+    
+    // Update camera position to follow player
+    const cameraOffset = new Vector3(0, 0.6, 0);
+    const newCameraPos = new Vector3(currentPos.x, currentPos.y, currentPos.z).add(cameraOffset);
+    
+    // Smooth camera following
+    camera.position.lerp(newCameraPos, delta * 15);
+    
+    // Ensure camera rotation is maintained
+    camera.rotation.x = rotationRef.current.x;
+    camera.rotation.y = rotationRef.current.y;
+    camera.rotation.z = 0; // No roll
   });
 
-  // Switch camera mode dengan transisi smooth
+  // Linear interpolation helper
+  const lerp = (start: number, end: number, factor: number) => {
+    return start + (end - start) * factor;
+  };
+
+  // Initialize camera and player position
   useEffect(() => {
     if (viewMode === 'fps') {
-      position.current.set(0, 1.6, 5);
-      rotation.current.set(0, 0, 0);
-      camera.position.set(0, 1.6, 5);
-    } else {
-      camera.position.set(0, 8, 12);
-      camera.lookAt(0, 0, 0);
+      const initialY = 1.6 + (currentFloor * 10);
+      camera.position.set(0, initialY, 0);
+      rotationRef.current = { x: 0, y: 0 };
+      camera.rotation.set(0, 0, 0);
     }
-  }, [viewMode, camera]);
+  }, [viewMode, camera, currentFloor]);
 
-  return null;
+  if (viewMode !== 'fps') return null;
+
+  return (
+    <RigidBody
+      ref={playerRef}
+      type="dynamic"
+      position={[0, 1.6 + (currentFloor * 10), 0]}
+      enabledRotations={[false, false, false]}
+      lockRotations
+      mass={1}
+      friction={0.8}
+      restitution={0}
+    >
+      <CapsuleCollider args={[0.8, 0.4]} />
+    </RigidBody>
+  );
 }

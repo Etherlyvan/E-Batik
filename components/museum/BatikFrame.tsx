@@ -1,10 +1,11 @@
 // components/museum/BatikFrame.tsx
 'use client';
 
-import { useRef, useState, Suspense } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { useRef, useState, useEffect, useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { Text, Box, Plane } from '@react-three/drei';
-import { Mesh, TextureLoader, Texture } from 'three';
+import { Mesh, Texture } from 'three';
+import { TextureManager } from '@/lib/utils/TextureManager';
 import type { Batik } from '@/lib/types';
 
 interface BatikFrameProps {
@@ -15,27 +16,45 @@ interface BatikFrameProps {
   onClick: () => void;
 }
 
-// Komponen untuk loading texture dengan fallback
-function BatikTexture({ imageUrl, onLoad }: { imageUrl: string; onLoad: (texture: Texture | null) => void }) {
-  try {
-    const texture = useLoader(TextureLoader, imageUrl);
-    onLoad(texture);
-    return null;
-  } catch (error) {
-    console.warn('Failed to load texture:', imageUrl);
-    onLoad(null);
-    return null;
-  }
-}
-
 export function BatikFrame({ batik, position, rotation, isSelected, onClick }: BatikFrameProps) {
   const meshRef = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const [texture, setTexture] = useState<Texture | null>(null);
-  const [textureLoaded, setTextureLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   
-  const imageUrl = batik.foto[0]?.link || '';
-  
+  const imageUrl = useMemo(() => {
+    return batik.foto[0]?.link || '';
+  }, [batik.foto]);
+
+  // Load texture using TextureManager
+  useEffect(() => {
+    if (!imageUrl) {
+      setLoading(false);
+      setError(true);
+      return;
+    }
+
+    let isMounted = true;
+    const textureManager = TextureManager.getInstance();
+
+    textureManager.loadTexture(imageUrl).then((loadedTexture) => {
+      if (isMounted) {
+        if (loadedTexture) {
+          setTexture(loadedTexture);
+          setError(false);
+        } else {
+          setError(true);
+        }
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [imageUrl]);
+
   // Floating animation for selected frame
   useFrame((state) => {
     if (meshRef.current && isSelected) {
@@ -43,30 +62,23 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
     }
   });
 
-  const handleTextureLoad = (loadedTexture: Texture | null) => {
-    setTexture(loadedTexture);
-    setTextureLoaded(true);
-  };
+  // Memoize colors
+  const frameColor = useMemo(() => isSelected ? "#FFD700" : "#654321", [isSelected]);
+  const labelColor = useMemo(() => isSelected ? "#FFD700" : "white", [isSelected]);
 
   return (
     <group position={position} rotation={rotation}>
-      {/* Frame dengan warna yang lebih kontras */}
-      <Box
-        args={[2.4, 2.4, 0.15]}
-        position={[0, 0, -0.08]}
-      >
+      {/* Frame */}
+      <Box args={[2.4, 2.4, 0.15]} position={[0, 0, -0.08]}>
         <meshStandardMaterial 
-          color={isSelected ? "#FFD700" : "#654321"} 
+          color={frameColor}
           roughness={0.3}
           metalness={0.1}
         />
       </Box>
       
       {/* Inner frame */}
-      <Box
-        args={[2.1, 2.1, 0.05]}
-        position={[0, 0, -0.02]}
-      >
+      <Box args={[2.1, 2.1, 0.05]} position={[0, 0, -0.02]}>
         <meshStandardMaterial color="#2a2a2a" />
       </Box>
       
@@ -79,65 +91,43 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        {imageUrl ? (
-          <Suspense fallback={null}>
-            <BatikTexture imageUrl={imageUrl} onLoad={handleTextureLoad} />
-          </Suspense>
-        ) : null}
-        
         <meshStandardMaterial 
           map={texture}
           transparent
           opacity={hovered ? 0.9 : 1}
-          color={texture ? "#ffffff" : "#f0f0f0"} // Putih untuk texture, abu terang untuk fallback
+          color={texture ? "#ffffff" : error ? "#ff6b6b" : "#f0f0f0"}
           roughness={0.1}
           metalness={0.0}
         />
       </Plane>
       
-      {/* Placeholder jika gambar tidak ada */}
-      {!textureLoaded && imageUrl && (
-        <Plane
-          args={[2, 2]}
-          position={[0, 0, 0.001]}
-        >
-          <meshStandardMaterial 
-            color="#e0e0e0" 
-            transparent 
-            opacity={0.8}
-          />
-        </Plane>
-      )}
-      
-      {/* Loading indicator */}
-      {!textureLoaded && imageUrl && (
+      {/* Loading/Error indicator */}
+      {(loading || error) && (
         <Text
           position={[0, 0, 0.01]}
-          fontSize={0.3}
-          color="#666666"
+          fontSize={0.2}
+          color={error ? "#ff6b6b" : "#666666"}
           anchorX="center"
           anchorY="middle"
         >
-          Loading...
+          {loading ? "Loading..." : "Image Error"}
         </Text>
       )}
       
-      {/* Label dengan background */}
-      <Plane
-        args={[2.2, 0.4]}
-        position={[0, -1.4, 0.01]}
-      >
+      {/* Label background */}
+      <Plane args={[2.2, 0.4]} position={[0, -1.4, 0.01]}>
         <meshStandardMaterial 
           color="#000000" 
           transparent 
-          opacity={0.7}
+          opacity={0.8}
         />
       </Plane>
       
+      {/* Label text */}
       <Text
         position={[0, -1.4, 0.02]}
         fontSize={0.15}
-        color={isSelected ? "#FFD700" : "white"}
+        color={labelColor}
         anchorX="center"
         anchorY="middle"
         maxWidth={2}
@@ -161,10 +151,7 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
       
       {/* Selection Glow */}
       {isSelected && (
-        <Plane
-          args={[2.6, 2.6]}
-          position={[0, 0, -0.15]}
-        >
+        <Plane args={[2.6, 2.6]} position={[0, 0, -0.15]}>
           <meshStandardMaterial 
             color="#FFD700" 
             transparent 

@@ -1,12 +1,12 @@
-// components/museum/Museum3D.tsx - Update dengan collision
+// components/museum/Museum3D.tsx
 'use client';
 
-import { useRef, useState, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useRef, useMemo } from 'react';
 import { Text, Box, Plane, OrbitControls } from '@react-three/drei';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
-import { Mesh, Group } from 'three';
+import { Group } from 'three';
 import { BatikFrame } from './BatikFrame';
+import { BatikPreloader } from './BatikPreloader';
 import type { Batik } from '@/lib/types';
 
 interface Museum3DProps {
@@ -14,41 +14,65 @@ interface Museum3DProps {
   onBatikSelect: (batik: Batik | null) => void;
   selectedBatik: Batik | null;
   viewMode: 'fps' | 'orbit';
+  currentFloor: number;
 }
 
-export function Museum3D({ batiks, onBatikSelect, selectedBatik, viewMode }: Museum3DProps) {
+export function Museum3D({ 
+  batiks, 
+  onBatikSelect, 
+  selectedBatik, 
+  viewMode, 
+  currentFloor 
+}: Museum3DProps) {
   const groupRef = useRef<Group>(null);
   
-  // Organize batiks in a grid layout
-  const batikPositions = useMemo(() => {
-    const positions: Array<{batik: Batik, position: [number, number, number], rotation: [number, number, number]}> = [];
-    const wallSpacing = 8;
-    const frameSpacing = 3;
-    const wallHeight = 3;
+  const batiksPerFloor = 8; // Reduced for better performance
+  const totalFloors = Math.ceil(batiks.length / batiksPerFloor);
+  const floorHeight = 10; // Increased spacing between floors
+
+  // Only render batiks for current floor and adjacent floors
+  const visibleBatiks = useMemo(() => {
+    const floorsToRender = [
+      Math.max(0, currentFloor - 1),
+      currentFloor,
+      Math.min(totalFloors - 1, currentFloor + 1)
+    ];
     
-    batiks.forEach((batik, index) => {
-      if (index < 20) {
-        const wallIndex = Math.floor(index / 5);
-        const frameIndex = index % 5;
+    const visible: Array<{
+      batik: Batik, 
+      position: [number, number, number], 
+      rotation: [number, number, number],
+      floor: number
+    }> = [];
+    
+    floorsToRender.forEach(floor => {
+      const startIndex = floor * batiksPerFloor;
+      const endIndex = Math.min(startIndex + batiksPerFloor, batiks.length);
+      const floorBatiks = batiks.slice(startIndex, endIndex);
+      
+      floorBatiks.forEach((batik, index) => {
+        const wallIndex = Math.floor(index / 2); // 2 batiks per wall
+        const frameIndex = index % 2;
+        const wallHeight = 3;
         
         let position: [number, number, number];
         let rotation: [number, number, number];
         
         switch (wallIndex) {
           case 0: // Front wall
-            position = [(frameIndex - 2) * frameSpacing, wallHeight, -wallSpacing + 0.1];
+            position = [(frameIndex - 0.5) * 4, wallHeight, -9];
             rotation = [0, 0, 0];
             break;
           case 1: // Right wall
-            position = [wallSpacing - 0.1, wallHeight, (frameIndex - 2) * frameSpacing];
+            position = [9, wallHeight, (frameIndex - 0.5) * 4];
             rotation = [0, -Math.PI / 2, 0];
             break;
           case 2: // Back wall
-            position = [-(frameIndex - 2) * frameSpacing, wallHeight, wallSpacing - 0.1];
+            position = [-(frameIndex - 0.5) * 4, wallHeight, 9];
             rotation = [0, Math.PI, 0];
             break;
           case 3: // Left wall
-            position = [-wallSpacing + 0.1, wallHeight, -(frameIndex - 2) * frameSpacing];
+            position = [-9, wallHeight, -(frameIndex - 0.5) * 4];
             rotation = [0, Math.PI / 2, 0];
             break;
           default:
@@ -56,16 +80,23 @@ export function Museum3D({ batiks, onBatikSelect, selectedBatik, viewMode }: Mus
             rotation = [0, 0, 0];
         }
         
-        positions.push({ batik, position, rotation });
-      }
+        visible.push({ batik, position, rotation, floor });
+      });
     });
     
-    return positions;
-  }, [batiks]);
+    return visible;
+  }, [batiks, currentFloor, batiksPerFloor, totalFloors]);
 
   return (
     <group ref={groupRef}>
-      {/* Orbit Controls for camera mode */}
+      {/* Preloader */}
+      <BatikPreloader 
+        batiks={batiks}
+        currentFloor={currentFloor}
+        onPreloadComplete={() => {}} 
+      />
+
+      {/* Orbit Controls */}
       {viewMode === 'orbit' && (
         <OrbitControls
           enablePan={true}
@@ -75,182 +106,165 @@ export function Museum3D({ batiks, onBatikSelect, selectedBatik, viewMode }: Mus
           maxDistance={50}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={0}
+          target={[0, 2 + (currentFloor * floorHeight), 0]}
         />
       )}
 
-      {/* Museum Floor with Physics */}
-      <RigidBody type="fixed">
-        <Plane
-          args={[20, 20]}
-          position={[0, 0, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          receiveShadow
-        >
-          <meshStandardMaterial 
-            color="#2F2F2F" 
-            roughness={0.1}
-            metalness={0.1}
+      {/* Render only visible floors */}
+      {Array.from({ length: 3 }).map((_, index) => {
+        const floorIndex = Math.max(0, currentFloor - 1) + index;
+        if (floorIndex >= totalFloors) return null;
+        
+        return (
+          <group key={floorIndex} position={[0, floorIndex * floorHeight, 0]}>
+            {/* Floor */}
+            <RigidBody type="fixed">
+              <Plane
+                args={[20, 20]}
+                position={[0, 0, 0]}
+                rotation={[-Math.PI / 2, 0, 0]}
+                receiveShadow
+              >
+                <meshStandardMaterial 
+                  color={floorIndex === currentFloor ? "#3F3F3F" : "#2F2F2F"} 
+                  roughness={0.1}
+                  metalness={0.1}
+                />
+              </Plane>
+              <CuboidCollider args={[10, 0.1, 10]} position={[0, -0.1, 0]} />
+            </RigidBody>
+            
+            {/* Walls */}
+            <group>
+              {[
+                { pos: [0, 4, -10], rot: [0, 0, 0] },      // Front
+                { pos: [0, 4, 10], rot: [0, Math.PI, 0] }, // Back
+                { pos: [-10, 4, 0], rot: [0, Math.PI / 2, 0] }, // Left
+                { pos: [10, 4, 0], rot: [0, -Math.PI / 2, 0] }  // Right
+              ].map((wall, i) => (
+                <RigidBody key={i} type="fixed">
+                  <Plane
+                    args={[20, 8]}
+                    position={wall.pos as [number, number, number]}
+                    rotation={wall.rot as [number, number, number]}
+                  >
+                    <meshStandardMaterial color="#1a1a1a" />
+                  </Plane>
+                  <CuboidCollider 
+                    args={[10, 4, 0.1]} 
+                    position={wall.pos as [number, number, number]} 
+                  />
+                </RigidBody>
+              ))}
+            </group>
+            
+            {/* Ceiling */}
+            <Plane
+              args={[20, 20]}
+              position={[0, 8, 0]}
+              rotation={[Math.PI / 2, 0, 0]}
+            >
+              <meshStandardMaterial color="#2a2a2a" />
+            </Plane>
+
+            {/* Floor Information */}
+            <group position={[0, 1.5, 8]}>
+              <Box args={[4, 1.2, 0.1]}>
+                <meshStandardMaterial color="#1a1a1a" />
+              </Box>
+              <Text
+                position={[0, 0.3, 0.1]}
+                fontSize={0.4}
+                color="gold"
+                anchorX="center"
+                anchorY="middle"
+              >
+                FLOOR {floorIndex + 1}
+              </Text>
+              <Text
+                position={[0, -0.3, 0.1]}
+                fontSize={0.2}
+                color="white"
+                anchorX="center"
+                anchorY="middle"
+              >
+                Press E/Q to change floors
+              </Text>
+            </group>
+
+            {/* Central Elevator Shaft */}
+            <RigidBody type="fixed">
+              <Box args={[2, 8, 2]} position={[0, 4, 0]}>
+                <meshStandardMaterial 
+                  color={floorIndex === currentFloor ? "#FFD700" : "#8B4513"} 
+                />
+              </Box>
+              <Text
+                position={[0, 6, 1.1]}
+                fontSize={0.3}
+                color={floorIndex === currentFloor ? "black" : "gold"}
+                anchorX="center"
+                anchorY="middle"
+              >
+                ELEVATOR
+              </Text>
+              <Text
+                position={[0, 5.5, 1.1]}
+                fontSize={0.15}
+                color={floorIndex === currentFloor ? "black" : "white"}
+                anchorX="center"
+                anchorY="middle"
+              >
+                Floor {floorIndex + 1}
+              </Text>
+              <CuboidCollider args={[1, 4, 1]} position={[0, 4, 0]} />
+            </RigidBody>
+          </group>
+        );
+      })}
+      
+      {/* Render only visible batik frames */}
+      {visibleBatiks.map(({ batik, position, rotation, floor }) => (
+        <group key={`${batik.id}-${floor}`} position={[0, floor * floorHeight, 0]}>
+          <BatikFrame
+            batik={batik}
+            position={[position[0], position[1], position[2]]}
+            rotation={rotation}
+            isSelected={selectedBatik?.id === batik.id}
+            onClick={() => onBatikSelect(batik)}
           />
-        </Plane>
-        <CuboidCollider args={[10, 0.1, 10]} position={[0, -0.1, 0]} />
-      </RigidBody>
-      
-      {/* Museum Walls with Physics */}
-      <group>
-        {/* Front Wall */}
-        <RigidBody type="fixed">
-          <Plane
-            args={[20, 8]}
-            position={[0, 4, -10]}
-            rotation={[0, 0, 0]}
-          >
-            <meshStandardMaterial color="#1a1a1a" />
-          </Plane>
-          <CuboidCollider args={[10, 4, 0.1]} position={[0, 4, -10]} />
-        </RigidBody>
-        
-        {/* Back Wall */}
-        <RigidBody type="fixed">
-          <Plane
-            args={[20, 8]}
-            position={[0, 4, 10]}
-            rotation={[0, Math.PI, 0]}
-          >
-            <meshStandardMaterial color="#1a1a1a" />
-          </Plane>
-          <CuboidCollider args={[10, 4, 0.1]} position={[0, 4, 10]} />
-        </RigidBody>
-        
-        {/* Left Wall */}
-        <RigidBody type="fixed">
-          <Plane
-            args={[20, 8]}
-            position={[-10, 4, 0]}
-            rotation={[0, Math.PI / 2, 0]}
-          >
-            <meshStandardMaterial color="#1a1a1a" />
-          </Plane>
-          <CuboidCollider args={[10, 4, 0.1]} position={[-10, 4, 0]} />
-        </RigidBody>
-        
-        {/* Right Wall */}
-        <RigidBody type="fixed">
-          <Plane
-            args={[20, 8]}
-            position={[10, 4, 0]}
-            rotation={[0, -Math.PI / 2, 0]}
-          >
-            <meshStandardMaterial color="#1a1a1a" />
-          </Plane>
-          <CuboidCollider args={[10, 4, 0.1]} position={[10, 4, 0]} />
-        </RigidBody>
-      </group>
-      
-      {/* Ceiling */}
-      <Plane
-        args={[20, 20]}
-        position={[0, 8, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-      >
-        <meshStandardMaterial color="#2a2a2a" />
-      </Plane>
-      
-      {/* Batik Frames */}
-      {batikPositions.map(({ batik, position, rotation }, index) => (
-        <BatikFrame
-          key={batik.id}
-          batik={batik}
-          position={position}
-          rotation={rotation}
-          isSelected={selectedBatik?.id === batik.id}
-          onClick={() => onBatikSelect(batik)}
-        />
+        </group>
       ))}
       
-      {/* Museum Lighting */}
-      <ambientLight intensity={0.6} color="#ffffff" />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, 10, -10]} intensity={0.5} />
-      <spotLight
-        position={[0, 20, 0]}
-        angle={0.3}
-        penumbra={1}
-        intensity={1}
-        castShadow
-      />
+      {/* Optimized Lighting */}
+      <ambientLight intensity={0.8} color="#ffffff" />
       
-      {/* Center Pedestal with Physics */}
-      <RigidBody type="fixed">
-        <group position={[0, 0, 0]}>
-          <Box args={[2, 1, 2]} position={[0, 0.5, 0]}>
-            <meshStandardMaterial color="#8B4513" />
-          </Box>
-          <Text
-            position={[0, 1.2, 0]}
-            fontSize={0.3}
-            color="gold"
-            anchorX="center"
-            anchorY="middle"
-          >
-            BATIK SPHERE
-          </Text>
-          <Text
-            position={[0, 0.8, 0]}
-            fontSize={0.15}
-            color="white"
-            anchorX="center"
-            anchorY="middle"
-          >
-            Digital Heritage Museum
-          </Text>
-        </group>
-        <CuboidCollider args={[1, 0.5, 1]} position={[0, 0.5, 0]} />
-      </RigidBody>
-
-      {/* Additional Museum Props */}
-      {/* Benches */}
-      {Array.from({ length: 4 }, (_, i) => {
-        const angle = (i / 4) * Math.PI * 2;
-        const x = Math.cos(angle) * 4;
-        const z = Math.sin(angle) * 4;
-        
-        return (
-          <RigidBody key={i} type="fixed">
-            <Box args={[1.5, 0.4, 0.4]} position={[x, 0.2, z]}>
-              <meshStandardMaterial color="#654321" />
-            </Box>
-            <CuboidCollider args={[0.75, 0.2, 0.2]} position={[x, 0.2, z]} />
-          </RigidBody>
-        );
-      })}
-      {/* Spotlight untuk setiap dinding */}
-      {Array.from({ length: 4 }, (_, i) => {
-        const angle = (i / 4) * Math.PI * 2;
-        const x = Math.cos(angle) * 7;
-        const z = Math.sin(angle) * 7;
-        
-        return (
-          <spotLight
-            key={i}
-            position={[x, 6, z]}
-            target-position={[-x * 0.8, 3, -z * 0.8]}
-            intensity={2}
-            angle={Math.PI / 3}
-            penumbra={0.3}
-            color="#ffffff"
-            castShadow
-          />
-        );
-      })}
-
-      {/* Center ceiling light */}
+      {/* Floor-specific lighting */}
       <pointLight
-        position={[0, 7, 0]}
-        intensity={1.5}
+        position={[0, 7 + (currentFloor * floorHeight), 0]}
+        intensity={3}
         color="#fff8dc"
-        distance={15}
+        distance={18}
         decay={1}
       />
+      
+      {/* Wall accent lights */}
+      {[
+        [8, 4 + (currentFloor * floorHeight), 0],
+        [-8, 4 + (currentFloor * floorHeight), 0],
+        [0, 4 + (currentFloor * floorHeight), 8],
+        [0, 4 + (currentFloor * floorHeight), -8]
+      ].map((pos, i) => (
+        <spotLight
+          key={i}
+          position={pos as [number, number, number]}
+          target-position={[0, 2 + (currentFloor * floorHeight), 0]}
+          intensity={1.5}
+          angle={Math.PI / 4}
+          penumbra={0.3}
+          color="#ffffff"
+        />
+      ))}
     </group>
   );
 }
