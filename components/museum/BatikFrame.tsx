@@ -4,8 +4,7 @@
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Box, Plane } from '@react-three/drei';
-import { Mesh, Texture } from 'three';
-import { TextureManager } from '@/lib/utils/TextureManager';
+import { Mesh, Texture, TextureLoader } from 'three';
 import type { Batik } from '@/lib/types';
 
 interface BatikFrameProps {
@@ -27,7 +26,15 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
     return batik.foto[0]?.link || '';
   }, [batik.foto]);
 
-  // Load texture using TextureManager
+  // Generate unique identifiers for this frame with more entropy
+  const frameId = useMemo(() => {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substr(2, 9);
+    const positionHash = position.map(p => Math.round(p * 100)).join('-');
+    return `frame-${batik.id}-${positionHash}-${timestamp}-${random}`;
+  }, [batik.id, position]);
+
+  // Direct texture loading
   useEffect(() => {
     if (!imageUrl) {
       setLoading(false);
@@ -36,19 +43,31 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
     }
 
     let isMounted = true;
-    const textureManager = TextureManager.getInstance();
+    const loader = new TextureLoader();
 
-    textureManager.loadTexture(imageUrl).then((loadedTexture) => {
-      if (isMounted) {
-        if (loadedTexture) {
+    loader.load(
+      imageUrl,
+      (loadedTexture) => {
+        if (isMounted) {
+          // Optimize texture
+          loadedTexture.generateMipmaps = true;
+          loadedTexture.minFilter = 1008; // LinearMipmapLinearFilter
+          loadedTexture.magFilter = 1006; // LinearFilter
+          
           setTexture(loadedTexture);
           setError(false);
-        } else {
-          setError(true);
+          setLoading(false);
         }
-        setLoading(false);
+      },
+      undefined,
+      (error) => {
+        console.warn('Failed to load batik texture:', imageUrl, error);
+        if (isMounted) {
+          setError(true);
+          setLoading(false);
+        }
       }
-    });
+    );
 
     return () => {
       isMounted = false;
@@ -62,96 +81,111 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
     }
   });
 
-  // Memoize colors
-  const frameColor = useMemo(() => isSelected ? "#FFD700" : "#654321", [isSelected]);
+  const frameColor = useMemo(() => isSelected ? "#FFD700" : "#8B4513", [isSelected]);
   const labelColor = useMemo(() => isSelected ? "#FFD700" : "white", [isSelected]);
 
   return (
     <group position={position} rotation={rotation}>
-      {/* Frame */}
-      <Box args={[2.4, 2.4, 0.15]} position={[0, 0, -0.08]}>
+      {/* Outer Frame */}
+      <Box key={`${frameId}-outer-frame`} args={[2.6, 2.6, 0.2]} position={[0, 0, -0.1]}>
         <meshStandardMaterial 
           color={frameColor}
-          roughness={0.3}
-          metalness={0.1}
+          roughness={0.4}
+          metalness={0.2}
         />
       </Box>
       
-      {/* Inner frame */}
-      <Box args={[2.1, 2.1, 0.05]} position={[0, 0, -0.02]}>
+      {/* Inner Frame */}
+      <Box key={`${frameId}-inner-frame`} args={[2.3, 2.3, 0.1]} position={[0, 0, -0.05]}>
         <meshStandardMaterial color="#2a2a2a" />
       </Box>
       
-      {/* Batik Image */}
+      {/* Batik Image Plane - TANPA EFEK KACA */}
       <Plane
+        key={`${frameId}-image-plane`}
         ref={meshRef}
-        args={[2, 2]}
+        args={[2.2, 2.2]}
         position={[0, 0, 0]}
-        onClick={onClick}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setHovered(true);
+          document.body.style.cursor = 'pointer';
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          setHovered(false);
+          document.body.style.cursor = 'auto';
+        }}
       >
         <meshStandardMaterial 
           map={texture}
-          transparent
-          opacity={hovered ? 0.9 : 1}
+          transparent={false}
+          opacity={1}
           color={texture ? "#ffffff" : error ? "#ff6b6b" : "#f0f0f0"}
-          roughness={0.1}
+          roughness={0.8}
           metalness={0.0}
+          side={2}
         />
       </Plane>
       
-      {/* Loading/Error indicator */}
+      {/* Loading/Error Text */}
       {(loading || error) && (
         <Text
+          key={`${frameId}-status-text`}
           position={[0, 0, 0.01]}
-          fontSize={0.2}
+          fontSize={0.3}
           color={error ? "#ff6b6b" : "#666666"}
           anchorX="center"
           anchorY="middle"
         >
-          {loading ? "Loading..." : "Image Error"}
+          {loading ? "Loading..." : "No Image"}
         </Text>
       )}
       
-      {/* Label background */}
-      <Plane args={[2.2, 0.4]} position={[0, -1.4, 0.01]}>
+      {/* Name Label Background */}
+      <Plane key={`${frameId}-label-background`} args={[2.4, 0.5]} position={[0, -1.5, 0.01]}>
         <meshStandardMaterial 
           color="#000000" 
           transparent 
-          opacity={0.8}
+          opacity={0.9}
         />
       </Plane>
       
-      {/* Label text */}
+      {/* Name Label */}
       <Text
-        position={[0, -1.4, 0.02]}
-        fontSize={0.15}
+        key={`${frameId}-name-text`}
+        position={[0, -1.5, 0.02]}
+        fontSize={0.18}
         color={labelColor}
         anchorX="center"
         anchorY="middle"
-        maxWidth={2}
+        maxWidth={2.2}
       >
         {batik.nama}
       </Text>
       
-      {/* Artist */}
+      {/* Artist Label */}
       {batik.seniman && (
         <Text
-          position={[0, -1.6, 0.02]}
-          fontSize={0.12}
+          key={`${frameId}-artist-text`}
+          position={[0, -1.7, 0.02]}
+          fontSize={0.14}
           color="lightgray"
           anchorX="center"
           anchorY="middle"
-          maxWidth={2}
+          maxWidth={2.2}
         >
-          {batik.seniman}
+          by {batik.seniman}
         </Text>
       )}
       
       {/* Selection Glow */}
       {isSelected && (
-        <Plane args={[2.6, 2.6]} position={[0, 0, -0.15]}>
+        <Plane key={`${frameId}-selection-glow`} args={[2.8, 2.8]} position={[0, 0, -0.15]}>
           <meshStandardMaterial 
             color="#FFD700" 
             transparent 

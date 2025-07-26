@@ -1,7 +1,7 @@
 // components/museum/BatikPreloader.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { TextureManager } from '@/lib/utils/TextureManager';
 import type { Batik } from '@/lib/types';
 
@@ -14,10 +14,16 @@ interface BatikPreloaderProps {
 export function BatikPreloader({ batiks, currentFloor, onPreloadComplete }: BatikPreloaderProps) {
   const [preloadedFloors, setPreloadedFloors] = useState<Set<number>>(new Set());
   
-  const batiksPerFloor = 8; // Reduced for better performance
+  const batiksPerFloor = 12;
+  
+  // Generate unique instance ID for this preloader
+  const instanceId = useMemo(() => `preloader-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, []);
   
   useEffect(() => {
     const preloadFloor = async (floor: number) => {
+      // Create unique identifier for this floor
+      const floorKey = `${instanceId}-floor-${floor}`;
+      
       if (preloadedFloors.has(floor)) return;
       
       const startIndex = floor * batiksPerFloor;
@@ -26,9 +32,10 @@ export function BatikPreloader({ batiks, currentFloor, onPreloadComplete }: Bati
       
       const textureManager = TextureManager.getInstance();
       
-      // Preload textures for this floor
-      const promises = floorBatiks.map(batik => {
+      // Preload textures for this floor with unique identifiers
+      const promises = floorBatiks.map((batik, index) => {
         const imageUrl = batik.foto[0]?.link;
+        const uniqueId = `${floorKey}-batik-${batik.id}-index-${index}`;
         return imageUrl ? textureManager.loadTexture(imageUrl) : Promise.resolve(null);
       });
       
@@ -50,7 +57,7 @@ export function BatikPreloader({ batiks, currentFloor, onPreloadComplete }: Bati
         preloadFloor(floor);
       }
     });
-  }, [currentFloor, batiks, batiksPerFloor, preloadedFloors, onPreloadComplete]);
+  }, [currentFloor, batiks, batiksPerFloor, preloadedFloors, onPreloadComplete, instanceId]);
   
-  return null; // This component doesn't render anything
+  return null;
 }

@@ -372,9 +372,27 @@ export function MuseumClient({ batiks }: MuseumClientProps) {
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 p-3 rounded-lg border border-amber-500/20">
                   <div className="flex items-center mb-1">
-                    <kbd className="px-2 py-1 bg-amber-600 text-black rounded text-xs font-bold mr-2">WASD</kbd>
+                    <kbd className="px-2 py-1 bg-amber-600 text-black rounded text-xs font-bold mr-2">W</kbd>
                   </div>
-                  <span className="text-gray-300 text-xs">{isIndonesian ? 'Bergerak' : 'Move'}</span>
+                  <span className="text-gray-300 text-xs">{isIndonesian ? 'Maju' : 'Forward'}</span>
+                </div>
+                <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 p-3 rounded-lg border border-amber-500/20">
+                  <div className="flex items-center mb-1">
+                    <kbd className="px-2 py-1 bg-amber-600 text-black rounded text-xs font-bold mr-2">S</kbd>
+                  </div>
+                  <span className="text-gray-300 text-xs">{isIndonesian ? 'Mundur' : 'Backward'}</span>
+                </div>
+                <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 p-3 rounded-lg border border-amber-500/20">
+                  <div className="flex items-center mb-1">
+                    <kbd className="px-2 py-1 bg-amber-600 text-black rounded text-xs font-bold mr-2">A</kbd>
+                  </div>
+                  <span className="text-gray-300 text-xs">{isIndonesian ? 'Kiri' : 'Left'}</span>
+                </div>
+                <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 p-3 rounded-lg border border-amber-500/20">
+                  <div className="flex items-center mb-1">
+                    <kbd className="px-2 py-1 bg-amber-600 text-black rounded text-xs font-bold mr-2">D</kbd>
+                  </div>
+                  <span className="text-gray-300 text-xs">{isIndonesian ? 'Kanan' : 'Right'}</span>
                 </div>
                 <div className="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 p-3 rounded-lg border border-blue-500/20">
                   <div className="flex items-center mb-1">
@@ -387,12 +405,6 @@ export function MuseumClient({ batiks }: MuseumClientProps) {
                     <kbd className="px-2 py-1 bg-green-600 text-black rounded text-xs font-bold mr-2">Shift</kbd>
                   </div>
                   <span className="text-gray-300 text-xs">{isIndonesian ? 'Berlari' : 'Sprint'}</span>
-                </div>
-                <div className="bg-gradient-to-r from-purple-900/40 to-violet-900/40 p-3 rounded-lg border border-purple-500/20">
-                  <div className="flex items-center mb-1">
-                    <kbd className="px-2 py-1 bg-purple-600 text-white rounded text-xs font-bold mr-2">Space</kbd>
-                  </div>
-                  <span className="text-gray-300 text-xs">{isIndonesian ? 'Lompat' : 'Jump'}</span>
                 </div>
               </div>
               
@@ -465,6 +477,8 @@ export function MuseumClient({ batiks }: MuseumClientProps) {
           <div>Batiks: {Math.min((currentFloor + 1) * batiksPerFloor, batiks.length)}/{batiks.length}</div>
           <div>Mode: {viewMode.toUpperCase()}</div>
           <div>Locked: {isPointerLocked ? 'Yes' : 'No'}</div>
+          <div>Camera: {viewMode === 'fps' ? 'FPS' : 'Orbit'}</div>
+          <div>WASD: {viewMode === 'fps' && isPointerLocked ? 'Active' : 'Inactive'}</div>
         </div>
       )}
 
