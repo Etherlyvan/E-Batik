@@ -1,45 +1,47 @@
-'use client';
+// app/page.tsx
+import { Hero } from '@/components/layout/Hero';
+import { InfoSection } from '@/components/layout/InfoSection';
+import { StatsCounter } from '@/components/layout/StatsCounter';
+import { BatikSlider } from '@/components/batik/BatikSlider';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { getBatiks } from '@/lib/actions/batik';
+import { prisma } from '@/lib/db/prisma';
 
-import Hero from '@/app/components/hero';
-import InfiniteSlider from './components/InfiniteSlider';
-import { useEffect, useState } from 'react';
-import { Batik } from '@/types';
-import InfoDataComponent from './components/InfoDataComponent';
-import Footer from './components/Footer';
-import Navbar from './components/Navbar';
-import StatsCounter from './components/StatsCounter';
+async function getHeroImages() {
+  try {
+    const recentPhotos = await prisma.foto.findMany({
+      select: {
+        link: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+      take: 10,
+    });
 
-export default function Home() {
-    const [batiks, setBatiks] = useState<Batik[]>([]);
+    return recentPhotos.map(photo => photo.link);
+  } catch (error) {
+    console.error('Error fetching hero photos:', error);
+    return [];
+  }
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const batiksResponse = await fetch('/api/batik');
+export default async function HomePage() {
+  const [batiks, heroImages] = await Promise.all([
+    getBatiks(),
+    getHeroImages()
+  ]);
 
-                const batiksData = await batiksResponse.json();
-
-                if (Array.isArray(batiksData)) {
-                    setBatiks(batiksData);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    return (
-        <div className='min-h-screen'>
-            <Navbar />
-            <main className='flex flex-col items-center sm:items-start'>
-                <Hero />
-                <InfoDataComponent />
-                <StatsCounter />
-                <InfiniteSlider batiks={batiks} />
-            </main>
-            <Footer />
-        </div>
-    );
+  return (
+    <PageLayout>
+      <div className="min-h-screen">
+        <main className="flex flex-col">
+          <Hero backgroundImages={heroImages} />
+          <InfoSection />
+          <StatsCounter />
+          <BatikSlider batiks={batiks} />
+        </main>
+      </div>
+    </PageLayout>
+  );
 }
