@@ -2,11 +2,10 @@
 'use client';
 
 import { useRef, useMemo } from 'react';
-import { Text, Box, Plane, OrbitControls } from '@react-three/drei';
+import { Box, Plane, Text } from '@react-three/drei';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
 import { Group } from 'three';
 import { BatikFrame } from './BatikFrame';
-import { BatikPreloader } from './BatikPreloader';
 import type { Batik } from '@/lib/types';
 
 interface Museum3DProps {
@@ -26,97 +25,80 @@ export function Museum3D({
 }: Museum3DProps) {
   const groupRef = useRef<Group>(null);
   
-  const batiksPerFloor = 12;
+  const batiksPerFloor = 16; // 4 per wall * 4 walls
   const totalFloors = Math.ceil(batiks.length / batiksPerFloor);
   const floorHeight = 12;
 
-  // Generate unique instance ID for this component
+  // Generate unique instance ID
   const instanceId = useMemo(() => `museum-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, []);
 
-  // Museum layout based on the floor plan image
+  // Create museum layout (similar to reference)
   const createMuseumLayout = (floorIndex: number) => {
     const yOffset = floorIndex * floorHeight;
     const floorId = `${instanceId}-floor-${floorIndex}`;
     
     return (
       <group key={floorId} position={[0, yOffset, 0]}>
-        {/* Main Floor */}
-        <RigidBody type="fixed" key={`${floorId}-main-floor`}>
+        {/* Floor */}
+        <RigidBody type="fixed" key={`${floorId}-floor`}>
           <Plane
-            args={[50, 30]}
+            args={[40, 40]}
             position={[0, 0, 0]}
             rotation={[-Math.PI / 2, 0, 0]}
             receiveShadow
           >
-            <meshStandardMaterial 
-              color={floorIndex === currentFloor ? "#4A4A4A" : "#3A3A3A"} 
-              roughness={0.8}
-              metalness={0.1}
-            />
+            <meshBasicMaterial color="#444444" />
           </Plane>
-          <CuboidCollider args={[25, 0.1, 15]} position={[0, -0.1, 0]} />
+          <CuboidCollider args={[20, 0.1, 20]} position={[0, -0.1, 0]} />
         </RigidBody>
 
-        {/* Outer Walls */}
-        {[
-          { pos: [0, 4, -15], rot: [0, 0, 0], size: [50, 8, 0.5], id: 'front' },
-          { pos: [0, 4, 15], rot: [0, Math.PI, 0], size: [50, 8, 0.5], id: 'back' },
-          { pos: [-25, 4, 0], rot: [0, Math.PI / 2, 0], size: [30, 8, 0.5], id: 'left' },
-          { pos: [25, 4, 0], rot: [0, -Math.PI / 2, 0], size: [30, 8, 0.5], id: 'right' }
-        ].map((wall, i) => (
-          <RigidBody key={`${floorId}-outer-wall-${wall.id}-${i}`} type="fixed">
-            <Box
-              args={wall.size as [number, number, number]}
-              position={wall.pos as [number, number, number]}
-              rotation={wall.rot as [number, number, number]}
-            >
-              <meshStandardMaterial color="#2A2A2A" roughness={0.8} />
-            </Box>
-            <CuboidCollider 
-              args={[wall.size[0]/2, wall.size[1]/2, wall.size[2]/2]} 
-              position={wall.pos as [number, number, number]} 
-            />
-          </RigidBody>
-        ))}
+        {/* Walls - Similar to reference structure */}
+        {/* Front Wall */}
+        <RigidBody type="fixed" key={`${floorId}-front-wall`}>
+          <Box args={[40, 8, 0.5]} position={[0, 4, -20]}>
+            <meshBasicMaterial color="#666666" />
+          </Box>
+          <CuboidCollider args={[20, 4, 0.25]} position={[0, 4, -20]} />
+        </RigidBody>
 
-        {/* Interior Walls and Partitions */}
-        {[
-          { pos: [-15, 4, -8], size: [8, 8, 0.3], id: 'storage' },
-          { pos: [0, 4, -8], size: [6, 8, 0.3], id: 'reception' },
-          { pos: [15, 4, -8], size: [8, 8, 0.3], id: 'bathroom' },
-          { pos: [-10, 4, 2], size: [0.3, 8, 8], id: 'partition-left' },
-          { pos: [10, 4, 2], size: [0.3, 8, 8], id: 'partition-right' },
-          { pos: [-5, 4, 8], size: [8, 8, 0.3], id: 'partition-back-left' },
-          { pos: [5, 4, 8], size: [8, 8, 0.3], id: 'partition-back-right' }
-        ].map((wall, i) => (
-          <RigidBody key={`${floorId}-interior-wall-${wall.id}-${i}`} type="fixed">
-            <Box
-              args={wall.size as [number, number, number]}
-              position={wall.pos as [number, number, number]}
-            >
-              <meshStandardMaterial color={wall.id.includes('partition') ? "#4A4A4A" : "#3A3A3A"} />
-            </Box>
-            <CuboidCollider 
-              args={[wall.size[0]/2, wall.size[1]/2, wall.size[2]/2]} 
-              position={wall.pos as [number, number, number]} 
-            />
-          </RigidBody>
-        ))}
+        {/* Back Wall */}
+        <RigidBody type="fixed" key={`${floorId}-back-wall`}>
+          <Box args={[40, 8, 0.5]} position={[0, 4, 20]}>
+            <meshBasicMaterial color="#666666" />
+          </Box>
+          <CuboidCollider args={[20, 4, 0.25]} position={[0, 4, 20]} />
+        </RigidBody>
+
+        {/* Left Wall */}
+        <RigidBody type="fixed" key={`${floorId}-left-wall`}>
+          <Box args={[40, 8, 0.5]} position={[-20, 4, 0]} rotation={[0, Math.PI / 2, 0]}>
+            <meshBasicMaterial color="#666666" />
+          </Box>
+          <CuboidCollider args={[20, 4, 0.25]} position={[-20, 4, 0]} />
+        </RigidBody>
+
+        {/* Right Wall */}
+        <RigidBody type="fixed" key={`${floorId}-right-wall`}>
+          <Box args={[40, 8, 0.5]} position={[20, 4, 0]} rotation={[0, Math.PI / 2, 0]}>
+            <meshBasicMaterial color="#666666" />
+          </Box>
+          <CuboidCollider args={[20, 4, 0.25]} position={[20, 4, 0]} />
+        </RigidBody>
 
         {/* Ceiling */}
         <Plane
           key={`${floorId}-ceiling`}
-          args={[50, 30]}
+          args={[40, 40]}
           position={[0, 8, 0]}
           rotation={[Math.PI / 2, 0, 0]}
         >
-          <meshStandardMaterial color="#2A2A2A" />
+          <meshBasicMaterial color="#333333" />
         </Plane>
 
         {/* Floor Information Panel */}
-        <group key={`${floorId}-info-panel`} position={[0, 1.5, 12]}>
+        <group key={`${floorId}-info-panel`} position={[0, 1.5, 18]}>
           <Box args={[6, 2, 0.2]}>
-            <meshStandardMaterial color="#1a1a1a" />
+            <meshBasicMaterial color="#1a1a1a" />
           </Box>
           <Text
             position={[0, 0.5, 0.2]}
@@ -150,7 +132,7 @@ export function Museum3D({
     );
   };
 
-  // Position batiks on walls with absolutely unique keys
+  // Position batiks on walls (like paintings in reference)
   const visibleBatiks = useMemo(() => {
     const floorsToRender = [
       Math.max(0, currentFloor - 1),
@@ -171,30 +153,45 @@ export function Museum3D({
       const endIndex = Math.min(startIndex + batiksPerFloor, batiks.length);
       const floorBatiks = batiks.slice(startIndex, endIndex);
       
-      // Wall positions for batik frames
+      // Wall positions (similar to paintingData.js)
       const wallPositions = [
-        { pos: [-18, 3, -14.5], rot: [0, 0, 0], wall: 'front', position: 'left' },
-        { pos: [-6, 3, -14.5], rot: [0, 0, 0], wall: 'front', position: 'center-left' },
-        { pos: [6, 3, -14.5], rot: [0, 0, 0], wall: 'front', position: 'center-right' },
-        { pos: [18, 3, -14.5], rot: [0, 0, 0], wall: 'front', position: 'right' },
-        { pos: [24.5, 3, -6], rot: [0, -Math.PI / 2, 0], wall: 'right', position: 'front' },
-        { pos: [24.5, 3, 6], rot: [0, -Math.PI / 2, 0], wall: 'right', position: 'back' },
-        { pos: [18, 3, 14.5], rot: [0, Math.PI, 0], wall: 'back', position: 'right' },
-        { pos: [6, 3, 14.5], rot: [0, Math.PI, 0], wall: 'back', position: 'center-right' },
-        { pos: [-6, 3, 14.5], rot: [0, Math.PI, 0], wall: 'back', position: 'center-left' },
-        { pos: [-18, 3, 14.5], rot: [0, Math.PI, 0], wall: 'back', position: 'left' },
-        { pos: [-24.5, 3, 6], rot: [0, Math.PI / 2, 0], wall: 'left', position: 'back' },
-        { pos: [-24.5, 3, -6], rot: [0, Math.PI / 2, 0], wall: 'left', position: 'front' }
+        // Front Wall (4 batiks)
+        ...Array.from({ length: 4 }, (_, i) => ({
+          pos: [-15 + 10 * i, 3, -19.5],
+          rot: [0, 0, 0],
+          wall: 'front',
+          position: `front-${i}`
+        })),
+        // Back Wall (4 batiks)
+        ...Array.from({ length: 4 }, (_, i) => ({
+          pos: [-15 + 10 * i, 3, 19.5],
+          rot: [0, Math.PI, 0],
+          wall: 'back',
+          position: `back-${i}`
+        })),
+        // Left Wall (4 batiks)
+        ...Array.from({ length: 4 }, (_, i) => ({
+          pos: [-19.5, 3, -15 + 10 * i],
+          rot: [0, Math.PI / 2, 0],
+          wall: 'left',
+          position: `left-${i}`
+        })),
+        // Right Wall (4 batiks)
+        ...Array.from({ length: 4 }, (_, i) => ({
+          pos: [19.5, 3, -15 + 10 * i],
+          rot: [0, -Math.PI / 2, 0],
+          wall: 'right',
+          position: `right-${i}`
+        }))
       ];
       
       floorBatiks.forEach((batik, index) => {
         if (index < wallPositions.length) {
           const wallPos = wallPositions[index];
           
-          // Create absolutely unique key with timestamp and random
           const timestamp = Date.now();
           const random = Math.random().toString(36).substr(2, 9);
-          const uniqueKey = `${instanceId}-batik-${batik.id}-floor-${floor}-wall-${wallPos.wall}-pos-${wallPos.position}-idx-${index}-${timestamp}-${random}`;
+          const uniqueKey = `${instanceId}-batik-${batik.id}-floor-${floor}-${wallPos.wall}-${wallPos.position}-${index}-${timestamp}-${random}`;
           
           visible.push({ 
             batik, 
@@ -216,35 +213,14 @@ export function Museum3D({
 
   return (
     <group ref={groupRef}>
-      {/* Preloader */}
-      <BatikPreloader 
-        batiks={batiks}
-        currentFloor={currentFloor}
-        onPreloadComplete={() => {}} 
-      />
-
-      {/* Orbit Controls for orbit mode */}
-      {viewMode === 'orbit' && (
-        <OrbitControls
-          enablePan={true}
-          enableZoom={true}
-          enableRotate={true}
-          minDistance={10}
-          maxDistance={80}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={0}
-          target={[0, 4 + (currentFloor * floorHeight), 0]}
-        />
-      )}
-
-      {/* Render visible floors with unique keys */}
+      {/* Render visible floors */}
       {Array.from({ length: 3 }).map((_, index) => {
         const floorIndex = Math.max(0, currentFloor - 1) + index;
         if (floorIndex >= totalFloors) return null;
         return createMuseumLayout(floorIndex);
       })}
       
-      {/* Render batik frames with absolutely unique keys */}
+      {/* Render batik frames */}
       {visibleBatiks.map(({ batik, position, rotation, floor, uniqueKey }) => (
         <BatikFrame
           key={uniqueKey}
@@ -256,48 +232,13 @@ export function Museum3D({
         />
       ))}
       
-      {/* Enhanced Lighting System with unique keys */}
-      <ambientLight key={`${instanceId}-ambient-light`} intensity={0.6} color="#ffffff" />
-      
-      {/* Main floor lighting */}
-      <pointLight
-        key={`${instanceId}-main-light-${currentFloor}`}
-        position={[0, 7 + (currentFloor * floorHeight), 0]}
-        intensity={4}
-        color="#fff8dc"
-        distance={25}
-        decay={1}
-        castShadow
-      />
-      
-      {/* Area-specific lighting with unique keys */}
-      {[
-        { pos: [15, 6 + (currentFloor * floorHeight), 0], id: 'right' },
-        { pos: [-15, 6 + (currentFloor * floorHeight), 0], id: 'left' },
-        { pos: [0, 6 + (currentFloor * floorHeight), 10], id: 'back' },
-        { pos: [0, 6 + (currentFloor * floorHeight), -10], id: 'front' }
-      ].map((light, i) => (
-        <spotLight
-          key={`${instanceId}-spot-light-${currentFloor}-${light.id}-${i}`}
-          position={light.pos as [number, number, number]}
-          target-position={[0, 2 + (currentFloor * floorHeight), 0]}
-          intensity={2}
-          angle={Math.PI / 3}
-          penumbra={0.3}
-          color="#ffffff"
-          castShadow
-        />
-      ))}
-
-      {/* Directional light for overall illumination */}
+      {/* Simple Lighting (like reference) */}
+      <ambientLight intensity={1.0} color="#ffffff" />
       <directionalLight
-        key={`${instanceId}-directional-light-${currentFloor}`}
-        position={[20, 20 + (currentFloor * floorHeight), 10]}
-        intensity={1}
+        position={[10, 20 + (currentFloor * floorHeight), 10]}
+        intensity={0.8}
         color="#ffffff"
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        castShadow={false}
       />
     </group>
   );

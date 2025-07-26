@@ -26,15 +26,11 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
     return batik.foto[0]?.link || '';
   }, [batik.foto]);
 
-  // Generate unique identifiers for this frame with more entropy
   const frameId = useMemo(() => {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substr(2, 9);
-    const positionHash = position.map(p => Math.round(p * 100)).join('-');
-    return `frame-${batik.id}-${positionHash}-${timestamp}-${random}`;
+    return `frame-${batik.id}-${position.join('-')}-${Date.now()}`;
   }, [batik.id, position]);
 
-  // Direct texture loading
+  // Texture loading (optimized for quality)
   useEffect(() => {
     if (!imageUrl) {
       setLoading(false);
@@ -49,10 +45,13 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
       imageUrl,
       (loadedTexture) => {
         if (isMounted) {
-          // Optimize texture
-          loadedTexture.generateMipmaps = true;
-          loadedTexture.minFilter = 1008; // LinearMipmapLinearFilter
+          // High quality settings
+          loadedTexture.generateMipmaps = false;
+          loadedTexture.minFilter = 1006; // LinearFilter
           loadedTexture.magFilter = 1006; // LinearFilter
+          loadedTexture.anisotropy = 16;
+          loadedTexture.flipY = false;
+          loadedTexture.needsUpdate = true;
           
           setTexture(loadedTexture);
           setError(false);
@@ -74,7 +73,7 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
     };
   }, [imageUrl]);
 
-  // Floating animation for selected frame
+  // Selection animation
   useFrame((state) => {
     if (meshRef.current && isSelected) {
       meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.1;
@@ -86,25 +85,21 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
 
   return (
     <group position={position} rotation={rotation}>
-      {/* Outer Frame */}
-      <Box key={`${frameId}-outer-frame`} args={[2.6, 2.6, 0.2]} position={[0, 0, -0.1]}>
-        <meshStandardMaterial 
-          color={frameColor}
-          roughness={0.4}
-          metalness={0.2}
-        />
+      {/* Frame */}
+      <Box key={`${frameId}-frame`} args={[5.2, 3.2, 0.2]} position={[0, 0, -0.1]}>
+        <meshBasicMaterial color={frameColor} />
       </Box>
       
       {/* Inner Frame */}
-      <Box key={`${frameId}-inner-frame`} args={[2.3, 2.3, 0.1]} position={[0, 0, -0.05]}>
-        <meshStandardMaterial color="#2a2a2a" />
+      <Box key={`${frameId}-inner`} args={[4.8, 2.8, 0.1]} position={[0, 0, -0.05]}>
+        <meshBasicMaterial color="#2a2a2a" />
       </Box>
       
-      {/* Batik Image Plane - TANPA EFEK KACA */}
+      {/* Batik Image */}
       <Plane
-        key={`${frameId}-image-plane`}
+        key={`${frameId}-image`}
         ref={meshRef}
-        args={[2.2, 2.2]}
+        args={[4.6, 2.6]}
         position={[0, 0, 0]}
         onClick={(e) => {
           e.stopPropagation();
@@ -121,13 +116,10 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
           document.body.style.cursor = 'auto';
         }}
       >
-        <meshStandardMaterial 
+        <meshBasicMaterial 
           map={texture}
           transparent={false}
-          opacity={1}
           color={texture ? "#ffffff" : error ? "#ff6b6b" : "#f0f0f0"}
-          roughness={0.8}
-          metalness={0.0}
           side={2}
         />
       </Plane>
@@ -135,7 +127,7 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
       {/* Loading/Error Text */}
       {(loading || error) && (
         <Text
-          key={`${frameId}-status-text`}
+          key={`${frameId}-status`}
           position={[0, 0, 0.01]}
           fontSize={0.3}
           color={error ? "#ff6b6b" : "#666666"}
@@ -146,52 +138,42 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
         </Text>
       )}
       
-      {/* Name Label Background */}
-      <Plane key={`${frameId}-label-background`} args={[2.4, 0.5]} position={[0, -1.5, 0.01]}>
-        <meshStandardMaterial 
-          color="#000000" 
-          transparent 
-          opacity={0.9}
-        />
-      </Plane>
-      
       {/* Name Label */}
-      <Text
-        key={`${frameId}-name-text`}
-        position={[0, -1.5, 0.02]}
-        fontSize={0.18}
-        color={labelColor}
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={2.2}
-      >
-        {batik.nama}
-      </Text>
-      
-      {/* Artist Label */}
-      {batik.seniman && (
+      <group key={`${frameId}-label`} position={[0, -2, 0.01]}>
+        <Plane args={[4.8, 0.8]}>
+          <meshBasicMaterial color="#000000" transparent opacity={0.8} />
+        </Plane>
         <Text
-          key={`${frameId}-artist-text`}
-          position={[0, -1.7, 0.02]}
-          fontSize={0.14}
-          color="lightgray"
+          position={[0, 0, 0.01]}
+          fontSize={0.25}
+          color={labelColor}
           anchorX="center"
           anchorY="middle"
-          maxWidth={2.2}
+          maxWidth={4.4}
         >
-          by {batik.seniman}
+          {batik.nama}
         </Text>
-      )}
+        {batik.seniman && (
+          <Text
+            position={[0, -0.3, 0.01]}
+            fontSize={0.18}
+            color="lightgray"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={4.4}
+          >
+            by {batik.seniman}
+          </Text>
+        )}
+      </group>
       
       {/* Selection Glow */}
       {isSelected && (
-        <Plane key={`${frameId}-selection-glow`} args={[2.8, 2.8]} position={[0, 0, -0.15]}>
-          <meshStandardMaterial 
+        <Plane key={`${frameId}-glow`} args={[5.6, 3.6]} position={[0, 0, -0.15]}>
+          <meshBasicMaterial 
             color="#FFD700" 
             transparent 
             opacity={0.3}
-            emissive="#FFD700"
-            emissiveIntensity={0.2}
           />
         </Plane>
       )}

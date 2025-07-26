@@ -1,11 +1,11 @@
 // components/museum/FirstPersonPlayer.tsx
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useKeyboardControls } from '@react-three/drei';
 import { RigidBody, CapsuleCollider } from '@react-three/rapier';
-import { Vector3, Euler } from 'three';
+import { Vector3, Box3 } from 'three';
 
 interface FirstPersonPlayerProps {
   viewMode: 'fps' | 'orbit';
@@ -25,17 +25,16 @@ export function FirstPersonPlayer({
   const playerRef = useRef<any>(null);
   const [, get] = useKeyboardControls();
   
-  // Player rotation state
+  // Player state (similar to reference)
   const rotationRef = useRef({ x: 0, y: 0 });
-  const velocityRef = useRef({ x: 0, z: 0 });
   
-  // Movement parameters
-  const moveSpeed = 10;
-  const sprintMultiplier = 2.0;
+  // Movement parameters (based on reference)
+  const moveSpeed = 5;
+  const sprintMultiplier = 1.5;
   const mouseSensitivity = 0.002;
   const maxVerticalAngle = Math.PI / 2.2;
 
-  // Mouse movement controls
+  // Mouse controls (similar to reference eventListeners.js)
   useEffect(() => {
     if (viewMode !== 'fps') return;
 
@@ -44,17 +43,14 @@ export function FirstPersonPlayer({
 
       const { movementX, movementY } = event;
       
-      // Mouse movement mapping
-      rotationRef.current.y -= movementX * mouseSensitivity; // Horizontal (left/right)
-      rotationRef.current.x -= movementY * mouseSensitivity; // Vertical (up/down)
+      rotationRef.current.y -= movementX * mouseSensitivity;
+      rotationRef.current.x -= movementY * mouseSensitivity;
       
-      // Clamp vertical rotation
       rotationRef.current.x = Math.max(
         -maxVerticalAngle, 
         Math.min(maxVerticalAngle, rotationRef.current.x)
       );
       
-      // Apply rotation to camera
       camera.rotation.order = 'YXZ';
       camera.rotation.x = rotationRef.current.x;
       camera.rotation.y = rotationRef.current.y;
@@ -62,7 +58,7 @@ export function FirstPersonPlayer({
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Floor switching
+      // Floor switching (like reference)
       if (event.key === 'E' || event.key === 'e') {
         event.preventDefault();
         switchFloor(1);
@@ -71,7 +67,6 @@ export function FirstPersonPlayer({
         event.preventDefault();
         switchFloor(-1);
       }
-      // Reset position
       if (event.key === 'R' || event.key === 'r') {
         event.preventDefault();
         resetPlayerPosition();
@@ -87,7 +82,6 @@ export function FirstPersonPlayer({
     };
   }, [viewMode, isPointerLocked, camera]);
 
-  // Floor switching
   const switchFloor = (direction: number) => {
     const maxFloors = 5;
     const newFloor = Math.max(0, Math.min(maxFloors - 1, currentFloor + direction));
@@ -106,13 +100,12 @@ export function FirstPersonPlayer({
       playerRef.current.setTranslation({ x: 0, y: currentY, z: 0 }, true);
       playerRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
       
-      // Reset rotation
       rotationRef.current = { x: 0, y: 0 };
       camera.rotation.set(0, 0, 0);
     }
   };
 
-  // FIXED: WASD Movement System - Standar Game Controls
+  // Movement system (based on reference movement.js)
   useFrame((state, delta) => {
     if (viewMode !== 'fps' || !playerRef.current) return;
 
@@ -121,69 +114,64 @@ export function FirstPersonPlayer({
     const currentPos = playerRef.current.translation();
     const currentVel = playerRef.current.linvel();
     
-    // Boundary check
-    if (Math.abs(currentPos.x) > 23 || Math.abs(currentPos.z) > 13 || currentPos.y < -5) {
+    // Boundary check (similar to reference collision detection)
+    if (Math.abs(currentPos.x) > 18 || Math.abs(currentPos.z) > 18 || currentPos.y < -5) {
       resetPlayerPosition();
       return;
     }
     
-    // FIXED: Movement direction calculation - Standard FPS controls
-    const direction = new Vector3(0, 0, 0);
+    // Movement calculation (based on reference)
+    const moveSpeedDelta = (run ? moveSpeed * sprintMultiplier : moveSpeed) * delta;
     
-    // W = Forward (negative Z in local space)
-    if (forward) direction.z -= 1;
-    // S = Backward (positive Z in local space)  
-    if (back) direction.z += 1;
-    // A = Left (negative X in local space)
-    if (left) direction.x -= 1;
-    // D = Right (positive X in local space)
-    if (right) direction.x += 1;
+    let moveX = 0;
+    let moveZ = 0;
     
-    if (direction.length() > 0) {
-      direction.normalize();
-      
-      // Apply camera Y rotation to movement direction
-      const yRotation = rotationRef.current.y;
-      const rotatedDirection = new Vector3();
-      
-      // Standard FPS rotation matrix
-      rotatedDirection.x = direction.x * Math.cos(yRotation) - direction.z * Math.sin(yRotation);
-      rotatedDirection.z = direction.x * Math.sin(yRotation) + direction.z * Math.cos(yRotation);
-      rotatedDirection.y = 0; // No vertical movement from WASD
-      
-      direction.copy(rotatedDirection);
+    // WASD mapping (like reference keysPressed)
+    if (forward) moveZ = -1; // W
+    if (back) moveZ = 1;     // S  
+    if (left) moveX = -1;    // A
+    if (right) moveX = 1;    // D
+    
+    // Normalize diagonal movement
+    if (moveX !== 0 && moveZ !== 0) {
+      const length = Math.sqrt(moveX * moveX + moveZ * moveZ);
+      moveX /= length;
+      moveZ /= length;
     }
     
-    // Calculate speed
-    const currentSpeed = run ? moveSpeed * sprintMultiplier : moveSpeed;
+    if (moveX !== 0 || moveZ !== 0) {
+      // Transform movement based on camera rotation (like reference)
+      const yaw = rotationRef.current.y;
+      
+      const worldMoveX = moveX * Math.cos(yaw) - moveZ * Math.sin(yaw);
+      const worldMoveZ = moveX * Math.sin(yaw) + moveZ * Math.cos(yaw);
+      
+      // Apply movement
+      playerRef.current.setLinvel({
+        x: worldMoveX * moveSpeedDelta * 60, // Scale for physics
+        y: currentVel.y,
+        z: worldMoveZ * moveSpeedDelta * 60
+      }, true);
+    } else {
+      // Stop horizontal movement
+      playerRef.current.setLinvel({
+        x: 0,
+        y: currentVel.y,
+        z: 0
+      }, true);
+    }
     
-    // Apply movement
-    const targetVelocityX = direction.x * currentSpeed;
-    const targetVelocityZ = direction.z * currentSpeed;
+    // Update camera position (smooth follow)
+    const targetCameraPos = new Vector3(
+      currentPos.x, 
+      currentPos.y + 0.6, 
+      currentPos.z
+    );
     
-    // Smooth velocity interpolation
-    const dampingFactor = 12;
-    velocityRef.current.x = lerp(velocityRef.current.x, targetVelocityX, delta * dampingFactor);
-    velocityRef.current.z = lerp(velocityRef.current.z, targetVelocityZ, delta * dampingFactor);
-    
-    // Apply velocity to physics body
-    playerRef.current.setLinvel({
-      x: velocityRef.current.x,
-      y: currentVel.y, // Keep gravity
-      z: velocityRef.current.z
-    }, true);
-    
-    // Update camera position to follow player
-    const cameraOffset = new Vector3(0, 0.6, 0);
-    const newCameraPos = new Vector3(currentPos.x, currentPos.y, currentPos.z).add(cameraOffset);
-    camera.position.lerp(newCameraPos, delta * 20);
+    camera.position.lerp(targetCameraPos, delta * 20);
   });
 
-  const lerp = (start: number, end: number, factor: number) => {
-    return start + (end - start) * factor;
-  };
-
-  // Initialize camera position
+  // Initialize camera
   useEffect(() => {
     if (viewMode === 'fps') {
       const initialY = 1.6 + (currentFloor * 12);
