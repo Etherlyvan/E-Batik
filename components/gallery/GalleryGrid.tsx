@@ -12,9 +12,17 @@ interface GalleryGridProps {
   batiks: Batik[];
   loading?: boolean;
   onCardClick?: (batik: Batik) => void;
+  onDelete?: (id: number) => void;
+  showDeleteButton?: boolean;
 }
 
-export function GalleryGrid({ batiks, loading = false, onCardClick }: GalleryGridProps) {
+export function GalleryGrid({ 
+  batiks, 
+  loading = false, 
+  onCardClick, 
+  onDelete,
+  showDeleteButton = false 
+}: GalleryGridProps) {
   const { currentLanguage } = useLanguage();
   const isIndonesian = currentLanguage.code === 'id';
 
@@ -38,7 +46,7 @@ export function GalleryGrid({ batiks, loading = false, onCardClick }: GalleryGri
         animate={{ opacity: 1 }}
         className="flex justify-center items-center py-20"
       >
-        <div className="text-center max-w-md mx-auto">
+        <div className="text-center max-w-md mx-auto bg-white rounded-xl p-8 shadow-sm border border-gray-100">
           <div className="text-6xl mb-4">🎨</div>
           <h3 className="text-2xl font-bold text-amber-800 mb-4">
             {isIndonesian ? 'Tidak Ada Hasil' : 'No Results Found'}
@@ -48,7 +56,7 @@ export function GalleryGrid({ batiks, loading = false, onCardClick }: GalleryGri
               ? 'Tidak ada batik yang sesuai dengan pencarian atau filter Anda. Coba ubah kriteria pencarian.'
               : "We couldn't find any batik matching your search or filters. Try adjusting your search criteria."}
           </p>
-          <div className="text-sm text-amber-500">
+          <div className="text-sm text-amber-500 bg-amber-50 p-3 rounded-lg">
             {isIndonesian
               ? 'Tips: Coba gunakan kata kunci yang lebih umum atau hapus beberapa filter'
               : 'Tip: Try using more general keywords or remove some filters'}
@@ -69,15 +77,18 @@ export function GalleryGrid({ batiks, loading = false, onCardClick }: GalleryGri
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ 
-                duration: 0.3, 
+                duration: 0.4, 
                 delay: index * 0.05,
                 ease: "easeOut"
               }}
+              whileHover={{ y: -8 }}
               className="w-full"
             >
               <GalleryCard
                 batik={batik}
                 onClick={() => onCardClick?.(batik)}
+                onDelete={onDelete ? () => onDelete(batik.id) : undefined}
+                showDeleteButton={showDeleteButton}
               />
             </motion.div>
           ))}

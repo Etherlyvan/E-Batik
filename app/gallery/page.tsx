@@ -1,4 +1,6 @@
 // app/gallery/page.tsx
+'use client';
+
 import { Suspense } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { getBatiks } from '@/lib/actions/batik';
