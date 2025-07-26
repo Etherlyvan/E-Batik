@@ -7,7 +7,6 @@ import type { Batik } from '@/lib/types';
 
 interface FilterState {
   themes: number[];
-  subThemes: number[];
   year: string;
   technique: string;
   dye: string;
@@ -25,7 +24,6 @@ export function useGalleryFilters({ batiks, searchTerm }: UseGalleryFiltersProps
   
   const [filters, setFilters] = useState<FilterState>({
     themes: [],
-    subThemes: [],
     year: '',
     technique: '',
     dye: '',
@@ -45,9 +43,6 @@ export function useGalleryFilters({ batiks, searchTerm }: UseGalleryFiltersProps
       const matchesTheme = filters.themes.length === 0 ||
         batik.tema.some(tema => filters.themes.includes(tema.id));
 
-      const matchesSubTheme = filters.subThemes.length === 0 ||
-        batik.subTema.some(subTema => filters.subThemes.includes(subTema.id));
-
       // Year filter
       const matchesYear = !filters.year || batik.tahun.includes(filters.year);
 
@@ -56,7 +51,7 @@ export function useGalleryFilters({ batiks, searchTerm }: UseGalleryFiltersProps
         t => t.languageId === currentLanguage.id
       ) || batik.translations[0];
       
-      if (!translation) return matchesSearch && matchesTheme && matchesSubTheme && matchesYear;
+      if (!translation) return matchesSearch && matchesTheme && matchesYear;
 
       const matchesTechnique = !filters.technique || 
         translation.teknik.toLowerCase().includes(filters.technique.toLowerCase());
@@ -67,9 +62,8 @@ export function useGalleryFilters({ batiks, searchTerm }: UseGalleryFiltersProps
       const matchesFabricType = !filters.fabricType || 
         translation.jenisKain.toLowerCase().includes(filters.fabricType.toLowerCase());
 
-      return matchesSearch && matchesTheme && matchesSubTheme && 
-             matchesYear && matchesTechnique && matchesDye && 
-             matchesShape && matchesFabricType;
+      return matchesSearch && matchesTheme && matchesYear && 
+             matchesTechnique && matchesDye && matchesShape && matchesFabricType;
     });
   }, [batiks, searchTerm, filters, currentLanguage.id]);
 
@@ -80,7 +74,6 @@ export function useGalleryFilters({ batiks, searchTerm }: UseGalleryFiltersProps
   const clearFilters = () => {
     setFilters({
       themes: [],
-      subThemes: [],
       year: '',
       technique: '',
       dye: '',

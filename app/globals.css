@@ -200,3 +200,63 @@ html {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
   backdrop-filter: blur(4px);
 }
+/* Dropdown z-index fixes */
+.dropdown-container {
+  position: relative;
+  z-index: 50;
+}
+
+/* Ensure dropdowns are always on top */
+[data-dropdown-menu] {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+/* Fix for filter container overflow */
+.filter-container {
+  overflow: visible !important;
+}
+
+/* Prevent dropdown cutoff in containers */
+.gallery-filter-container {
+  overflow: visible;
+  position: relative;
+  z-index: 10;
+}
+
+.gallery-filter-container .relative {
+  overflow: visible;
+}
+
+/* Mobile dropdown improvements */
+@media (max-width: 768px) {
+  .dropdown-menu-mobile {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    max-width: 400px !important;
+    max-height: 70vh !important;
+    z-index: 9999 !important;
+  }
+}
+
+/* Scrollbar styling for dropdown */
+.dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

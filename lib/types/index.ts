@@ -95,7 +95,6 @@ export interface Batik extends BaseEntity {
 // Filter types
 export interface FilterState {
   themes: number[];
-  subThemes: number[];
   year: string;
   technique: string;
   dye: string;
@@ -148,3 +147,4 @@ export interface AuthSession {
   };
   expires: string;
 }
+

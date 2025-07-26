@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, Filter, X, Grid, List } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GalleryGrid } from './GalleryGrid';
 import { GalleryFilter } from './GalleryFilter';
@@ -26,6 +26,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const isIndonesian = currentLanguage.code === 'id';
 
@@ -77,9 +78,14 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
     }
   };
 
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    clearFilters();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Simplified Hero Section */}
+      {/* Hero Section */}
       <div 
         className="relative bg-gradient-to-br from-amber-600 via-orange-600 to-red-600 text-white py-20 md:py-24 overflow-hidden"
         style={{
@@ -89,7 +95,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
           backgroundBlendMode: 'overlay',
         }}
       >
-        {/* Dark Overlay for Better Text Contrast */}
+        {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/60" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
@@ -122,13 +128,13 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder={isIndonesian ? 'Cari batik berdasarkan nama...' : 'Search batik by name...'}
+                  placeholder={isIndonesian ? 'Cari batik berdasarkan nama, seniman, atau lokasi...' : 'Search batik by name, artist, or location...'}
                   className="flex-1 px-4 py-4 focus:outline-none text-lg text-gray-800 bg-transparent placeholder-gray-500"
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="mr-2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    className="mr-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
                   >
                     <X className="h-5 w-5 text-gray-400" />
                   </button>
@@ -168,7 +174,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="mb-8 overflow-hidden"
+                className="mb-8 overflow-visible gallery-filter-container" // Tambahkan class ini
               >
                 <GalleryFilter
                   themes={themes}
@@ -180,63 +186,92 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             )}
           </AnimatePresence>
 
-          {/* Simple Results Info */}
+          {/* Results Header */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <div className="flex items-center justify-between">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Results Info */}
                 <div className="flex items-center space-x-8">
-                  {/* Total Batik */}
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{totalItems}</div>
+                    <div className="text-3xl font-bold text-gray-900">{totalItems}</div>
                     <div className="text-sm text-gray-600">{isIndonesian ? 'Total Batik' : 'Total Batiks'}</div>
                   </div>
                   
-                  <div className="w-px h-8 bg-gray-300" />
+                  <div className="w-px h-12 bg-gray-300" />
                   
-                  {/* Current Page */}
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-amber-600">{currentPage}</div>
+                    <div className="text-3xl font-bold text-amber-600">{currentPage}</div>
                     <div className="text-sm text-gray-600">{isIndonesian ? 'Halaman' : 'Page'}</div>
                   </div>
                   
-                  <div className="w-px h-8 bg-gray-300" />
+                  <div className="w-px h-12 bg-gray-300" />
                   
-                  {/* Total Pages */}
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{totalPages}</div>
+                    <div className="text-3xl font-bold text-gray-900">{totalPages}</div>
                     <div className="text-sm text-gray-600">{isIndonesian ? 'Total Halaman' : 'Total Pages'}</div>
                   </div>
                 </div>
                 
-                {/* Clear Filters */}
-                {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== '') && (
-                  <button
-                    onClick={clearFilters}
-                    className="flex items-center text-gray-500 hover:text-red-600 transition-colors px-3 py-1 rounded border border-gray-300 hover:border-red-300"
-                  >
-                    <X className="w-4 h-4 mr-1" />
-                    {isIndonesian ? 'Hapus Filter' : 'Clear Filters'}
-                  </button>
-                )}
+                {/* Actions */}
+                <div className="flex items-center space-x-4">
+                  {/* View Mode Toggle */}
+                  <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 rounded-md transition-colors ${
+                        viewMode === 'grid' 
+                          ? 'bg-white text-amber-600 shadow-sm' 
+                          : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      <Grid className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 rounded-md transition-colors ${
+                        viewMode === 'list' 
+                          ? 'bg-white text-amber-600 shadow-sm' 
+                          : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      <List className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Clear All Button */}
+                  {(searchTerm || Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== '')) && (
+                    <button
+                      onClick={handleClearSearch}
+                      className="flex items-center text-gray-500 hover:text-red-600 transition-colors px-3 py-2 rounded-lg border border-gray-300 hover:border-red-300 bg-white hover:bg-red-50"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      {isIndonesian ? 'Hapus Semua' : 'Clear All'}
+                    </button>
+                  )}
+                </div>
               </div>
               
-              {/* Simple Progress Bar */}
-              <div className="mt-3 bg-gray-200 rounded-full h-1">
+              {/* Progress Bar */}
+              <div className="mt-4 bg-gray-200 rounded-full h-2">
                 <div 
-                  className="bg-amber-500 h-1 rounded-full transition-all duration-300"
-                  style={{ width: `${(currentPage / totalPages) * 100}%` }}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${totalPages > 0 ? (currentPage / totalPages) * 100 : 0}%` }}
                 />
               </div>
               
-              {/* Simple Text Info */}
-              <div className="mt-2 text-center text-sm text-gray-500">
-                {isIndonesian 
-                  ? `Menampilkan batik ${startIndex + 1}-${endIndex}`
-                  : `Showing batiks ${startIndex + 1}-${endIndex}`}
+              {/* Status Text */}
+              <div className="mt-3 text-center text-sm text-gray-500">
+                {totalItems > 0 ? (
+                  isIndonesian 
+                    ? `Menampilkan batik ${startIndex + 1}-${endIndex} dari ${totalItems} hasil`
+                    : `Showing batiks ${startIndex + 1}-${endIndex} of ${totalItems} results`
+                ) : (
+                  isIndonesian ? 'Tidak ada hasil ditemukan' : 'No results found'
+                )}
               </div>
             </div>
           </motion.div>
@@ -250,7 +285,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             showDeleteButton={!!user}
           />
 
-          {/* Simple Pagination */}
+          {/* Pagination */}
           {totalPages > 1 && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
