@@ -1,8 +1,7 @@
-// 🎛️ SHARED UI - Pagination component
+// components/ui/Pagination.tsx
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './Button';
 import { cn } from '@/lib/utils/cn';
 
 interface PaginationProps {
@@ -33,23 +32,21 @@ export function Pagination({
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
 
-    // Add first page and ellipsis if needed
+    // Add first page if not in range
     if (startPage > 1) {
       pages.push(
-        <Button
+        <button
           key={1}
-          variant="ghost"
-          size="sm"
           onClick={() => onPageChange(1)}
-          className="mx-1"
+          className="px-3 py-2 text-sm text-gray-700 hover:text-amber-600 hover:bg-gray-50 rounded"
         >
           1
-        </Button>
+        </button>
       );
       
       if (startPage > 2) {
         pages.push(
-          <span key="ellipsis-start" className="mx-1 text-gray-500">
+          <span key="ellipsis-start" className="px-2 text-gray-400">
             ...
           </span>
         );
@@ -59,38 +56,39 @@ export function Pagination({
     // Add page numbers
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
-        <Button
+        <button
           key={i}
-          variant={i === currentPage ? 'primary' : 'ghost'}
-          size="sm"
           onClick={() => onPageChange(i)}
-          className="mx-1"
+          className={cn(
+            "px-3 py-2 text-sm rounded transition-colors",
+            i === currentPage
+              ? "bg-amber-500 text-white"
+              : "text-gray-700 hover:text-amber-600 hover:bg-gray-50"
+          )}
         >
           {i}
-        </Button>
+        </button>
       );
     }
 
-    // Add last page and ellipsis if needed
+    // Add last page if not in range
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pages.push(
-          <span key="ellipsis-end" className="mx-1 text-gray-500">
+          <span key="ellipsis-end" className="px-2 text-gray-400">
             ...
           </span>
         );
       }
       
       pages.push(
-        <Button
+        <button
           key={totalPages}
-          variant="ghost"
-          size="sm"
           onClick={() => onPageChange(totalPages)}
-          className="mx-1"
+          className="px-3 py-2 text-sm text-gray-700 hover:text-amber-600 hover:bg-gray-50 rounded"
         >
           {totalPages}
-        </Button>
+        </button>
       );
     }
 
@@ -100,30 +98,39 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <div className={cn("flex items-center justify-center space-x-2", className)}>
-      <Button
-        variant="ghost"
-        size="sm"
+    <div className={cn("flex items-center space-x-1 bg-white border border-gray-200 rounded-lg p-2", className)}>
+      {/* Previous Button */}
+      <button
         onClick={onPrev}
         disabled={currentPage === 1}
-        className="flex items-center"
+        className={cn(
+          "flex items-center px-3 py-2 text-sm rounded transition-colors",
+          currentPage === 1
+            ? "text-gray-400 cursor-not-allowed"
+            : "text-gray-700 hover:text-amber-600 hover:bg-gray-50"
+        )}
       >
         <ChevronLeft className="w-4 h-4 mr-1" />
         Previous
-      </Button>
+      </button>
       
+      {/* Page Numbers */}
       {renderPageNumbers()}
       
-      <Button
-        variant="ghost"
-        size="sm"
+      {/* Next Button */}
+      <button
         onClick={onNext}
         disabled={currentPage === totalPages}
-        className="flex items-center"
+        className={cn(
+          "flex items-center px-3 py-2 text-sm rounded transition-colors",
+          currentPage === totalPages
+            ? "text-gray-400 cursor-not-allowed"
+            : "text-gray-700 hover:text-amber-600 hover:bg-gray-50"
+        )}
       >
         Next
         <ChevronRight className="w-4 h-4 ml-1" />
-      </Button>
+      </button>
     </div>
   );
 }

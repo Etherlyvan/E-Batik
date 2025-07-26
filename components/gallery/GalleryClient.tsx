@@ -63,7 +63,6 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
         });
 
         if (response.ok) {
-          // Refresh the page or update the state
           window.location.reload();
         } else {
           const errorData = await response.json();
@@ -80,7 +79,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Enhanced Hero Section */}
+      {/* Simplified Hero Section */}
       <div 
         className="relative bg-gradient-to-br from-amber-600 via-orange-600 to-red-600 text-white py-20 md:py-24 overflow-hidden"
         style={{
@@ -90,44 +89,35 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
           backgroundBlendMode: 'overlay',
         }}
       >
-        {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div 
-            className="w-full h-full animate-pulse"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
+        {/* Dark Overlay for Better Text Contrast */}
+        <div className="absolute inset-0 bg-black/60" />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
-        
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-200 to-orange-200 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white drop-shadow-lg">
               {isIndonesian ? 'Database Batik' : 'Batik Database'}
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed text-orange-100">
+            <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed text-white/95 drop-shadow-md">
               {isIndonesian 
                 ? 'Koleksi batik tradisional Indonesia yang menampilkan keindahan dan keragaman budaya nusantara'
                 : 'Traditional Indonesian batik collection showcasing the beauty and diversity of archipelago culture'}
             </p>
           </motion.div>
           
-          {/* Enhanced Search Component */}
+          {/* Search Component */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="max-w-3xl mx-auto"
           >
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-2 flex items-center">
+            <div className="bg-white/98 backdrop-blur-sm rounded-2xl shadow-2xl p-2 flex items-center border border-white/20">
               <div className="flex-1 flex items-center">
-                <Search className="ml-4 h-6 w-6 text-gray-400" />
+                <Search className="ml-4 h-6 w-6 text-gray-500" />
                 <input
                   type="text"
                   value={searchTerm}
@@ -164,34 +154,11 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
               </div>
             </div>
           </motion.div>
-
-          {/* Stats Preview */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 flex justify-center items-center space-x-8 text-orange-100"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold">{totalItems}</div>
-              <div className="text-sm opacity-80">{isIndonesian ? 'Total Batik' : 'Total Batiks'}</div>
-            </div>
-            <div className="w-px h-8 bg-orange-300/50" />
-            <div className="text-center">
-              <div className="text-2xl font-bold">{themes.length}</div>
-              <div className="text-sm opacity-80">{isIndonesian ? 'Tema' : 'Themes'}</div>
-            </div>
-            <div className="w-px h-8 bg-orange-300/50" />
-            <div className="text-center">
-              <div className="text-2xl font-bold">30+</div>
-              <div className="text-sm opacity-80">{isIndonesian ? 'Butik' : 'Boutiques'}</div>
-            </div>
-          </motion.div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="w-full bg-gradient-to-b from-gray-50 to-white">
+      <div className="w-full bg-white">
         <div className="max-w-7xl mx-auto py-8 px-4">
           {/* Filters */}
           <AnimatePresence>
@@ -213,41 +180,65 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             )}
           </AnimatePresence>
 
-          {/* Results Info */}
+          {/* Simple Results Info */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+            className="mb-6"
           >
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                {isIndonesian 
-                  ? `${startIndex + 1}-${endIndex} dari ${totalItems} batik`
-                  : `${startIndex + 1}-${endIndex} of ${totalItems} batiks`}
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-8">
+                  {/* Total Batik */}
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900">{totalItems}</div>
+                    <div className="text-sm text-gray-600">{isIndonesian ? 'Total Batik' : 'Total Batiks'}</div>
+                  </div>
+                  
+                  <div className="w-px h-8 bg-gray-300" />
+                  
+                  {/* Current Page */}
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-amber-600">{currentPage}</div>
+                    <div className="text-sm text-gray-600">{isIndonesian ? 'Halaman' : 'Page'}</div>
+                  </div>
+                  
+                  <div className="w-px h-8 bg-gray-300" />
+                  
+                  {/* Total Pages */}
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900">{totalPages}</div>
+                    <div className="text-sm text-gray-600">{isIndonesian ? 'Total Halaman' : 'Total Pages'}</div>
+                  </div>
+                </div>
+                
+                {/* Clear Filters */}
+                {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== '') && (
+                  <button
+                    onClick={clearFilters}
+                    className="flex items-center text-gray-500 hover:text-red-600 transition-colors px-3 py-1 rounded border border-gray-300 hover:border-red-300"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    {isIndonesian ? 'Hapus Filter' : 'Clear Filters'}
+                  </button>
+                )}
               </div>
               
-              {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== '') && (
-                <button
-                  onClick={clearFilters}
-                  className="flex items-center text-gray-500 hover:text-red-600 transition-colors"
-                >
-                  <X className="w-4 h-4 mr-1" />
-                  {isIndonesian ? 'Hapus Filter' : 'Clear Filters'}
-                </button>
-              )}
+              {/* Simple Progress Bar */}
+              <div className="mt-3 bg-gray-200 rounded-full h-1">
+                <div 
+                  className="bg-amber-500 h-1 rounded-full transition-all duration-300"
+                  style={{ width: `${(currentPage / totalPages) * 100}%` }}
+                />
+              </div>
+              
+              {/* Simple Text Info */}
+              <div className="mt-2 text-center text-sm text-gray-500">
+                {isIndonesian 
+                  ? `Menampilkan batik ${startIndex + 1}-${endIndex}`
+                  : `Showing batiks ${startIndex + 1}-${endIndex}`}
+              </div>
             </div>
-            
-            {/* Mobile Filter Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden bg-amber-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-amber-700 transition-colors flex items-center"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              {showFilters 
-                ? (isIndonesian ? 'Sembunyikan Filter' : 'Hide Filters')
-                : (isIndonesian ? 'Tampilkan Filter' : 'Show Filters')
-              }
-            </button>
           </motion.div>
 
           {/* Gallery Grid */}
@@ -259,22 +250,20 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             showDeleteButton={!!user}
           />
 
-          {/* Pagination */}
+          {/* Simple Pagination */}
           {totalPages > 1 && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-12 flex justify-center"
+              className="mt-8 flex justify-center"
             >
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={goToPage}
-                  onNext={nextPage}
-                  onPrev={prevPage}
-                />
-              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                onNext={nextPage}
+                onPrev={prevPage}
+              />
             </motion.div>
           )}
         </div>
