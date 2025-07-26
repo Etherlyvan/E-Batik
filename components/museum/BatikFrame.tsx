@@ -30,7 +30,7 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
     return `frame-${batik.id}-${position.join('-')}-${Date.now()}`;
   }, [batik.id, position]);
 
-  // Texture loading (optimized for quality)
+  // Texture loading
   useEffect(() => {
     if (!imageUrl) {
       setLoading(false);
@@ -45,10 +45,9 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
       imageUrl,
       (loadedTexture) => {
         if (isMounted) {
-          // High quality settings
           loadedTexture.generateMipmaps = false;
-          loadedTexture.minFilter = 1006; // LinearFilter
-          loadedTexture.magFilter = 1006; // LinearFilter
+          loadedTexture.minFilter = 1006;
+          loadedTexture.magFilter = 1006;
           loadedTexture.anisotropy = 16;
           loadedTexture.flipY = false;
           loadedTexture.needsUpdate = true;
@@ -85,7 +84,7 @@ export function BatikFrame({ batik, position, rotation, isSelected, onClick }: B
 
   return (
     <group position={position} rotation={rotation}>
-      {/* Frame */}
+      {/* Frame dengan style yang sama seperti 3D museum */}
       <Box key={`${frameId}-frame`} args={[5.2, 3.2, 0.2]} position={[0, 0, -0.1]}>
         <meshBasicMaterial color={frameColor} />
       </Box>
