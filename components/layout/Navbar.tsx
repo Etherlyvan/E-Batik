@@ -34,6 +34,7 @@ export function Navbar() {
   const navLinks = [
     { href: '/', label: isIndonesian ? 'Beranda' : 'Home' },
     { href: '/gallery', label: isIndonesian ? 'Galeri' : 'Gallery' },
+    { href: '/museum', label: isIndonesian ? 'Museum 3D' : '3D Museum' }, // Tambahkan ini
   ];
 
   return (
