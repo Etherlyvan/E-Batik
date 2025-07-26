@@ -22,10 +22,22 @@ html {
 
 /* Hero section full height */
 .hero-section {
-    height: 100vh;
-    min-height: 600px;
+  height: 100vh;
+  min-height: 100vh;
+  padding-top: 0;
 }
-
+.hero-content {
+  padding-top: 4rem; /* 64px - navbar height */
+  min-height: calc(100vh - 4rem);
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .hero-content {
+    padding-top: 5rem; /* 80px - larger navbar on desktop */
+    min-height: calc(100vh - 5rem);
+  }
+}
 /* Utility classes */
 .line-clamp-1 {
     overflow: hidden;
@@ -99,39 +111,54 @@ html {
 
 /* Responsive text sizing */
 @media (max-width: 640px) {
-    .hero-title {
-        font-size: 2.5rem;
-        line-height: 1.1;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.5rem;
-        line-height: 1.2;
-    }
+  .hero-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.875rem;
+    line-height: 1.1;
+  }
+  
+  .hero-description {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
 }
 
 @media (min-width: 641px) and (max-width: 768px) {
-    .hero-title {
-        font-size: 3.5rem;
-        line-height: 1.1;
-    }
-    
-    .hero-subtitle {
-        font-size: 2rem;
-        line-height: 1.2;
-    }
+  .hero-title {
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
 }
 
 @media (min-width: 769px) {
-    .hero-title {
-        font-size: 4.5rem;
-        line-height: 1.1;
-    }
-    
-    .hero-subtitle {
-        font-size: 2.5rem;
-        line-height: 1.2;
-    }
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-subtitle {
+    font-size: 3.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-description {
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
 }
 /* Pastikan semua container gallery lurus */
 .gallery-container {
@@ -259,4 +286,133 @@ html {
 
 .dropdown-menu::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+/* Navbar height compensation */
+.hero-with-navbar {
+  padding-top: 4rem; /* 64px - default navbar height */
+}
+
+@media (min-width: 768px) {
+  .hero-with-navbar {
+    padding-top: 4.5rem; /* 72px - larger navbar on desktop */
+  }
+    html {
+    scroll-padding-top: 5rem;
+  }
+}
+/* Button responsive improvements */
+.hero-buttons {
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .hero-buttons {
+    gap: 1.5rem;
+  }
+}
+/* Ensure proper z-index stacking */
+.hero-background {
+  z-index: 1;
+}
+
+.hero-content {
+  z-index: 10;
+}
+
+.hero-indicators {
+  z-index: 20;
+}
+
+
+/* Mobile landscape adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .hero-section {
+    min-height: 100vh;
+  }
+  
+  .hero-content {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+  }
+  
+  .hero-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-description {
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+}
+/* Ensure proper spacing for fixed navbar */
+.page-content {
+  margin-top: 0;
+}
+
+/* Mobile navbar adjustments */
+@media (max-width: 767px) {
+  .hero-with-navbar {
+    padding-top: 4rem; /* 64px */
+  }
+  
+  .hero-title-mobile {
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle-mobile {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.4;
+  }
+}
+
+/* Search component responsive improvements */
+.search-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.search-input {
+  min-width: 0;
+  flex: 1;
+}
+
+/* Filter container spacing */
+.gallery-filter-container {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .gallery-filter-container {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Results header responsive */
+.results-header {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .results-header {
+    padding: 1.5rem;
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 4.5rem;
+  }
 }

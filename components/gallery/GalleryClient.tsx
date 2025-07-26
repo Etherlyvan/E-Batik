@@ -85,9 +85,9 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+      {/* Hero Section - Fixed padding untuk navbar */}
       <div 
-        className="relative bg-gradient-to-br from-amber-600 via-orange-600 to-red-600 text-white py-20 md:py-24 overflow-hidden"
+        className="relative bg-gradient-to-br from-amber-600 via-orange-600 to-red-600 text-white pt-24 pb-16 md:pt-28 md:pb-20 overflow-hidden"
         style={{
           backgroundImage: "url('/images/gallery-hero-bg.jpg')",
           backgroundSize: 'cover',
@@ -104,10 +104,10 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white drop-shadow-lg">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 md:mb-6 text-white drop-shadow-lg">
               {isIndonesian ? 'Database Batik' : 'Batik Database'}
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed text-white/95 drop-shadow-md">
+            <p className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-4xl mx-auto leading-relaxed text-white/95 drop-shadow-md px-4">
               {isIndonesian 
                 ? 'Koleksi batik tradisional Indonesia yang menampilkan keindahan dan keragaman budaya nusantara'
                 : 'Traditional Indonesian batik collection showcasing the beauty and diversity of archipelago culture'}
@@ -119,43 +119,45 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto px-4"
           >
-            <div className="bg-white/98 backdrop-blur-sm rounded-2xl shadow-2xl p-2 flex items-center border border-white/20">
-              <div className="flex-1 flex items-center">
-                <Search className="ml-4 h-6 w-6 text-gray-500" />
+            <div className="bg-white/98 backdrop-blur-sm rounded-2xl shadow-2xl p-2 flex flex-col sm:flex-row items-stretch sm:items-center border border-white/20">
+              {/* Search Input */}
+              <div className="flex-1 flex items-center min-w-0">
+                <Search className="ml-4 h-5 w-5 md:h-6 md:w-6 text-gray-500 flex-shrink-0" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder={isIndonesian ? 'Cari batik berdasarkan nama, seniman, atau lokasi...' : 'Search batik by name, artist, or location...'}
-                  className="flex-1 px-4 py-4 focus:outline-none text-lg text-gray-800 bg-transparent placeholder-gray-500"
+                  className="flex-1 px-3 md:px-4 py-3 md:py-4 focus:outline-none text-base md:text-lg text-gray-800 bg-transparent placeholder-gray-500 min-w-0"
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="mr-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    className="mr-2 p-1 md:p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
                   >
-                    <X className="h-5 w-5 text-gray-400" />
+                    <X className="h-4 w-4 md:h-5 md:w-5 text-gray-400" />
                   </button>
                 )}
               </div>
               
-              <div className="flex items-center space-x-2">
+              {/* Action Buttons */}
+              <div className="flex items-center space-x-2 mt-2 sm:mt-0 px-2 sm:px-0">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`flex items-center px-4 md:px-6 py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
                     showFilters 
                       ? 'bg-amber-600 text-white shadow-lg' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  <Filter className="h-5 w-5 mr-2" />
+                  <Filter className="h-4 w-4 md:h-5 md:w-5 mr-2" />
                   {isIndonesian ? 'Filter' : 'Filters'}
                 </button>
                 
-                <button className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl">
-                  <Search className="h-5 w-5" />
+                <button className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl">
+                  <Search className="h-4 w-4 md:h-5 md:w-5" />
                 </button>
               </div>
             </div>
@@ -165,7 +167,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
 
       {/* Content */}
       <div className="w-full bg-white">
-        <div className="max-w-7xl mx-auto py-8 px-4">
+        <div className="max-w-7xl mx-auto py-6 md:py-8 px-4">
           {/* Filters */}
           <AnimatePresence>
             {showFilters && (
@@ -174,7 +176,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="mb-8 overflow-visible gallery-filter-container" // Tambahkan class ini
+                className="mb-6 md:mb-8 overflow-visible gallery-filter-container"
               >
                 <GalleryFilter
                   themes={themes}
@@ -192,32 +194,32 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 {/* Results Info */}
-                <div className="flex items-center space-x-8">
+                <div className="flex items-center justify-center lg:justify-start space-x-4 md:space-x-8">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900">{totalItems}</div>
-                    <div className="text-sm text-gray-600">{isIndonesian ? 'Total Batik' : 'Total Batiks'}</div>
+                    <div className="text-2xl md:text-3xl font-bold text-gray-900">{totalItems}</div>
+                    <div className="text-xs md:text-sm text-gray-600">{isIndonesian ? 'Total Batik' : 'Total Batiks'}</div>
                   </div>
                   
-                  <div className="w-px h-12 bg-gray-300" />
+                  <div className="w-px h-8 md:h-12 bg-gray-300" />
                   
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-amber-600">{currentPage}</div>
-                    <div className="text-sm text-gray-600">{isIndonesian ? 'Halaman' : 'Page'}</div>
+                    <div className="text-2xl md:text-3xl font-bold text-amber-600">{currentPage}</div>
+                    <div className="text-xs md:text-sm text-gray-600">{isIndonesian ? 'Halaman' : 'Page'}</div>
                   </div>
                   
-                  <div className="w-px h-12 bg-gray-300" />
+                  <div className="w-px h-8 md:h-12 bg-gray-300" />
                   
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900">{totalPages}</div>
-                    <div className="text-sm text-gray-600">{isIndonesian ? 'Total Halaman' : 'Total Pages'}</div>
+                    <div className="text-2xl md:text-3xl font-bold text-gray-900">{totalPages}</div>
+                    <div className="text-xs md:text-sm text-gray-600">{isIndonesian ? 'Total Halaman' : 'Total Pages'}</div>
                   </div>
                 </div>
                 
                 {/* Actions */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-center lg:justify-end space-x-4">
                   {/* View Mode Toggle */}
                   <div className="flex items-center bg-gray-100 rounded-lg p-1">
                     <button
@@ -246,10 +248,11 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
                   {(searchTerm || Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== '')) && (
                     <button
                       onClick={handleClearSearch}
-                      className="flex items-center text-gray-500 hover:text-red-600 transition-colors px-3 py-2 rounded-lg border border-gray-300 hover:border-red-300 bg-white hover:bg-red-50"
+                      className="flex items-center text-gray-500 hover:text-red-600 transition-colors px-3 py-2 rounded-lg border border-gray-300 hover:border-red-300 bg-white hover:bg-red-50 text-sm"
                     >
                       <X className="w-4 h-4 mr-1" />
-                      {isIndonesian ? 'Hapus Semua' : 'Clear All'}
+                      <span className="hidden sm:inline">{isIndonesian ? 'Hapus Semua' : 'Clear All'}</span>
+                      <span className="sm:hidden">{isIndonesian ? 'Hapus' : 'Clear'}</span>
                     </button>
                   )}
                 </div>
@@ -264,7 +267,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
               </div>
               
               {/* Status Text */}
-              <div className="mt-3 text-center text-sm text-gray-500">
+              <div className="mt-3 text-center text-xs md:text-sm text-gray-500">
                 {totalItems > 0 ? (
                   isIndonesian 
                     ? `Menampilkan batik ${startIndex + 1}-${endIndex} dari ${totalItems} hasil`
@@ -290,7 +293,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-8 flex justify-center"
+              className="mt-6 md:mt-8 flex justify-center"
             >
               <Pagination
                 currentPage={currentPage}
