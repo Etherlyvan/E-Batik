@@ -7,9 +7,6 @@ class TextureManager {
   private textureCache: Map<string, Texture> = new Map();
   private loader: TextureLoader = new TextureLoader();
   private loadingPromises: Map<string, Promise<Texture | null>> = new Map();
-  private maxConcurrentLoads = 8;
-  private currentLoads = 0;
-  private loadQueue: Array<() => void> = [];
 
   static getInstance(): TextureManager {
     if (!TextureManager.instance) {
@@ -23,6 +20,11 @@ class TextureManager {
     wrapT?: THREE.Wrapping;
     repeat?: [number, number];
   }): Promise<Texture | null> {
+    if (!url) {
+      console.warn('TextureManager: Empty URL provided');
+      return null;
+    }
+
     const cacheKey = `${url}_${JSON.stringify(options || {})}`;
     
     // Return cached texture if available
@@ -35,14 +37,12 @@ class TextureManager {
       return this.loadingPromises.get(cacheKey)!;
     }
 
-    // Create loading promise with queue management
+    // Create loading promise
     const loadingPromise = new Promise<Texture | null>((resolve) => {
-      const loadTexture = () => {
-        this.currentLoads++;
-        
-        this.loader.load(
-          url,
-          (texture) => {
+      this.loader.load(
+        url,
+        (texture) => {
+          try {
             // Apply options if provided
             if (options) {
               if (options.wrapS) texture.wrapS = options.wrapS;
@@ -51,65 +51,44 @@ class TextureManager {
             }
 
             // Optimize texture settings
-            texture.generateMipmaps = false;
-            texture.minFilter = THREE.LinearFilter;
+            texture.generateMipmaps = true;
+            texture.minFilter = THREE.LinearMipmapLinearFilter;
             texture.magFilter = THREE.LinearFilter;
             texture.format = THREE.RGBAFormat;
             texture.flipY = false;
             
             this.textureCache.set(cacheKey, texture);
             this.loadingPromises.delete(cacheKey);
-            this.currentLoads--;
-            this.processQueue();
             resolve(texture);
-          },
-          undefined,
-          (error) => {
-            console.warn('Failed to load texture:', url, error);
+          } catch (error) {
+            console.error('Error processing texture:', url, error);
             this.loadingPromises.delete(cacheKey);
-            this.currentLoads--;
-            this.processQueue();
             resolve(null);
           }
-        );
-      };
-
-      if (this.currentLoads < this.maxConcurrentLoads) {
-        loadTexture();
-      } else {
-        this.loadQueue.push(loadTexture);
-      }
+        },
+        undefined,
+        (error) => {
+          console.warn('Failed to load texture:', url, error);
+          this.loadingPromises.delete(cacheKey);
+          resolve(null);
+        }
+      );
     });
 
     this.loadingPromises.set(cacheKey, loadingPromise);
     return loadingPromise;
   }
 
-  private processQueue(): void {
-    if (this.loadQueue.length > 0 && this.currentLoads < this.maxConcurrentLoads) {
-      const nextLoad = this.loadQueue.shift();
-      if (nextLoad) {
-        nextLoad();
-      }
-    }
-  }
-
-  disposeTexture(url: string): void {
-    const texture = this.textureCache.get(url);
-    if (texture) {
-      texture.dispose();
-      this.textureCache.delete(url);
-    }
-  }
-
   disposeAll(): void {
     this.textureCache.forEach((texture) => {
-      texture.dispose();
+      try {
+        texture.dispose();
+      } catch (error) {
+        console.warn('Error disposing texture:', error);
+      }
     });
     this.textureCache.clear();
     this.loadingPromises.clear();
-    this.loadQueue.length = 0;
-    this.currentLoads = 0;
   }
 
   getCacheSize(): number {

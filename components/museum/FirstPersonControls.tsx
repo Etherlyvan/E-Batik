@@ -17,7 +17,7 @@ export function FirstPersonControls({
   sensitivity = 0.002 
 }: FirstPersonControlsProps) {
   const { camera, gl } = useThree();
-  const { currentFloor, setCurrentFloor, totalFloors, getBatiksByFloor } = useMuseumStore();
+  const { currentFloor, setCurrentFloor, totalFloors } = useMuseumStore();
   
   const moveForward = useRef(false);
   const moveBackward = useRef(false);
@@ -44,7 +44,7 @@ export function FirstPersonControls({
     camera.quaternion.setFromEuler(euler.current);
   };
 
-  // Keyboard-only controls
+  // Keyboard controls
   const onKeyDown = (event: KeyboardEvent) => {
     switch (event.code) {
       // Movement
@@ -69,65 +69,35 @@ export function FirstPersonControls({
         canJump.current = false;
         break;
 
-      // Floor navigation using number keys
+      // Floor navigation
       case 'Digit1':
-        if (currentFloor !== 1) {
+        if (totalFloors >= 1) {
           setCurrentFloor(1);
           camera.position.set(0, 2, 15);
         }
         break;
       case 'Digit2':
-        if (currentFloor !== 2) {
+        if (totalFloors >= 2) {
           setCurrentFloor(2);
           camera.position.set(0, 8, 15);
         }
         break;
       case 'Digit3':
-        if (currentFloor !== 3) {
+        if (totalFloors >= 3) {
           setCurrentFloor(3);
           camera.position.set(0, 14, 15);
         }
         break;
       case 'Digit4':
-        if (totalFloors >= 4 && currentFloor !== 4) {
+        if (totalFloors >= 4) {
           setCurrentFloor(4);
           camera.position.set(0, 20, 15);
         }
         break;
       case 'Digit5':
-        if (totalFloors >= 5 && currentFloor !== 5) {
+        if (totalFloors >= 5) {
           setCurrentFloor(5);
           camera.position.set(0, 26, 15);
-        }
-        break;
-      case 'Digit6':
-        if (totalFloors >= 6 && currentFloor !== 6) {
-          setCurrentFloor(6);
-          camera.position.set(0, 32, 15);
-        }
-        break;
-      case 'Digit7':
-        if (totalFloors >= 7 && currentFloor !== 7) {
-          setCurrentFloor(7);
-          camera.position.set(0, 38, 15);
-        }
-        break;
-      case 'Digit8':
-        if (totalFloors >= 8 && currentFloor !== 8) {
-          setCurrentFloor(8);
-          camera.position.set(0, 44, 15);
-        }
-        break;
-      case 'Digit9':
-        if (totalFloors >= 9 && currentFloor !== 9) {
-          setCurrentFloor(9);
-          camera.position.set(0, 50, 15);
-        }
-        break;
-      case 'Digit0':
-        if (totalFloors >= 10 && currentFloor !== 10) {
-          setCurrentFloor(10);
-          camera.position.set(0, 56, 15);
         }
         break;
 
@@ -208,6 +178,7 @@ export function FirstPersonControls({
 
     // Set initial camera position
     camera.position.set(0, 2, 15);
+    camera.lookAt(0, 2, 0);
 
     return () => {
       canvas.removeEventListener('click', onClick);
@@ -217,56 +188,60 @@ export function FirstPersonControls({
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('keyup', onKeyUp);
     };
-  }, [gl.domElement, camera, sensitivity, currentFloor, setCurrentFloor, totalFloors]);
+  }, [gl.domElement, camera, sensitivity, totalFloors, currentFloor, setCurrentFloor]);
 
   useFrame((state, delta) => {
     if (!isLocked.current) return;
 
-    velocity.current.x -= velocity.current.x * 10.0 * delta;
-    velocity.current.z -= velocity.current.z * 10.0 * delta;
-    velocity.current.y -= 9.8 * 100.0 * delta; // gravity
+    try {
+      velocity.current.x -= velocity.current.x * 10.0 * delta;
+      velocity.current.z -= velocity.current.z * 10.0 * delta;
+      velocity.current.y -= 9.8 * 100.0 * delta; // gravity
 
-    direction.current.z = Number(moveForward.current) - Number(moveBackward.current);
-    direction.current.x = Number(moveRight.current) - Number(moveLeft.current);
-    direction.current.normalize();
+      direction.current.z = Number(moveForward.current) - Number(moveBackward.current);
+      direction.current.x = Number(moveRight.current) - Number(moveLeft.current);
+      direction.current.normalize();
 
-    if (moveForward.current || moveBackward.current) {
-      velocity.current.z -= direction.current.z * 400.0 * delta;
-    }
-    if (moveLeft.current || moveRight.current) {
-      velocity.current.x -= direction.current.x * 400.0 * delta;
-    }
+      if (moveForward.current || moveBackward.current) {
+        velocity.current.z -= direction.current.z * 400.0 * delta;
+      }
+      if (moveLeft.current || moveRight.current) {
+        velocity.current.x -= direction.current.x * 400.0 * delta;
+      }
 
-    // Apply movement
-    const moveVector = new Vector3();
-    moveVector.setFromMatrixColumn(camera.matrix, 0);
-    moveVector.crossVectors(camera.up, moveVector);
-    moveVector.multiplyScalar(-velocity.current.z * delta);
-    camera.position.add(moveVector);
+      // Apply movement
+      const moveVector = new Vector3();
+      moveVector.setFromMatrixColumn(camera.matrix, 0);
+      moveVector.crossVectors(camera.up, moveVector);
+      moveVector.multiplyScalar(-velocity.current.z * delta);
+      camera.position.add(moveVector);
 
-    const strafeVector = new Vector3();
-    strafeVector.setFromMatrixColumn(camera.matrix, 0);
-    strafeVector.multiplyScalar(-velocity.current.x * delta);
-    camera.position.add(strafeVector);
+      const strafeVector = new Vector3();
+      strafeVector.setFromMatrixColumn(camera.matrix, 0);
+      strafeVector.multiplyScalar(-velocity.current.x * delta);
+      camera.position.add(strafeVector);
 
-    // Enhanced boundaries
-    const boundary = 25;
-    camera.position.x = Math.max(-boundary, Math.min(boundary, camera.position.x));
-    camera.position.z = Math.max(-boundary, Math.min(boundary, camera.position.z));
+      // Enhanced boundaries for museum
+      const boundary = 25;
+      camera.position.x = Math.max(-boundary, Math.min(boundary, camera.position.x));
+      camera.position.z = Math.max(-boundary, Math.min(boundary, camera.position.z));
 
-    // Floor height constraints
-    const floorHeight = (currentFloor - 1) * 6 + 2;
-    const ceilingHeight = (currentFloor - 1) * 6 + 5;
-    
-    if (camera.position.y < floorHeight) {
-      velocity.current.y = 0;
-      camera.position.y = floorHeight;
-      canJump.current = true;
-    }
-    
-    if (camera.position.y > ceilingHeight) {
-      camera.position.y = ceilingHeight;
-      velocity.current.y = 0;
+      // Floor height constraints
+      const floorHeight = (currentFloor - 1) * 6 + 2;
+      const ceilingHeight = (currentFloor - 1) * 6 + 5;
+      
+      if (camera.position.y < floorHeight) {
+        velocity.current.y = 0;
+        camera.position.y = floorHeight;
+        canJump.current = true;
+      }
+      
+      if (camera.position.y > ceilingHeight) {
+        camera.position.y = ceilingHeight;
+        velocity.current.y = 0;
+      }
+    } catch (error) {
+      console.warn('Error in FirstPersonControls:', error);
     }
   });
 

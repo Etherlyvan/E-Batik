@@ -27,7 +27,12 @@ export const useMuseumStore = create<MuseumState>((set, get) => ({
   floorBatiks: {},
   totalFloors: 3,
 
-  setCurrentFloor: (floor) => set({ currentFloor: floor }),
+  setCurrentFloor: (floor) => {
+    const state = get();
+    if (floor >= 1 && floor <= state.totalFloors) {
+      set({ currentFloor: floor });
+    }
+  },
   
   setSelectedBatik: (batik) => set({ 
     selectedBatik: batik,
@@ -35,17 +40,25 @@ export const useMuseumStore = create<MuseumState>((set, get) => ({
   }),
   
   setBatiks: (batiks) => {
-    // Distribute batiks across floors more evenly
+    if (!batiks || batiks.length === 0) {
+      set({ 
+        batiks: [], 
+        floorBatiks: {},
+        totalFloors: 3
+      });
+      return;
+    }
+
     const floorBatiks: Record<number, Batik[]> = {};
-    const batiksPerFloor = 20; // Increased from 12 to 20
-    const totalFloors = Math.ceil(batiks.length / batiksPerFloor);
+    const batiksPerFloor = 20;
+    const calculatedFloors = Math.max(3, Math.ceil(batiks.length / batiksPerFloor));
     
     // Initialize all floors
-    for (let i = 1; i <= Math.max(3, totalFloors); i++) {
+    for (let i = 1; i <= calculatedFloors; i++) {
       floorBatiks[i] = [];
     }
     
-    // Distribute batiks
+    // Distribute batiks evenly across floors
     batiks.forEach((batik, index) => {
       const floor = Math.floor(index / batiksPerFloor) + 1;
       if (floorBatiks[floor]) {
@@ -53,12 +66,19 @@ export const useMuseumStore = create<MuseumState>((set, get) => ({
       }
     });
     
-    console.log('Batik distribution:', floorBatiks); // Debug log
+    console.log('🏛️ Museum: Distributed batiks across floors:', {
+      totalBatiks: batiks.length,
+      totalFloors: calculatedFloors,
+      distribution: Object.keys(floorBatiks).map(floor => ({
+        floor: parseInt(floor),
+        count: floorBatiks[parseInt(floor)].length
+      }))
+    });
     
     set({ 
       batiks, 
       floorBatiks,
-      totalFloors: Math.max(3, totalFloors)
+      totalFloors: calculatedFloors
     });
   },
   
@@ -78,7 +98,8 @@ export const useMuseumStore = create<MuseumState>((set, get) => ({
     const state = get();
     const stats: Record<number, number> = {};
     Object.keys(state.floorBatiks).forEach(floor => {
-      stats[parseInt(floor)] = state.floorBatiks[parseInt(floor)].length;
+      const floorNum = parseInt(floor);
+      stats[floorNum] = state.floorBatiks[floorNum]?.length || 0;
     });
     return stats;
   },
