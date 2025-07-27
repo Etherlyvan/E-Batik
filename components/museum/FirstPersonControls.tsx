@@ -69,7 +69,7 @@ export function FirstPersonControls({
         canJump.current = false;
         break;
 
-      // Floor navigation
+      // Floor navigation with optimized positioning
       case 'Digit1':
         if (totalFloors >= 1) {
           setCurrentFloor(1);
@@ -86,18 +86,6 @@ export function FirstPersonControls({
         if (totalFloors >= 3) {
           setCurrentFloor(3);
           camera.position.set(0, 14, 15);
-        }
-        break;
-      case 'Digit4':
-        if (totalFloors >= 4) {
-          setCurrentFloor(4);
-          camera.position.set(0, 20, 15);
-        }
-        break;
-      case 'Digit5':
-        if (totalFloors >= 5) {
-          setCurrentFloor(5);
-          camera.position.set(0, 26, 15);
         }
         break;
 
@@ -222,13 +210,13 @@ export function FirstPersonControls({
       camera.position.add(strafeVector);
 
       // Enhanced boundaries for museum
-      const boundary = 25;
+      const boundary = 23;
       camera.position.x = Math.max(-boundary, Math.min(boundary, camera.position.x));
       camera.position.z = Math.max(-boundary, Math.min(boundary, camera.position.z));
 
-      // Floor height constraints
+      // Optimized floor height constraints for smaller frames
       const floorHeight = (currentFloor - 1) * 6 + 2;
-      const ceilingHeight = (currentFloor - 1) * 6 + 5;
+      const ceilingHeight = (currentFloor - 1) * 6 + 4.5; // Lower ceiling
       
       if (camera.position.y < floorHeight) {
         velocity.current.y = 0;

@@ -5,9 +5,6 @@ import { useRef, useEffect, useMemo, useState } from 'react';
 import { RigidBody } from '@react-three/rapier';
 import { Box, Plane } from '@react-three/drei';
 import { TextureManager } from '@/lib/utils/TextureManager';
-import { CeilingLamp } from './models/CeilingLamp';
-import { Bench } from './models/Bench';
-import { Statue } from './models/Statue';
 import * as THREE from 'three';
 
 export function MuseumBuilding() {
@@ -16,7 +13,7 @@ export function MuseumBuilding() {
   const [wallTexture, setWallTexture] = useState<THREE.Texture | null>(null);
   const [ceilingTexture, setCeilingTexture] = useState<THREE.Texture | null>(null);
 
-  // Load textures
+  // Load textures dengan path yang benar
   useEffect(() => {
     const textureManager = TextureManager.getInstance();
     
@@ -25,18 +22,21 @@ export function MuseumBuilding() {
         console.log('🏗️ Loading museum textures...');
         
         const [floor, wall, ceiling] = await Promise.all([
+          // Floor texture - Wood Floor
           textureManager.loadTexture('/textures/WoodFloor040_4K-JPG/WoodFloor040_4K-JPG_Color.jpg', {
             wrapS: THREE.RepeatWrapping,
             wrapT: THREE.RepeatWrapping,
             repeat: [10, 10]
           }).catch(() => null),
           
+          // Wall texture - Leather White Rough
           textureManager.loadTexture('/textures/leather_white_4k.gltf/textures/leather_white_rough_4k.jpg', {
             wrapS: THREE.RepeatWrapping,
             wrapT: THREE.RepeatWrapping,
             repeat: [4, 4]
           }).catch(() => null),
           
+          // Ceiling texture - Office Ceiling
           textureManager.loadTexture('/textures/OfficeCeiling005_4K-JPG/OfficeCeiling005_4K-JPG_Color.jpg', {
             wrapS: THREE.RepeatWrapping,
             wrapT: THREE.RepeatWrapping,
@@ -48,7 +48,7 @@ export function MuseumBuilding() {
         setWallTexture(wall);
         setCeilingTexture(ceiling);
 
-        console.log('✅ Museum textures loaded');
+        console.log('✅ Museum textures loaded:', { floor: !!floor, wall: !!wall, ceiling: !!ceiling });
       } catch (error) {
         console.error('❌ Failed to load textures:', error);
       }
@@ -61,19 +61,19 @@ export function MuseumBuilding() {
   const materials = useMemo(() => ({
     floor: new THREE.MeshStandardMaterial({
       map: floorTexture,
-      color: floorTexture ? 0xffffff : 0xf5f5f5, // Light gray instead of brown
+      color: floorTexture ? 0xffffff : 0xd2b48c,
       roughness: 0.8,
       metalness: 0.1,
     }),
     wall: new THREE.MeshStandardMaterial({
       map: wallTexture,
-      color: wallTexture ? 0xffffff : 0xffffff, // Pure white
+      color: wallTexture ? 0xffffff : 0xf5f5dc,
       roughness: 0.7,
       metalness: 0.1,
     }),
     ceiling: new THREE.MeshStandardMaterial({
       map: ceilingTexture,
-      color: ceilingTexture ? 0xffffff : 0xf8f8f8, // Very light gray
+      color: ceilingTexture ? 0xffffff : 0xf0f0f0,
       roughness: 0.3,
       metalness: 0.1,
     }),
@@ -92,7 +92,7 @@ export function MuseumBuilding() {
         </Plane>
       </RigidBody>
 
-      {/* 3 Floors Structure */}
+      {/* Simple Box Rooms - 3 Floors */}
       {[1, 2, 3].map((floorLevel) => {
         const floorY = (floorLevel - 1) * 6;
         const ceilingY = floorLevel * 6 - 0.5;
@@ -116,7 +116,7 @@ export function MuseumBuilding() {
         );
       })}
 
-      {/* Walls */}
+      {/* Simple Box Walls */}
       {[
         { position: [0, 9, -25], args: [50, 18, 1] as [number, number, number] }, // Back
         { position: [0, 9, 25], args: [50, 18, 1] as [number, number, number] },  // Front
@@ -130,21 +130,21 @@ export function MuseumBuilding() {
         </RigidBody>
       ))}
 
-      {/* HAPUS SEMUA CEILING LAMPS, BENCHES, STATUE, DAN FLOOR INDICATORS */}
+      {/* Minimal Lighting - Only 4 ceiling lamps per floor */}
+      {[1, 2, 3].map((floor) => {
+        const y = floor * 6 - 2;
+        return (
+          <group key={`lighting-${floor}`}>
+            {/* Corner lighting only */}
+            <pointLight position={[-12, y, -12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
+            <pointLight position={[12, y, -12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
+            <pointLight position={[-12, y, 12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
+            <pointLight position={[12, y, 12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
+          </group>
+        );
+      })}
+
       
-      {/* Basic Lighting Only - Clean and minimal */}
-      <ambientLight intensity={0.6} color="#ffffff" />
-      <directionalLight
-        position={[20, 30, 20]}
-        intensity={0.8}
-        color="#ffffff"
-        castShadow={false}
-      />
-      <directionalLight
-        position={[-20, 20, -20]}
-        intensity={0.4}
-        color="#ffffff"
-      />
     </group>
   );
 }

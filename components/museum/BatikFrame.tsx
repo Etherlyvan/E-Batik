@@ -1,11 +1,12 @@
 // components/museum/BatikFrame.tsx
 'use client';
 
-import { useRef, useState, useEffect, useMemo, Suspense } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 import { useMuseumStore } from '@/lib/stores/museumStore';
+import { TextureManager } from '@/lib/utils/TextureManager';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
 import type { Batik } from '@/lib/types';
 import * as THREE from 'three';
@@ -17,168 +18,42 @@ interface BatikFrameProps {
   floor: number;
 }
 
-// Large Portrait Frame with Direct Texture Loading
-function LargePortraitFrame({ 
-  position, 
-  rotation, 
-  imageUrl,
-  batikName
-}: { 
-  position: [number, number, number]; 
-  rotation: [number, number, number];
-  imageUrl: string | null;
-  batikName: string;
-}) {
-  const [texture, setTexture] = useState<THREE.Texture | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    if (!imageUrl) {
-      console.warn(`No image URL for ${batikName}`);
-      setHasError(true);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setHasError(false);
-
-    const loader = new THREE.TextureLoader();
-    
-    console.log(`🔄 Loading image for ${batikName}: ${imageUrl}`);
-
-    loader.load(
-      imageUrl,
-      (loadedTexture) => {
-        // Configure texture
-        loadedTexture.minFilter = THREE.LinearFilter;
-        loadedTexture.magFilter = THREE.LinearFilter;
-        loadedTexture.wrapS = THREE.ClampToEdgeWrapping;
-        loadedTexture.wrapT = THREE.ClampToEdgeWrapping;
-        loadedTexture.flipY = false;
-        loadedTexture.needsUpdate = true;
-        
-        setTexture(loadedTexture);
-        setIsLoading(false);
-        console.log(`✅ Image loaded successfully for ${batikName}`);
-      },
-      (progress) => {
-        console.log(`📊 Loading progress for ${batikName}: ${Math.round((progress.loaded / progress.total) * 100)}%`);
-      },
-      (error) => {
-        console.error(`❌ Failed to load image for ${batikName}:`, error);
-        setHasError(true);
-        setIsLoading(false);
-      }
-    );
-
-    return () => {
-      if (texture) {
-        texture.dispose();
-      }
-    };
-  }, [imageUrl, batikName, texture]);
-
-  return (
-    <RigidBody type="fixed" colliders="cuboid">
-      <group position={position} rotation={rotation}>
-        {/* Large Frame Border - Much Bigger */}
-        <mesh>
-          <boxGeometry args={[4.0, 5.5, 0.2]} />
-          <meshStandardMaterial color="#2c3e50" roughness={0.3} metalness={0.1} />
-        </mesh>
-        
-        {/* Inner Frame */}
-        <mesh position={[0, 0, 0.05]}>
-          <boxGeometry args={[3.6, 5.1, 0.1]} />
-          <meshStandardMaterial color="#34495e" />
-        </mesh>
-        
-        {/* Background for image */}
-        <mesh position={[0, 0, 0.1]}>
-          <planeGeometry args={[3.4, 4.9]} />
-          <meshStandardMaterial color="#ffffff" />
-        </mesh>
-        
-        {/* Batik Image or Placeholder */}
-        <mesh position={[0, 0, 0.11]}>
-          <planeGeometry args={[3.2, 4.7]} />
-          {isLoading ? (
-            <meshStandardMaterial color="#e0e0e0" />
-          ) : hasError || !texture ? (
-            <meshStandardMaterial color="#f8f9fa" />
-          ) : (
-            <meshStandardMaterial map={texture} />
-          )}
-        </mesh>
-        
-        {/* Loading Indicator */}
-        {isLoading && (
-          <mesh position={[0, 0, 0.12]}>
-            <planeGeometry args={[2, 0.5]} />
-            <meshStandardMaterial color="#3498db" transparent opacity={0.8} />
-          </mesh>
-        )}
-        
-        {/* Error Indicator */}
-        {hasError && !isLoading && (
-          <mesh position={[0, 0, 0.12]}>
-            <planeGeometry args={[2.5, 0.8]} />
-            <meshStandardMaterial color="#e74c3c" transparent opacity={0.7} />
-          </mesh>
-        )}
-        
-        {/* Glass Effect */}
-        <mesh position={[0, 0, 0.13]}>
-          <planeGeometry args={[3.5, 5.0]} />
-          <meshStandardMaterial 
-            transparent 
-            opacity={0.05} 
-            color="#ffffff"
-            roughness={0.0}
-            metalness={0.9}
-          />
-        </mesh>
-
-        {/* Frame Shadow */}
-        <mesh position={[0.1, -0.1, -0.05]}>
-          <planeGeometry args={[4.1, 5.6]} />
-          <meshStandardMaterial 
-            transparent 
-            opacity={0.2} 
-            color="#000000"
-          />
-        </mesh>
-      </group>
-    </RigidBody>
-  );
-}
-
 export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps) {
+  const meshRef = useRef<THREE.Mesh>(null);
   const [isNear, setIsNear] = useState(false);
   const [canInteract, setCanInteract] = useState(false);
+  const [batikTexture, setBatikTexture] = useState<THREE.Texture | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { setSelectedBatik } = useMuseumStore();
   const { currentLanguage } = useLanguage();
   const { camera } = useThree();
 
   const isIndonesian = currentLanguage.code === 'id';
 
-  // Get image URL with better error handling - Fixed useMemo import
-  const imageUrl = useMemo(() => {
-    if (!batik.foto || batik.foto.length === 0) {
-      console.warn(`No photos available for batik: ${batik.nama}`);
-      return null;
-    }
-    
-    const firstPhoto = batik.foto[0];
-    if (!firstPhoto || !firstPhoto.link) {
-      console.warn(`Invalid photo data for batik: ${batik.nama}`);
-      return null;
-    }
-    
-    console.log(`Image URL for ${batik.nama}: ${firstPhoto.link}`);
-    return firstPhoto.link;
+  // Load batik texture
+  useEffect(() => {
+    const loadBatikTexture = async () => {
+      if (!batik.foto || batik.foto.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const textureManager = TextureManager.getInstance();
+        const imageUrl = batik.foto[0]?.link;
+        
+        if (imageUrl) {
+          const texture = await textureManager.loadTexture(imageUrl);
+          setBatikTexture(texture);
+        }
+      } catch (error) {
+        console.warn('Failed to load batik texture for:', batik.nama, error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadBatikTexture();
   }, [batik.foto, batik.nama]);
 
   // Keyboard interaction
@@ -195,13 +70,13 @@ export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps
     }
   }, [canInteract, batik, setSelectedBatik]);
 
-  // Distance checking with larger detection range
+  // Distance checking and interaction
   useFrame(() => {
-    if (camera) {
+    if (meshRef.current && camera) {
       try {
         const distance = camera.position.distanceTo(new THREE.Vector3(...position));
-        const isClose = distance < 12; // Increased range for larger frames
-        const isVeryClose = distance < 8;
+        const isClose = distance < 8;
+        const isVeryClose = distance < 5;
         
         if (isClose !== isNear) {
           setIsNear(isClose);
@@ -210,74 +85,134 @@ export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps
         if (isVeryClose !== canInteract) {
           setCanInteract(isVeryClose);
         }
+
+        // Subtle hover effect
+        if (isClose && meshRef.current) {
+          meshRef.current.scale.setScalar(1.02);
+        } else if (meshRef.current) {
+          meshRef.current.scale.setScalar(1);
+        }
       } catch (error) {
-        console.warn('Error in frame distance check:', error);
+        console.warn('Error in frame animation:', error);
       }
     }
   });
 
-  return (
-    <group>
-      {/* Large Portrait Frame */}
-      <Suspense fallback={null}>
-        <LargePortraitFrame
-          position={position}
-          rotation={rotation}
-          imageUrl={imageUrl}
-          batikName={batik.nama}
-        />
-      </Suspense>
+  // Get translation for current language
+  const translation = batik.translations?.find(
+    t => t.languageId === currentLanguage.id
+  ) || batik.translations?.[0];
 
-      {/* Enhanced Info Panel for Larger Frame */}
-      {isNear && (
+  // Materials
+  const frameMaterial = new THREE.MeshStandardMaterial({
+    color: isNear ? "#8b4513" : "#654321",
+    emissive: canInteract ? "#332211" : "#000000",
+    emissiveIntensity: canInteract ? 0.2 : 0,
+    roughness: 0.8,
+    metalness: 0.1,
+  });
+
+  const batikMaterial = batikTexture ? new THREE.MeshStandardMaterial({
+    map: batikTexture,
+    transparent: false,
+    roughness: 0.1,
+    metalness: 0.0,
+  }) : new THREE.MeshStandardMaterial({ 
+    color: "#f5f5f5",
+    roughness: 0.2,
+    metalness: 0.0,
+  });
+
+  const glassMaterial = new THREE.MeshStandardMaterial({
+    transparent: true,
+    opacity: 0.1,
+    roughness: 0.0,
+    metalness: 0.0,
+    color: "#ffffff"
+  });
+
+  return (
+    <group position={position} rotation={rotation}>
+      {/* Main Frame */}
+      <RigidBody type="fixed" colliders="cuboid">
+        <mesh ref={meshRef}>
+          <boxGeometry args={[4.2, 3.2, 0.3]} />
+          <primitive object={frameMaterial} />
+        </mesh>
+      </RigidBody>
+
+      {/* Inner Frame */}
+      <mesh position={[0, 0, 0.05]}>
+        <boxGeometry args={[3.8, 2.8, 0.1]} />
+        <meshStandardMaterial color="#654321" roughness={0.6} metalness={0.2} />
+      </mesh>
+
+      {/* Batik Image Plane */}
+      <mesh position={[0, 0, 0.16]}>
+        <planeGeometry args={[3.5, 2.5]} />
+        <primitive object={batikMaterial} />
+      </mesh>
+
+      {/* Glass Protection */}
+      <mesh position={[0, 0, 0.17]}>
+        <planeGeometry args={[3.6, 2.6]} />
+        <primitive object={glassMaterial} />
+      </mesh>
+
+      {/* Loading Indicator */}
+      {isLoading && (
+        <Html position={[0, -2.2, 0.5]} center distanceFactor={6}>
+          <div className="bg-black/80 text-white p-2 rounded">
+            <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
+            <div className="text-xs">Loading...</div>
+          </div>
+        </Html>
+      )}
+
+      {/* Info Panel - Only show when near and loaded */}
+      {isNear && !isLoading && (
         <Html
-          position={[position[0], position[1] - 3.5, position[2] + 0.8]}
+          position={[0, -2.2, 0.5]}
           center
-          distanceFactor={8}
+          distanceFactor={6}
+          className="pointer-events-none select-none"
         >
-          <div className={`bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border-2 max-w-sm ${
-            canInteract ? 'border-green-500' : 'border-gray-300'
+          <div className={`bg-black/90 backdrop-blur-sm rounded-lg p-4 shadow-xl border max-w-xs transition-all duration-300 ${
+            canInteract ? 'border-green-400' : 'border-amber-400'
           }`}>
-            <h3 className="font-bold text-gray-800 text-lg mb-2">
+            <h3 className="font-bold text-amber-300 text-sm mb-2 line-clamp-2">
               {batik.nama}
             </h3>
             
             {batik.seniman && (
-              <p className="text-sm text-gray-600 mb-2">
-                <span className="font-medium">Artist:</span> {batik.seniman}
+              <p className="text-xs text-amber-200 mb-1 line-clamp-1">
+                🎨 {batik.seniman}
               </p>
             )}
             
-            {batik.alamat && (
-              <p className="text-sm text-gray-600 mb-2">
-                <span className="font-medium">Location:</span> {batik.alamat}
-              </p>
-            )}
-            
-            <p className="text-sm text-gray-500 mb-3">
-              <span className="font-medium">Year:</span> {batik.tahun}
+            <p className="text-xs text-gray-300 mb-2">
+              📅 {batik.tahun}
             </p>
 
-            {/* Image Status */}
-            {!imageUrl && (
-              <p className="text-xs text-red-500 mb-2 bg-red-50 p-2 rounded">
-                ⚠️ No image available
+            {translation && (
+              <p className="text-xs text-gray-300 mb-3 line-clamp-2">
+                {translation.histori}
               </p>
             )}
-
+            
             <div className="flex items-center justify-between">
               {canInteract ? (
-                <p className="text-sm text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full">
-                  {isIndonesian ? 'Tekan ENTER untuk detail' : 'Press ENTER for details'}
+                <p className="text-xs text-green-400 font-medium animate-pulse">
+                  ⌨️ {isIndonesian ? 'Tekan ENTER' : 'Press ENTER'}
                 </p>
               ) : (
-                <p className="text-sm text-gray-500">
-                  {isIndonesian ? 'Dekati untuk melihat' : 'Move closer to view'}
+                <p className="text-xs text-amber-400">
+                  🚶 {isIndonesian ? 'Dekati untuk berinteraksi' : 'Move closer to interact'}
                 </p>
               )}
               
               {batik.kode && (
-                <span className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
+                <span className="text-xs bg-amber-600 text-white px-2 py-1 rounded-full">
                   {batik.kode}
                 </span>
               )}
@@ -286,25 +221,27 @@ export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps
         </Html>
       )}
 
-      {/* Enhanced lighting for larger frame */}
-      {isNear && (
-        <>
-          <spotLight
-            position={[position[0], position[1] + 2, position[2] + 2]}
-            angle={0.4}
-            penumbra={0.3}
-            intensity={1.2}
-            color="#ffffff"
-            distance={10}
-            decay={2}
-          />
-          <pointLight
-            position={[position[0], position[1], position[2] + 1]}
-            intensity={0.5}
-            distance={8}
-            color="#fff8dc"
-          />
-        </>
+      {/* Frame Lighting */}
+      <spotLight
+        position={[0, 0, 3]}
+        angle={0.6}
+        penumbra={0.3}
+        intensity={canInteract ? 1.2 : isNear ? 0.8 : 0.5}
+        color={canInteract ? "#00ff88" : isNear ? "#ffd700" : "#fff8dc"}
+        castShadow={false}
+        distance={10}
+        decay={2}
+      />
+
+      {/* Additional lighting for better visibility */}
+      {canInteract && (
+        <pointLight
+          position={[0, 0, 1.5]}
+          intensity={0.3}
+          distance={4}
+          decay={2}
+          color="#00ff88"
+        />
       )}
     </group>
   );
