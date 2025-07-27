@@ -29,16 +29,20 @@ class TextureManager {
     
     // Return cached texture if available
     if (this.textureCache.has(cacheKey)) {
+      console.log(`📦 Using cached texture: ${url}`);
       return this.textureCache.get(cacheKey)!;
     }
 
     // Return existing loading promise if already loading
     if (this.loadingPromises.has(cacheKey)) {
+      console.log(`⏳ Waiting for existing load: ${url}`);
       return this.loadingPromises.get(cacheKey)!;
     }
 
     // Create loading promise
     const loadingPromise = new Promise<Texture | null>((resolve) => {
+      console.log(`🔄 Loading texture: ${url}`);
+      
       this.loader.load(
         url,
         (texture) => {
@@ -57,8 +61,13 @@ class TextureManager {
             texture.format = THREE.RGBAFormat;
             texture.flipY = false;
             
+            // Ensure texture is properly updated
+            texture.needsUpdate = true;
+            
             this.textureCache.set(cacheKey, texture);
             this.loadingPromises.delete(cacheKey);
+            
+            console.log(`✅ Texture loaded successfully: ${url}`);
             resolve(texture);
           } catch (error) {
             console.error('Error processing texture:', url, error);
@@ -66,9 +75,12 @@ class TextureManager {
             resolve(null);
           }
         },
-        undefined,
+        (progress) => {
+          // Optional: Log loading progress
+          console.log(`📊 Loading progress for ${url}: ${(progress.loaded / progress.total * 100).toFixed(1)}%`);
+        },
         (error) => {
-          console.warn('Failed to load texture:', url, error);
+          console.error('❌ Failed to load texture:', url, error);
           this.loadingPromises.delete(cacheKey);
           resolve(null);
         }
@@ -80,19 +92,26 @@ class TextureManager {
   }
 
   disposeAll(): void {
-    this.textureCache.forEach((texture) => {
+    console.log('🧹 Disposing all textures...');
+    this.textureCache.forEach((texture, key) => {
       try {
         texture.dispose();
+        console.log(`🗑️ Disposed texture: ${key}`);
       } catch (error) {
-        console.warn('Error disposing texture:', error);
+        console.warn('Error disposing texture:', key, error);
       }
     });
     this.textureCache.clear();
     this.loadingPromises.clear();
+    console.log('✅ All textures disposed');
   }
 
   getCacheSize(): number {
     return this.textureCache.size;
+  }
+
+  getCacheInfo(): string[] {
+    return Array.from(this.textureCache.keys());
   }
 }
 
