@@ -2,11 +2,11 @@
 'use client';
 
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { useFrame, useLoader, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
-import { TextureLoader, RepeatWrapping } from 'three';
 import { RigidBody } from '@react-three/rapier';
 import { useMuseumStore } from '@/lib/stores/museumStore';
+import { TextureManager } from '@/lib/utils/TextureManager';
 import type { Batik } from '@/lib/types';
 import * as THREE from 'three';
 
@@ -21,27 +21,32 @@ export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps
   const meshRef = useRef<THREE.Mesh>(null);
   const [isNear, setIsNear] = useState(false);
   const [canInteract, setCanInteract] = useState(false);
+  const [batikTexture, setBatikTexture] = useState<THREE.Texture | null>(null);
   const { setSelectedBatik } = useMuseumStore();
   const { camera } = useThree();
 
-  // Load batik texture
-  const texture = useLoader(TextureLoader, batik.foto[0]?.link || '/images/placeholder.jpg');
-  
-  // Load wood texture for frame
-  const frameTexture = useLoader(TextureLoader, '/textures/WoodFloor040_4K-JPG/WoodFloor040_4K-JPG_Color.jpg');
-  const frameNormal = useLoader(TextureLoader, '/textures/WoodFloor040_4K-JPG/WoodFloor040_4K-JPG_NormalGL.jpg');
-  const frameRoughness = useLoader(TextureLoader, '/textures/WoodFloor040_4K-JPG/WoodFloor040_4K-JPG_Roughness.jpg');
-
-  // Configure frame textures
+  // Load textures with optimization
   useEffect(() => {
-    [frameTexture, frameNormal, frameRoughness].forEach(tex => {
-      if (tex) {
-        tex.wrapS = RepeatWrapping;
-        tex.wrapT = RepeatWrapping;
-        tex.repeat.set(0.5, 0.5);
+    const textureManager = TextureManager.getInstance();
+    
+    const loadTextures = async () => {
+      try {
+        const texture = await textureManager.loadTexture(
+          batik.foto[0]?.link || '/images/placeholder.jpg'
+        );
+        setBatikTexture(texture);
+      } catch (error) {
+        console.warn('Failed to load batik texture:', error);
       }
-    });
-  }, [frameTexture, frameNormal, frameRoughness]);
+    };
+
+    loadTextures();
+
+    // Cleanup on unmount
+    return () => {
+      // Don't dispose here, let TextureManager handle it
+    };
+  }, [batik.foto]);
 
   // Keyboard interaction
   useEffect(() => {
@@ -81,57 +86,62 @@ export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps
     }
   });
 
+  // Optimized materials
+  const frameMaterial = new THREE.MeshStandardMaterial({
+    color: isNear ? "#a0522d" : "#8b4513",
+    emissive: canInteract ? "#332211" : "#000000",
+    emissiveIntensity: canInteract ? 0.2 : 0,
+    roughness: 0.8,
+    metalness: 0.1,
+  });
+
+  const innerFrameMaterial = new THREE.MeshStandardMaterial({
+    color: "#654321",
+    roughness: 0.6,
+    metalness: 0.2,
+  });
+
+  const batikMaterial = batikTexture ? new THREE.MeshStandardMaterial({
+    map: batikTexture,
+    transparent: true,
+    opacity: 0.95,
+    roughness: 0.1,
+    metalness: 0.0,
+  }) : new THREE.MeshStandardMaterial({ color: "#cccccc" });
+
+  const glassMaterial = new THREE.MeshStandardMaterial({
+    transparent: true,
+    opacity: 0.1,
+    roughness: 0.0,
+    metalness: 0.0,
+  });
+
   return (
     <group position={position} rotation={rotation}>
-      {/* Frame with Wood Texture */}
+      {/* Frame */}
       <RigidBody type="fixed">
         <mesh ref={meshRef}>
           <boxGeometry args={[4.2, 3.2, 0.3]} />
-          <meshStandardMaterial 
-            map={frameTexture}
-            normalMap={frameNormal}
-            roughnessMap={frameRoughness}
-            color={isNear ? "#a0522d" : "#8b4513"}
-            emissive={canInteract ? "#332211" : "#000000"}
-            emissiveIntensity={canInteract ? 0.2 : 0}
-            roughness={0.8}
-            metalness={0.1}
-          />
+          <primitive object={frameMaterial} />
         </mesh>
       </RigidBody>
 
       {/* Inner Frame */}
       <mesh position={[0, 0, 0.05]}>
         <boxGeometry args={[3.8, 2.8, 0.1]} />
-        <meshStandardMaterial 
-          color="#654321"
-          roughness={0.6}
-          metalness={0.2}
-        />
+        <primitive object={innerFrameMaterial} />
       </mesh>
 
       {/* Batik Image */}
       <mesh position={[0, 0, 0.16]}>
         <planeGeometry args={[3.5, 2.5]} />
-        <meshStandardMaterial 
-          map={texture}
-          transparent
-          opacity={0.95}
-          roughness={0.1}
-          metalness={0.0}
-        />
+        <primitive object={batikMaterial} />
       </mesh>
 
       {/* Glass Protection */}
       <mesh position={[0, 0, 0.17]}>
         <planeGeometry args={[3.6, 2.6]} />
-        <meshStandardMaterial 
-          transparent
-          opacity={0.1}
-          roughness={0.0}
-          metalness={0.0}
-          envMapIntensity={1}
-        />
+        <primitive object={glassMaterial} />
       </mesh>
 
       {/* Info Panel - Only show when near */}
@@ -176,32 +186,21 @@ export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps
         </Html>
       )}
 
-      {/* Enhanced lighting for the frame */}
+      {/* Optimized lighting */}
       <spotLight
         position={[0, 0, 3]}
         angle={0.6}
         penumbra={0.3}
-        intensity={canInteract ? 2.0 : isNear ? 1.2 : 0.8}
+        intensity={canInteract ? 1.5 : isNear ? 1.0 : 0.6}
         color={canInteract ? "#00ff88" : isNear ? "#ffd700" : "#fff8dc"}
-        castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
+        castShadow={false} // Disable shadows for performance
       />
 
-      {/* Ambient frame lighting */}
-      <pointLight
-        position={[0, 0, 1]}
-        intensity={0.4}
-        distance={4}
-        decay={2}
-        color="#ffeb3b"
-      />
-
-      {/* Interaction indicator light */}
+      {/* Reduced lighting for performance */}
       {canInteract && (
         <pointLight
           position={[0, 0, 1.5]}
-          intensity={0.6}
+          intensity={0.4}
           distance={3}
           decay={2}
           color="#00ff88"
