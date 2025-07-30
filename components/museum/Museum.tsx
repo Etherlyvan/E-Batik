@@ -1,164 +1,220 @@
-// components/museum/Museum.tsx
+// components/museum/Museum.tsx (Performance Optimized)
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
+import { KeyboardControls } from '@react-three/drei';
+import { ErrorBoundary } from 'react-error-boundary';
 import { MuseumBuilding } from './MuseumBuilding';
-import { BatikGallery } from './BatikGallery';
+import { BatikFrame } from './BatikFrame';
 import { FirstPersonControls } from './FirstPersonControls';
 import { MuseumUI } from './MuseumUI';
-import { LoadingScreen } from './LoadingScreen';
-import { ControlsInstructions } from './ControlsInstructions';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-import { TextureManager } from '@/lib/utils/TextureManager';
+import { useLanguage } from '@/lib/contexts/LanguageContext';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import type { Batik } from '@/lib/types';
-import * as THREE from 'three';
 
 interface MuseumProps {
   batiks: Batik[];
 }
 
-// Optimized Environment
-function MuseumEnvironment() {
-  return (
-    <>
-      <ambientLight intensity={0.5} color="#f0f8ff" />
-      <directionalLight
-        position={[20, 30, 20]}
-        intensity={0.8}
-        color="#fff8dc"
-        castShadow={false}
-      />
-      <directionalLight
-        position={[-20, 20, -20]}
-        intensity={0.3}
-        color="#e6f3ff"
-      />
-    </>
-  );
-}
+// Keyboard controls mapping
+const keyboardMap = [
+  { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
+  { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
+  { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
+  { name: 'right', keys: ['ArrowRight', 'KeyD'] },
+  { name: 'jump', keys: ['Space'] },
+  { name: 'reset', keys: ['KeyR'] },
+];
 
-export function Museum({ batiks }: MuseumProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [showInstructions, setShowInstructions] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { currentFloor, setBatiks } = useMuseumStore();
+function MuseumContent({ batiks }: { batiks: Batik[] }) {
+  const { 
+    setBatiks, 
+    getBatiksByFloor, 
+    quality,
+    setLoading,
+    setQuality
+  } = useMuseumStore();
 
-  // components/museum/Museum.tsx - Tambahkan logging
-    useEffect(() => {
-        const initializeMuseum = async () => {
-            try {
-            console.log('🏛️ Initializing Museum with batiks:', batiks.length);
-            
-            // Debug: Log sample batik data
-            if (batiks.length > 0) {
-                console.log('📊 Sample batik data:', {
-                name: batiks[0].nama,
-                photos: batiks[0].foto?.length || 0,
-                firstPhotoUrl: batiks[0].foto?.[0]?.link || 'No URL'
-                });
-            }
+  const [isInitialized, setIsInitialized] = useState(false);
 
-            if (!batiks || batiks.length === 0) {
-                setError('No batik collection available');
-                setIsLoading(false);
-                return;
-            }
+  // Auto-detect performance and adjust quality
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    
+    if (gl) {
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      const renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : '';
+      
+      // Simple performance detection
+      if (renderer.includes('Intel') || renderer.includes('Integrated')) {
+        setQuality('low');
+      } else if (renderer.includes('GTX') || renderer.includes('RTX') || renderer.includes('RX')) {
+        setQuality('high');
+      } else {
+        setQuality('medium');
+      }
+    }
+  }, [setQuality]);
 
-            const validBatiks = batiks.filter(batik => 
-                batik && batik.id && batik.nama
-            );
+  // Initialize museum data
+  useEffect(() => {
+    setLoading(true, 0);
+    setBatiks(batiks);
+    setIsInitialized(true);
+    setLoading(false, 100);
+  }, [batiks, setBatiks, setLoading]);
 
-            console.log(`✅ Valid batiks: ${validBatiks.length}/${batiks.length}`);
-            
-            setBatiks(validBatiks);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setIsLoading(false);
-            } catch (err) {
-            console.error('❌ Museum initialization failed:', err);
-            setError('Failed to initialize museum');
-            setIsLoading(false);
-            }
-        };
-
-        initializeMuseum();
-    }, [batiks, setBatiks]);
-
-  if (isLoading) return <LoadingScreen />;
-  
-  if (error) {
+  if (!isInitialized) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-red-100">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-red-800 mb-4">Museum Error</h2>
-          <p className="text-red-600 mb-6">{error}</p>
-          <button
-            onClick={() => window.location.href = '/gallery'}
-            className="bg-red-600 text-white px-6 py-3 rounded-lg"
-          >
-            Return to Gallery
-          </button>
+      <div className="min-h-screen bg-gradient-to-br from-amber-900 to-orange-900 flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="lg" />
+          <p className="text-white mt-4">Loading museum...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-screen bg-gray-100">
-      <Canvas
-        camera={{ 
-          position: [0, 2, 15], 
-          fov: 75,
-          near: 0.1,
-          far: 100
-        }}
-        shadows={false}
-        gl={{
-          antialias: true,
-          powerPreference: "high-performance",
-          alpha: false,
-          stencil: false,
-        }}
-        className="w-full h-full"
-        onCreated={({ gl }) => {
-          gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-          gl.outputColorSpace = THREE.SRGBColorSpace;
-        }}
-      >
-        <Suspense fallback={null}>
-          <MuseumEnvironment />
-          
-          <Physics gravity={[0, -9.81, 0]} debug={false}>
-            <MuseumBuilding />
-            <BatikGallery batiks={batiks} currentFloor={currentFloor} />
-          </Physics>
-          
-          <FirstPersonControls speed={5} sensitivity={0.002} />
-        </Suspense>
-      </Canvas>
-      
+    <div className="w-full h-screen relative overflow-hidden bg-black">
+      <KeyboardControls map={keyboardMap}>
+        <Canvas
+          shadows={quality === 'high'}
+          camera={{ 
+            fov: 75, 
+            near: 0.1, 
+            far: 1000, 
+            position: [0, 2, 15] 
+          }}
+          gl={{ 
+            antialias: quality !== 'low',
+            powerPreference: "high-performance",
+            alpha: false,
+            depth: true,
+            stencil: false,
+           
+          }}
+          performance={{ min: 0.5 }}
+          onCreated={({ gl }) => {
+            gl.setClearColor('#87CEEB'); // Sky blue background
+          }}
+        >
+          <Suspense fallback={null}>
+            {/* Lighting - Simplified */}
+            <ambientLight intensity={0.4} />
+            <directionalLight position={[10, 10, 5]} intensity={0.8} />
+
+            {/* Physics World */}
+            <Physics 
+              gravity={[0, -9.81, 0]}
+              debug={false}
+              timeStep={1/60}
+            >
+              {/* Museum Building */}
+              <MuseumBuilding />
+
+              {/* Batik Frames - Only current floor for performance */}
+              {(() => {
+                const currentFloor = useMuseumStore.getState().currentFloor;
+                const floorBatiks = getBatiksByFloor(currentFloor);
+                const framePositions = generateFramePositions(currentFloor);
+                
+                return floorBatiks.slice(0, 16).map((batik, index) => {
+                  const frameData = framePositions[index];
+                  if (!frameData) return null;
+
+                  return (
+                    <BatikFrame
+                      key={`${currentFloor}-${batik.id}`}
+                      batik={batik}
+                      position={frameData.position}
+                      rotation={frameData.rotation}
+                      scale={0.9}
+                    />
+                  );
+                });
+              })()}
+
+              {/* First Person Controls */}
+                <FirstPersonControls 
+                    speed={quality === 'low' ? 2 : 2.5} // Dikurangi dari 4-5 ke 2-2.5
+                    sensitivity={0.0015} // Dikurangi dari 0.002
+                    smoothing={0.15} // Ditingkatkan untuk movement yang lebih smooth
+                />
+            </Physics>
+          </Suspense>
+        </Canvas>
+      </KeyboardControls>
+
+      {/* UI Overlay */}
       <MuseumUI />
-      
-      {showInstructions && (
-        <ControlsInstructions onClose={() => setShowInstructions(false)} />
-      )}
-
-      {/* Exit Button */}
-      <button
-        onClick={() => window.location.href = '/gallery'}
-        className="absolute top-4 left-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg z-50 transition-colors"
-      >
-        🚪 Exit Museum
-      </button>
-
-      {/* Help Button */}
-      <button
-        onClick={() => setShowInstructions(true)}
-        className="absolute top-4 right-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg z-50 transition-colors"
-      >
-        ❓ Controls
-      </button>
     </div>
+  );
+}
+
+// Generate frame positions
+function generateFramePositions(floor: number) {
+  const positions: Array<{ position: [number, number, number]; rotation: [number, number, number] }> = [];
+  const yOffset = (floor - 1) * 6 + 2.5;
+
+  // Back Wall - 4 frames
+  for (let i = 0; i < 4; i++) {
+    positions.push({
+      position: [-9 + (i * 6), yOffset, -24] as [number, number, number],
+      rotation: [0, 0, 0] as [number, number, number]
+    });
+  }
+
+  // Left Wall - 4 frames  
+  for (let i = 0; i < 4; i++) {
+    positions.push({
+      position: [-24, yOffset, -9 + (i * 6)] as [number, number, number],
+      rotation: [0, Math.PI / 2, 0] as [number, number, number]
+    });
+  }
+
+  // Right Wall - 4 frames
+  for (let i = 0; i < 4; i++) {
+    positions.push({
+      position: [24, yOffset, -9 + (i * 6)] as [number, number, number],
+      rotation: [0, -Math.PI / 2, 0] as [number, number, number]
+    });
+  }
+
+  // Front Wall - 4 frames
+  for (let i = 0; i < 4; i++) {
+    positions.push({
+      position: [-9 + (i * 6), yOffset, 24] as [number, number, number],
+      rotation: [0, Math.PI, 0] as [number, number, number]
+    });
+  }
+
+  return positions;
+}
+
+export function Museum({ batiks }: MuseumProps) {
+  return (
+    <ErrorBoundary
+      FallbackComponent={({ resetErrorBoundary }) => (
+        <div className="min-h-screen bg-red-100 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-red-800 mb-4">Museum Error</h2>
+            <button
+              onClick={resetErrorBoundary}
+              className="bg-red-600 text-white px-4 py-2 rounded"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      )}
+      onReset={() => window.location.reload()}
+    >
+      <MuseumContent batiks={batiks} />
+    </ErrorBoundary>
   );
 }

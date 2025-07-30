@@ -1,12 +1,28 @@
-// lib/utils/TextureManager.ts
-import { Texture, TextureLoader } from 'three';
+// lib/utils/TextureManager.ts (Updated)
+import { Texture, TextureLoader, LinearFilter, LinearMipmapLinearFilter } from 'three';
 import * as THREE from 'three';
+
+interface TextureOptions {
+  wrapS?: THREE.Wrapping;
+  wrapT?: THREE.Wrapping;
+  repeat?: [number, number];
+  quality?: 'low' | 'medium' | 'high';
+}
+
+interface CachedTexture {
+  texture: Texture;
+  lastUsed: number;
+  references: number;
+}
 
 class TextureManager {
   private static instance: TextureManager;
-  private textureCache: Map<string, Texture> = new Map();
+  private textureCache: Map<string, CachedTexture> = new Map();
   private loader: TextureLoader = new TextureLoader();
   private loadingPromises: Map<string, Promise<Texture | null>> = new Map();
+  private maxCacheSize = 100;
+  private maxMemoryMB = 200;
+  private currentMemoryMB = 0;
 
   static getInstance(): TextureManager {
     if (!TextureManager.instance) {
@@ -15,103 +31,164 @@ class TextureManager {
     return TextureManager.instance;
   }
 
-  async loadTexture(url: string, options?: {
-    wrapS?: THREE.Wrapping;
-    wrapT?: THREE.Wrapping;
-    repeat?: [number, number];
-  }): Promise<Texture | null> {
-    if (!url) {
-      console.warn('TextureManager: Empty URL provided');
-      return null;
-    }
+  async loadTexture(url: string, options: TextureOptions = {}): Promise<Texture | null> {
+    if (!url) return null;
 
-    const cacheKey = `${url}_${JSON.stringify(options || {})}`;
+    const cacheKey = `${url}_${JSON.stringify(options)}`;
     
-    // Return cached texture if available
-    if (this.textureCache.has(cacheKey)) {
-      console.log(`📦 Using cached texture: ${url}`);
-      return this.textureCache.get(cacheKey)!;
+    // Return cached texture
+    const cached = this.textureCache.get(cacheKey);
+    if (cached) {
+      cached.lastUsed = Date.now();
+      cached.references++;
+      return cached.texture;
     }
 
-    // Return existing loading promise if already loading
+    // Return existing loading promise
     if (this.loadingPromises.has(cacheKey)) {
-      console.log(`⏳ Waiting for existing load: ${url}`);
       return this.loadingPromises.get(cacheKey)!;
     }
 
-    // Create loading promise
-    const loadingPromise = new Promise<Texture | null>((resolve) => {
-      console.log(`🔄 Loading texture: ${url}`);
-      
+    // Create new loading promise
+    const loadingPromise = this.createLoadingPromise(url, options, cacheKey);
+    this.loadingPromises.set(cacheKey, loadingPromise);
+
+    return loadingPromise;
+  }
+
+  private async createLoadingPromise(
+    url: string, 
+    options: TextureOptions, 
+    cacheKey: string
+  ): Promise<Texture | null> {
+    return new Promise((resolve) => {
+      // Check memory before loading
+      if (this.currentMemoryMB > this.maxMemoryMB) {
+        this.cleanupOldTextures();
+      }
+
       this.loader.load(
         url,
         (texture) => {
           try {
-            // Apply options if provided
-            if (options) {
-              if (options.wrapS) texture.wrapS = options.wrapS;
-              if (options.wrapT) texture.wrapT = options.wrapT;
-              if (options.repeat) texture.repeat.set(options.repeat[0], options.repeat[1]);
-            }
+            this.configureTexture(texture, options);
+            
+            // Estimate texture memory usage
+            const memoryMB = this.estimateTextureMemory(texture);
+            this.currentMemoryMB += memoryMB;
 
-            // Optimize texture settings
-            texture.generateMipmaps = true;
-            texture.minFilter = THREE.LinearMipmapLinearFilter;
-            texture.magFilter = THREE.LinearFilter;
-            texture.format = THREE.RGBAFormat;
-            texture.flipY = false;
-            
-            // Ensure texture is properly updated
-            texture.needsUpdate = true;
-            
-            this.textureCache.set(cacheKey, texture);
+            // Cache the texture
+            this.textureCache.set(cacheKey, {
+              texture,
+              lastUsed: Date.now(),
+              references: 1
+            });
+
             this.loadingPromises.delete(cacheKey);
-            
-            console.log(`✅ Texture loaded successfully: ${url}`);
             resolve(texture);
           } catch (error) {
-            console.error('Error processing texture:', url, error);
+            console.error('Error configuring texture:', error);
             this.loadingPromises.delete(cacheKey);
             resolve(null);
           }
         },
-        (progress) => {
-          // Optional: Log loading progress
-          console.log(`📊 Loading progress for ${url}: ${(progress.loaded / progress.total * 100).toFixed(1)}%`);
-        },
+        undefined,
         (error) => {
-          console.error('❌ Failed to load texture:', url, error);
+          console.error('Failed to load texture:', url, error);
           this.loadingPromises.delete(cacheKey);
           resolve(null);
         }
       );
     });
-
-    this.loadingPromises.set(cacheKey, loadingPromise);
-    return loadingPromise;
   }
 
-  disposeAll(): void {
-    console.log('🧹 Disposing all textures...');
-    this.textureCache.forEach((texture, key) => {
-      try {
-        texture.dispose();
-        console.log(`🗑️ Disposed texture: ${key}`);
-      } catch (error) {
-        console.warn('Error disposing texture:', key, error);
+  private configureTexture(texture: Texture, options: TextureOptions) {
+    // Apply options
+    if (options.wrapS) texture.wrapS = options.wrapS;
+    if (options.wrapT) texture.wrapT = options.wrapT;
+    if (options.repeat) texture.repeat.set(options.repeat[0], options.repeat[1]);
+
+    // Quality settings
+    const quality = options.quality || 'medium';
+    switch (quality) {
+      case 'low':
+        texture.minFilter = LinearFilter;
+        texture.magFilter = LinearFilter;
+        texture.generateMipmaps = false;
+        break;
+      case 'medium':
+        texture.minFilter = LinearMipmapLinearFilter;
+        texture.magFilter = LinearFilter;
+        texture.generateMipmaps = true;
+        break;
+      case 'high':
+        texture.minFilter = LinearMipmapLinearFilter;
+        texture.magFilter = LinearFilter;
+        texture.generateMipmaps = true;
+        texture.anisotropy = 4;
+        break;
+    }
+
+    texture.flipY = false;
+    texture.needsUpdate = true;
+  }
+
+  private estimateTextureMemory(texture: Texture): number {
+    const image = texture.image;
+    if (!image) return 0;
+    
+    const width = image.width || 512;
+    const height = image.height || 512;
+    const bytesPerPixel = 4; // RGBA
+    
+    return (width * height * bytesPerPixel) / (1024 * 1024); // MB
+  }
+
+  private cleanupOldTextures() {
+    const entries = Array.from(this.textureCache.entries());
+    entries.sort((a, b) => a[1].lastUsed - b[1].lastUsed);
+
+    // Remove oldest textures until memory is under limit
+    for (const [key, cached] of entries) {
+      if (this.currentMemoryMB <= this.maxMemoryMB * 0.8) break;
+      if (cached.references <= 0) {
+        this.disposeTexture(key);
       }
+    }
+  }
+
+  releaseTexture(url: string, options: TextureOptions = {}) {
+    const cacheKey = `${url}_${JSON.stringify(options)}`;
+    const cached = this.textureCache.get(cacheKey);
+    if (cached) {
+      cached.references = Math.max(0, cached.references - 1);
+    }
+  }
+
+  private disposeTexture(cacheKey: string) {
+    const cached = this.textureCache.get(cacheKey);
+    if (cached) {
+      cached.texture.dispose();
+      this.currentMemoryMB -= this.estimateTextureMemory(cached.texture);
+      this.textureCache.delete(cacheKey);
+    }
+  }
+
+  disposeAll() {
+    this.textureCache.forEach((cached, key) => {
+      cached.texture.dispose();
     });
     this.textureCache.clear();
     this.loadingPromises.clear();
-    console.log('✅ All textures disposed');
+    this.currentMemoryMB = 0;
   }
 
-  getCacheSize(): number {
-    return this.textureCache.size;
-  }
-
-  getCacheInfo(): string[] {
-    return Array.from(this.textureCache.keys());
+  getStats() {
+    return {
+      cachedTextures: this.textureCache.size,
+      memoryUsageMB: this.currentMemoryMB,
+      loadingTextures: this.loadingPromises.size,
+    };
   }
 }
 

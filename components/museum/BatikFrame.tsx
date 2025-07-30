@@ -1,247 +1,237 @@
-// components/museum/BatikFrame.tsx
+// components/museum/BatikFrame.tsx (Optimized)
 'use client';
 
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
+import { Text, Box, Plane } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-import { TextureManager } from '@/lib/utils/TextureManager';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
-import type { Batik } from '@/lib/types';
 import * as THREE from 'three';
+import type { Batik } from '@/lib/types';
 
 interface BatikFrameProps {
   batik: Batik;
   position: [number, number, number];
-  rotation: [number, number, number];
-  floor: number;
+  rotation?: [number, number, number];
+  scale?: number;
 }
 
-export function BatikFrame({ batik, position, rotation, floor }: BatikFrameProps) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [isNear, setIsNear] = useState(false);
-  const [canInteract, setCanInteract] = useState(false);
-  const [batikTexture, setBatikTexture] = useState<THREE.Texture | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { setSelectedBatik } = useMuseumStore();
-  const { currentLanguage } = useLanguage();
+export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }: BatikFrameProps) {
+  const meshRef = useRef<THREE.Group>(null);
+  const frameRef = useRef<THREE.Mesh>(null);
+  
   const { camera } = useThree();
+  const { 
+    setSelectedBatik, 
+    selectedBatik, 
+    quality,
+    bookmarkedBatiks,
+    toggleBookmark 
+  } = useMuseumStore();
+  const { currentLanguage } = useLanguage();
+  
+  const [isHovered, setIsHovered] = useState(false);
+  const [isNearby, setIsNearby] = useState(false);
+  const [distance, setDistance] = useState(100);
+  const [batikTexture, setBatikTexture] = useState<THREE.Texture | null>(null);
 
+  const isSelected = selectedBatik?.id === batik.id;
+  const isBookmarked = bookmarkedBatiks.includes(batik.id);
   const isIndonesian = currentLanguage.code === 'id';
 
-  // Load batik texture
-  useEffect(() => {
-    const loadBatikTexture = async () => {
-      if (!batik.foto || batik.foto.length === 0) {
-        setIsLoading(false);
-        return;
-      }
+  // Get current translation
+  const translation = useMemo(() => {
+    return batik.translations.find(t => t.languageId === currentLanguage.id) || batik.translations[0];
+  }, [batik.translations, currentLanguage.id]);
 
-      try {
-        const textureManager = TextureManager.getInstance();
-        const imageUrl = batik.foto[0]?.link;
-        
-        if (imageUrl) {
-          const texture = await textureManager.loadTexture(imageUrl);
+  // Load batik texture with optimization
+  useEffect(() => {
+    if (batik.foto && batik.foto.length > 0) {
+      const loader = new THREE.TextureLoader();
+      loader.load(
+        batik.foto[0].link,
+        (texture) => {
+          // Optimize texture based on quality
+          if (quality === 'low') {
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            texture.generateMipmaps = false;
+          } else {
+            texture.minFilter = THREE.LinearMipmapLinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            texture.generateMipmaps = true;
+          }
+          
+          texture.wrapS = THREE.ClampToEdgeWrapping;
+          texture.wrapT = THREE.ClampToEdgeWrapping;
+          texture.flipY = false;
+          
           setBatikTexture(texture);
+        },
+        undefined,
+        (error) => {
+          console.error('Failed to load batik texture:', error);
+          setBatikTexture(null);
         }
-      } catch (error) {
-        console.warn('Failed to load batik texture for:', batik.nama, error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadBatikTexture();
-  }, [batik.foto, batik.nama]);
-
-  // Keyboard interaction
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.code === 'Enter' && canInteract) {
-        setSelectedBatik(batik);
-      }
-    };
-
-    if (canInteract) {
-      document.addEventListener('keydown', handleKeyPress);
-      return () => document.removeEventListener('keydown', handleKeyPress);
+      );
     }
-  }, [canInteract, batik, setSelectedBatik]);
 
-  // Distance checking and interaction
+    // Cleanup texture on unmount
+    return () => {
+      if (batikTexture) {
+        batikTexture.dispose();
+      }
+    };
+  }, [batik.foto, quality]);
+
+  // Distance calculation (optimized)
   useFrame(() => {
-    if (meshRef.current && camera) {
-      try {
-        const distance = camera.position.distanceTo(new THREE.Vector3(...position));
-        const isClose = distance < 8;
-        const isVeryClose = distance < 5;
-        
-        if (isClose !== isNear) {
-          setIsNear(isClose);
-        }
-        
-        if (isVeryClose !== canInteract) {
-          setCanInteract(isVeryClose);
-        }
+    if (!meshRef.current) return;
 
-        // Subtle hover effect
-        if (isClose && meshRef.current) {
-          meshRef.current.scale.setScalar(1.02);
-        } else if (meshRef.current) {
-          meshRef.current.scale.setScalar(1);
-        }
-      } catch (error) {
-        console.warn('Error in frame animation:', error);
-      }
+    const dist = camera.position.distanceTo(meshRef.current.position);
+    setDistance(dist);
+    setIsNearby(dist < 8);
+
+    // Simple frame animation only when needed
+    if (frameRef.current && (isSelected || isHovered) && quality !== 'low') {
+      const time = performance.now() * 0.001;
+      frameRef.current.scale.setScalar(1 + Math.sin(time * 2) * 0.01);
+    } else if (frameRef.current) {
+      frameRef.current.scale.setScalar(1);
     }
   });
 
-  // Get translation for current language
-  const translation = batik.translations?.find(
-    t => t.languageId === currentLanguage.id
-  ) || batik.translations?.[0];
+  // Simplified materials
+  const materials = useMemo(() => {
+    const frameMaterial = new THREE.MeshLambertMaterial({
+      color: isBookmarked ? 0xffd700 : 0x8b4513,
+    });
 
-  // Materials
-  const frameMaterial = new THREE.MeshStandardMaterial({
-    color: isNear ? "#8b4513" : "#654321",
-    emissive: canInteract ? "#332211" : "#000000",
-    emissiveIntensity: canInteract ? 0.2 : 0,
-    roughness: 0.8,
-    metalness: 0.1,
-  });
+    const fabricMaterial = new THREE.MeshLambertMaterial({
+      map: batikTexture,
+      color: 0xffffff,
+    });
 
-  const batikMaterial = batikTexture ? new THREE.MeshStandardMaterial({
-    map: batikTexture,
-    transparent: false,
-    roughness: 0.1,
-    metalness: 0.0,
-  }) : new THREE.MeshStandardMaterial({ 
-    color: "#f5f5f5",
-    roughness: 0.2,
-    metalness: 0.0,
-  });
+    return { frameMaterial, fabricMaterial };
+  }, [isBookmarked, batikTexture]);
 
-  const glassMaterial = new THREE.MeshStandardMaterial({
-    transparent: true,
-    opacity: 0.1,
-    roughness: 0.0,
-    metalness: 0.0,
-    color: "#ffffff"
-  });
+  // Handle interactions
+  const handleClick = (event: any) => {
+    event.stopPropagation();
+    
+    if (event.detail === 2) {
+      setSelectedBatik(batik);
+    } else if (event.shiftKey) {
+      toggleBookmark(batik.id);
+    } else {
+      setSelectedBatik(isSelected ? null : batik);
+    }
+  };
+
+  const handlePointerOver = () => {
+    setIsHovered(true);
+    document.body.style.cursor = 'pointer';
+  };
+
+  const handlePointerOut = () => {
+    setIsHovered(false);
+    document.body.style.cursor = 'auto';
+  };
+
+  // LOD - only show details when close
+  const shouldShowText = distance < 6;
+
+  // Portrait frame dimensions
+  const frameWidth = 2.5;
+  const frameHeight = 3.5;
+  const frameDepth = 0.2;
+  
+  const fabricWidth = frameWidth - 0.3;
+  const fabricHeight = frameHeight - 0.3;
 
   return (
-    <group position={position} rotation={rotation}>
-      {/* Main Frame */}
+    <group 
+      ref={meshRef} 
+      position={position} 
+      rotation={rotation} 
+      scale={scale}
+    >
+      {/* Portrait Frame */}
       <RigidBody type="fixed" colliders="cuboid">
-        <mesh ref={meshRef}>
-          <boxGeometry args={[4.2, 3.2, 0.3]} />
-          <primitive object={frameMaterial} />
-        </mesh>
+        <Box 
+          ref={frameRef}
+          args={[frameWidth, frameHeight, frameDepth]} 
+          position={[0, 0, 0]}
+          onClick={handleClick}
+          onPointerOver={handlePointerOver}
+          onPointerOut={handlePointerOut}
+        >
+          <primitive object={materials.frameMaterial} />
+        </Box>
       </RigidBody>
 
-      {/* Inner Frame */}
-      <mesh position={[0, 0, 0.05]}>
-        <boxGeometry args={[3.8, 2.8, 0.1]} />
-        <meshStandardMaterial color="#654321" roughness={0.6} metalness={0.2} />
+      {/* Batik Fabric */}
+      <mesh 
+        position={[0, 0, frameDepth/2 + 0.01]}
+        onClick={handleClick}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+      >
+        <planeGeometry args={[fabricWidth, fabricHeight]} />
+        <primitive object={materials.fabricMaterial} />
       </mesh>
 
-      {/* Batik Image Plane */}
-      <mesh position={[0, 0, 0.16]}>
-        <planeGeometry args={[3.5, 2.5]} />
-        <primitive object={batikMaterial} />
-      </mesh>
-
-      {/* Glass Protection */}
-      <mesh position={[0, 0, 0.17]}>
-        <planeGeometry args={[3.6, 2.6]} />
-        <primitive object={glassMaterial} />
-      </mesh>
-
-      {/* Loading Indicator */}
-      {isLoading && (
-        <Html position={[0, -2.2, 0.5]} center distanceFactor={6}>
-          <div className="bg-black/80 text-white p-2 rounded">
-            <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
-            <div className="text-xs">Loading...</div>
-          </div>
-        </Html>
+      {/* Bookmark Indicator */}
+      {isBookmarked && isNearby && (
+        <mesh position={[frameWidth/2 - 0.2, frameHeight/2 - 0.2, frameDepth/2 + 0.1]}>
+          <planeGeometry args={[0.2, 0.2]} />
+          <meshBasicMaterial color="#ffd700" />
+        </mesh>
       )}
 
-      {/* Info Panel - Only show when near and loaded */}
-      {isNear && !isLoading && (
-        <Html
-          position={[0, -2.2, 0.5]}
-          center
-          distanceFactor={6}
-          className="pointer-events-none select-none"
-        >
-          <div className={`bg-black/90 backdrop-blur-sm rounded-lg p-4 shadow-xl border max-w-xs transition-all duration-300 ${
-            canInteract ? 'border-green-400' : 'border-amber-400'
-          }`}>
-            <h3 className="font-bold text-amber-300 text-sm mb-2 line-clamp-2">
-              {batik.nama}
-            </h3>
-            
-            {batik.seniman && (
-              <p className="text-xs text-amber-200 mb-1 line-clamp-1">
-                🎨 {batik.seniman}
-              </p>
-            )}
-            
-            <p className="text-xs text-gray-300 mb-2">
-              📅 {batik.tahun}
-            </p>
+      {/* Information Panel - Only when close */}
+      {shouldShowText && (
+        <group position={[0, -frameHeight/2 - 0.6, 0.1]}>
+          <mesh>
+            <planeGeometry args={[frameWidth, 0.8]} />
+            <meshBasicMaterial color="#000000" transparent opacity={0.7} />
+          </mesh>
 
-            {translation && (
-              <p className="text-xs text-gray-300 mb-3 line-clamp-2">
-                {translation.histori}
-              </p>
-            )}
-            
-            <div className="flex items-center justify-between">
-              {canInteract ? (
-                <p className="text-xs text-green-400 font-medium animate-pulse">
-                  ⌨️ {isIndonesian ? 'Tekan ENTER' : 'Press ENTER'}
-                </p>
-              ) : (
-                <p className="text-xs text-amber-400">
-                  🚶 {isIndonesian ? 'Dekati untuk berinteraksi' : 'Move closer to interact'}
-                </p>
-              )}
-              
-              {batik.kode && (
-                <span className="text-xs bg-amber-600 text-white px-2 py-1 rounded-full">
-                  {batik.kode}
-                </span>
-              )}
-            </div>
-          </div>
-        </Html>
-      )}
+          <Text
+            position={[0, 0.2, 0.01]}
+            fontSize={0.1}
+            color="#ffffff"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={frameWidth - 0.2}
+          >
+            {batik.nama}
+          </Text>
 
-      {/* Frame Lighting */}
-      <spotLight
-        position={[0, 0, 3]}
-        angle={0.6}
-        penumbra={0.3}
-        intensity={canInteract ? 1.2 : isNear ? 0.8 : 0.5}
-        color={canInteract ? "#00ff88" : isNear ? "#ffd700" : "#fff8dc"}
-        castShadow={false}
-        distance={10}
-        decay={2}
-      />
+          {batik.seniman && (
+            <Text
+              position={[0, 0, 0.01]}
+              fontSize={0.06}
+              color="#ffd700"
+              anchorX="center"
+              anchorY="middle"
+              maxWidth={frameWidth - 0.2}
+            >
+              {batik.seniman}
+            </Text>
+          )}
 
-      {/* Additional lighting for better visibility */}
-      {canInteract && (
-        <pointLight
-          position={[0, 0, 1.5]}
-          intensity={0.3}
-          distance={4}
-          decay={2}
-          color="#00ff88"
-        />
+          <Text
+            position={[0, -0.2, 0.01]}
+            fontSize={0.05}
+            color="#cccccc"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {batik.tahun}
+          </Text>
+        </group>
       )}
     </group>
   );

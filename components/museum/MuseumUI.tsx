@@ -1,12 +1,32 @@
-// components/museum/MuseumUI.tsx
+// components/museum/MuseumUI.tsx (Simplified - Remove Tutorial & Audio)
 'use client';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { 
+  X, 
+  Settings, 
+  Map, 
+  Search,
+  Bookmark,
+  BarChart3,
+  Eye,
+  EyeOff
+} from 'lucide-react';
 import { useMuseumStore } from '@/lib/stores/museumStore';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
 import { BatikDetailModal } from './BatikDetailModal';
+import { Minimap } from './Minimap';
+import { FloorTransition } from './FloorTransition';
+import { PerformanceMonitor } from '@/lib/utils/PerformanceMonitor';
+
+interface PerformanceStats {
+  fps: number;
+  memory: number;
+  drawCalls: number;
+  triangles: number;
+  textures: number;
+}
 
 export function MuseumUI() {
   const { 
@@ -15,228 +35,296 @@ export function MuseumUI() {
     setSelectedBatik,
     getBatiksByFloor,
     getTotalBatiks,
-    totalFloors
+    showMinimap,
+    toggleMinimap,
+    showPerformanceStats,
+    togglePerformanceStats,
+    searchQuery,
+    setSearchQuery,
+    bookmarkedBatiks,
+    quality
   } = useMuseumStore();
   
   const { currentLanguage } = useLanguage();
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [performanceStats, setPerformanceStats] = useState<PerformanceStats>({
+    fps: 0,
+    memory: 0,
+    drawCalls: 0,
+    triangles: 0,
+    textures: 0
+  });
   
   const isIndonesian = currentLanguage.code === 'id';
   const currentFloorBatiks = getBatiksByFloor(currentFloor);
   const totalBatiks = getTotalBatiks();
 
-  // Auto-hide instructions after 10 seconds
+  // Performance monitoring
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowInstructions(false);
-    }, 10000);
+    const monitor = PerformanceMonitor.getInstance();
+    const unsubscribe = monitor.subscribe((metrics) => {
+      setPerformanceStats(metrics);
+    });
 
-    return () => clearTimeout(timer);
+    return unsubscribe;
   }, []);
 
-  // Hide instructions on any key press
-  useEffect(() => {
-    const handleKeyPress = () => {
-      setShowInstructions(false);
-    };
-
-    if (showInstructions) {
-      document.addEventListener('keydown', handleKeyPress);
-      return () => document.removeEventListener('keydown', handleKeyPress);
+  const handleExitMuseum = () => {
+    if (window.confirm(isIndonesian ? 'Keluar dari museum?' : 'Exit museum?')) {
+      window.location.href = '/gallery';
     }
-  }, [showInstructions]);
+  };
 
   return (
     <>
-      {/* Minimal Museum Info - Top Left */}
-      <div className="absolute top-6 left-6 z-10">
+      {/* Top Bar */}
+      <div className="fixed top-4 left-4 right-4 z-30 flex items-center justify-between">
+        {/* Museum Info */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
           className="bg-black/70 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-amber-500"
         >
-          <div className="text-white">
-            <div className="text-lg font-bold">
-              🏛️ {isIndonesian ? 'Museum Batik Digital' : 'Digital Batik Museum'}
-            </div>
-            <div className="text-sm text-amber-300">
-              {isIndonesian ? `Lantai ${currentFloor}` : `Floor ${currentFloor}`}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Current Floor Stats - Top Right */}
-      <div className="absolute top-6 right-6 z-10">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-black/70 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-amber-500"
-        >
-          <div className="text-white text-center">
-            <div className="text-2xl font-bold text-amber-400">
-              {currentFloorBatiks.length}
-            </div>
-            <div className="text-xs text-amber-300">
-              {isIndonesian ? 'Koleksi' : 'Collections'}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Keyboard Instructions - Bottom Center */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-black/80 backdrop-blur-sm rounded-lg shadow-lg p-4 border border-amber-500"
-        >
-          <div className="text-white text-center">
-            <div className="text-sm font-semibold text-amber-300 mb-2">
-              {isIndonesian ? 'Kontrol Keyboard' : 'Keyboard Controls'}
-            </div>
-            <div className="grid grid-cols-2 gap-4 text-xs">
-              <div>
-                <div className="text-amber-400 font-medium">
-                  {isIndonesian ? 'Gerakan:' : 'Movement:'}
-                </div>
-                <div>WASD</div>
+          <div className="flex items-center space-x-3">
+            <div className="text-2xl">🏛️</div>
+            <div>
+              <div className="text-white font-bold text-lg">
+                {isIndonesian ? 'Museum Batik Digital' : 'Digital Batik Museum'}
               </div>
-              <div>
-                <div className="text-amber-400 font-medium">
-                  {isIndonesian ? 'Lantai:' : 'Floor:'}
-                </div>
-                <div>1-{totalFloors}</div>
+              <div className="text-amber-300 text-sm">
+                {isIndonesian ? `Lantai ${currentFloor}` : `Floor ${currentFloor}`} • 
+                <span className="ml-1">
+                  {currentFloorBatiks.length} {isIndonesian ? 'koleksi' : 'collections'}
+                </span>
               </div>
             </div>
-            <div className="mt-2 text-xs text-gray-300">
-              {isIndonesian ? 'Tekan M untuk toggle mouse • ESC untuk keluar' : 'Press M to toggle mouse • ESC to exit'}
-            </div>
           </div>
         </motion.div>
-      </div>
 
-      {/* Initial Instructions Overlay */}
-      <AnimatePresence>
-        {showInstructions && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center"
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center space-x-2"
+        >
+          {/* Search Toggle */}
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className={`p-3 rounded-lg transition-colors ${
+              showSearch ? 'bg-blue-600' : 'bg-black/70 hover:bg-black/80'
+            } text-white border border-amber-500`}
+            title={isIndonesian ? 'Cari Batik' : 'Search Batik'}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-gradient-to-br from-amber-900 to-orange-900 text-white rounded-2xl shadow-2xl p-8 max-w-2xl mx-4 border border-amber-500"
-            >
-              <div className="text-center">
-                <div className="text-6xl mb-4">🏛️</div>
-                <h2 className="text-3xl font-bold mb-4 text-amber-200">
-                  {isIndonesian ? 'Selamat Datang di Museum Batik Digital' : 'Welcome to Digital Batik Museum'}
-                </h2>
-                <p className="text-lg mb-6 text-amber-100">
-                  {isIndonesian 
-                    ? 'Jelajahi koleksi batik tradisional Indonesia dengan kontrol keyboard'
-                    : 'Explore traditional Indonesian batik collections with keyboard controls'
-                  }
-                </p>
+            <Search className="w-5 h-5" />
+          </button>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-black/30 rounded-lg p-4">
-                    <h3 className="text-xl font-semibold mb-3 text-amber-300">
-                      {isIndonesian ? '🎮 Kontrol Gerakan' : '🎮 Movement Controls'}
-                    </h3>
-                    <div className="space-y-2 text-left">
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-amber-600 rounded text-sm">W</kbd>
-                        <span>{isIndonesian ? 'Maju' : 'Forward'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-amber-600 rounded text-sm">S</kbd>
-                        <span>{isIndonesian ? 'Mundur' : 'Backward'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-amber-600 rounded text-sm">A</kbd>
-                        <span>{isIndonesian ? 'Kiri' : 'Left'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-amber-600 rounded text-sm">D</kbd>
-                        <span>{isIndonesian ? 'Kanan' : 'Right'}</span>
-                      </div>
-                    </div>
-                  </div>
+          {/* Minimap Toggle */}
+          <button
+            onClick={toggleMinimap}
+            className={`p-3 rounded-lg transition-colors ${
+              showMinimap ? 'bg-blue-600' : 'bg-black/70 hover:bg-black/80'
+            } text-white border border-amber-500`}
+            title={isIndonesian ? 'Minimap' : 'Minimap'}
+          >
+            <Map className="w-5 h-5" />
+          </button>
 
-                  <div className="bg-black/30 rounded-lg p-4">
-                    <h3 className="text-xl font-semibold mb-3 text-amber-300">
-                      {isIndonesian ? '🏢 Navigasi Lantai' : '🏢 Floor Navigation'}
-                    </h3>
-                    <div className="space-y-2 text-left">
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-blue-600 rounded text-sm">1-{totalFloors}</kbd>
-                        <span>{isIndonesian ? 'Pindah Lantai' : 'Go to Floor'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-blue-600 rounded text-sm">Q</kbd>
-                        <span>{isIndonesian ? 'Lantai Bawah' : 'Floor Down'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-blue-600 rounded text-sm">E</kbd>
-                        <span>{isIndonesian ? 'Lantai Atas' : 'Floor Up'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <kbd className="px-3 py-1 bg-green-600 rounded text-sm">M</kbd>
-                        <span>{isIndonesian ? 'Toggle Mouse' : 'Toggle Mouse'}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          {/* Settings */}
+          <button
+            onClick={() => setShowSettings(!showSettings)}
+            className="p-3 bg-black/70 hover:bg-black/80 text-white rounded-lg transition-colors border border-amber-500"
+            title={isIndonesian ? 'Pengaturan' : 'Settings'}
+          >
+            <Settings className="w-5 h-5" />
+          </button>
 
-                <div className="bg-amber-800/50 rounded-lg p-4 mb-6">
-                  <h4 className="font-semibold text-amber-200 mb-2">
-                    {isIndonesian ? '💡 Tips Penting' : '💡 Important Tips'}
-                  </h4>
-                  <ul className="text-sm text-amber-100 space-y-1 text-left">
-                    <li>• {isIndonesian ? 'Klik layar untuk mengaktifkan kontrol mouse' : 'Click screen to enable mouse control'}</li>
-                    <li>• {isIndonesian ? 'Gunakan angka 1-' + totalFloors + ' untuk pindah lantai langsung' : 'Use numbers 1-' + totalFloors + ' to go directly to floors'}</li>
-                    <li>• {isIndonesian ? 'Dekati frame batik dan tekan Enter untuk melihat detail' : 'Approach batik frames and press Enter to view details'}</li>
-                    <li>• {isIndonesian ? 'Tekan ESC untuk keluar dari pointer lock' : 'Press ESC to exit pointer lock'}</li>
-                  </ul>
-                </div>
+          {/* Exit */}
+          <button
+            onClick={handleExitMuseum}
+            className="p-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            title={isIndonesian ? 'Keluar Museum' : 'Exit Museum'}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </motion.div>
+      </div>
 
-                <div className="text-amber-300 text-sm">
-                  {isIndonesian 
-                    ? 'Tekan tombol apa saja untuk memulai jelajah museum'
-                    : 'Press any key to start exploring the museum'
-                  }
-                </div>
+      {/* Search Panel */}
+      <AnimatePresence>
+        {showSearch && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-20 left-4 right-4 z-30"
+          >
+            <div className="bg-black/80 backdrop-blur-sm rounded-lg p-4 border border-amber-500 max-w-md mx-auto">
+              <div className="flex items-center space-x-3 mb-3">
+                <Search className="w-5 h-5 text-amber-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={isIndonesian ? 'Cari batik...' : 'Search batik...'}
+                  className="flex-1 bg-transparent text-white placeholder-amber-300 outline-none"
+                  autoFocus
+                />
               </div>
-            </motion.div>
+              
+              {searchQuery && (
+                <div className="text-amber-300 text-sm">
+                  {isIndonesian ? 'Tekan Enter untuk mencari di museum' : 'Press Enter to search in museum'}
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Museum Statistics - Bottom Left */}
-      <div className="absolute bottom-6 left-6 z-10">
+      {/* Settings Panel */}
+      <AnimatePresence>
+        {showSettings && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed top-20 right-4 z-30 w-80"
+          >
+            <div className="bg-black/90 backdrop-blur-sm rounded-lg border border-amber-500 overflow-hidden">
+              <div className="flex items-center justify-between p-4 bg-amber-900/50">
+                <h3 className="text-white font-semibold flex items-center">
+                  <Settings className="w-4 h-4 mr-2" />
+                  {isIndonesian ? 'Pengaturan' : 'Settings'}
+                </h3>
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="text-amber-300 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-4 space-y-4">
+                {/* Performance Stats Toggle */}
+                <div className="flex items-center justify-between">
+                  <span className="text-amber-300 text-sm">
+                    {isIndonesian ? 'Statistik Performa' : 'Performance Stats'}
+                  </span>
+                  <button
+                    onClick={togglePerformanceStats}
+                    className={`p-2 rounded transition-colors ${
+                      showPerformanceStats ? 'bg-green-600' : 'bg-gray-600'
+                    }`}
+                  >
+                    {showPerformanceStats ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  </button>
+                </div>
+
+                {/* Bookmarks */}
+                <div className="flex items-center justify-between">
+                  <span className="text-amber-300 text-sm">
+                    {isIndonesian ? 'Bookmark Tersimpan' : 'Saved Bookmarks'}
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <Bookmark className="w-4 h-4 text-amber-400" />
+                    <span className="text-white">{bookmarkedBatiks.length}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Performance Stats */}
+      <AnimatePresence>
+        {showPerformanceStats && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="fixed bottom-4 left-4 z-30"
+          >
+            <div className="bg-black/80 backdrop-blur-sm rounded-lg p-3 border border-amber-500 text-xs">
+              <div className="flex items-center space-x-2 mb-2">
+                <BarChart3 className="w-4 h-4 text-amber-400" />
+                <span className="text-amber-300 font-semibold">Performance</span>
+              </div>
+              <div className="space-y-1 text-white">
+                <div className="flex justify-between">
+                  <span>FPS:</span>
+                  <span className={performanceStats.fps < 30 ? 'text-red-400' : 'text-green-400'}>
+                    {performanceStats.fps}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Memory:</span>
+                  <span>{performanceStats.memory}MB</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Quality:</span>
+                  <span className="capitalize text-amber-300">{quality}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floor Stats */}
+      <div className="fixed bottom-4 right-4 z-30">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-black/70 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-amber-500"
+          className="bg-black/70 backdrop-blur-sm rounded-lg p-4 border border-amber-500"
         >
-          <div className="text-white text-center">
-            <div className="text-sm text-amber-300 mb-1">
-              {isIndonesian ? 'Total Museum' : 'Total Museum'}
+          <div className="text-center">
+            <div className="text-2xl font-bold text-amber-400 mb-1">
+              {currentFloorBatiks.length}
             </div>
-            <div className="text-xl font-bold text-amber-400">
-              {totalBatiks}
+            <div className="text-amber-300 text-sm mb-2">
+              {isIndonesian ? 'Koleksi Lantai Ini' : 'Floor Collections'}
             </div>
             <div className="text-xs text-gray-300">
-              {isIndonesian ? 'Koleksi Batik' : 'Batik Collections'}
+              {isIndonesian ? `Total: ${totalBatiks} batik` : `Total: ${totalBatiks} batiks`}
             </div>
           </div>
         </motion.div>
       </div>
+
+      {/* Keyboard Hints */}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-30">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-black/80 backdrop-blur-sm rounded-lg p-3 border border-amber-500"
+        >
+          <div className="text-white text-center text-sm">
+            <div className="font-semibold text-amber-300 mb-2">
+              {isIndonesian ? 'Kontrol Cepat' : 'Quick Controls'}
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <span className="text-amber-400">WASD:</span> {isIndonesian ? 'Bergerak' : 'Move'}
+              </div>
+              <div>
+                <span className="text-amber-400">1-3:</span> {isIndonesian ? 'Lantai' : 'Floors'}
+              </div>
+              <div>
+                <span className="text-amber-400">M:</span> {isIndonesian ? 'Minimap' : 'Minimap'}
+              </div>
+              <div>
+                <span className="text-amber-400">ESC:</span> {isIndonesian ? 'Lepas Mouse' : 'Release Mouse'}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Components */}
+      {showMinimap && <Minimap />}
+      <FloorTransition />
 
       {/* Batik Detail Modal */}
       <AnimatePresence>

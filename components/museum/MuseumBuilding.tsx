@@ -1,83 +1,134 @@
-// components/museum/MuseumBuilding.tsx
+// components/museum/MuseumBuilding.tsx (Updated)
 'use client';
 
 import { useRef, useEffect, useMemo, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { RigidBody } from '@react-three/rapier';
 import { Box, Plane } from '@react-three/drei';
 import { TextureManager } from '@/lib/utils/TextureManager';
+import { useMuseumStore } from '@/lib/stores/museumStore';
 import * as THREE from 'three';
 
 export function MuseumBuilding() {
   const buildingRef = useRef<THREE.Group>(null);
-  const [floorTexture, setFloorTexture] = useState<THREE.Texture | null>(null);
-  const [wallTexture, setWallTexture] = useState<THREE.Texture | null>(null);
-  const [ceilingTexture, setCeilingTexture] = useState<THREE.Texture | null>(null);
+  const { quality } = useMuseumStore();
+  const [textures, setTextures] = useState({
+    floor: null as THREE.Texture | null,
+    wall: null as THREE.Texture | null,
+    ceiling: null as THREE.Texture | null,
+  });
 
-  // Load textures dengan path yang benar
+  // Load textures based on quality
   useEffect(() => {
     const textureManager = TextureManager.getInstance();
     
     const loadTextures = async () => {
+      const qualitySettings = {
+        low: { repeat: [5, 5] as [number, number], quality: 'low' as const },
+        medium: { repeat: [8, 8] as [number, number], quality: 'medium' as const },
+        high: { repeat: [12, 12] as [number, number], quality: 'high' as const },
+      };
+
+      const settings = qualitySettings[quality];
+      
       try {
-        console.log('🏗️ Loading museum textures...');
-        
         const [floor, wall, ceiling] = await Promise.all([
-          // Floor texture - Wood Floor
           textureManager.loadTexture('/textures/WoodFloor040_4K-JPG/WoodFloor040_4K-JPG_Color.jpg', {
             wrapS: THREE.RepeatWrapping,
             wrapT: THREE.RepeatWrapping,
-            repeat: [10, 10]
-          }).catch(() => null),
-          
-          // Wall texture - Leather White Rough
+            repeat: settings.repeat,
+            quality: settings.quality
+          }),
           textureManager.loadTexture('/textures/leather_white_4k.gltf/textures/leather_white_rough_4k.jpg', {
             wrapS: THREE.RepeatWrapping,
             wrapT: THREE.RepeatWrapping,
-            repeat: [4, 4]
-          }).catch(() => null),
-          
-          // Ceiling texture - Office Ceiling
+            repeat: [4, 4] as [number, number],
+            quality: settings.quality
+          }),
           textureManager.loadTexture('/textures/OfficeCeiling005_4K-JPG/OfficeCeiling005_4K-JPG_Color.jpg', {
             wrapS: THREE.RepeatWrapping,
             wrapT: THREE.RepeatWrapping,
-            repeat: [8, 8]
-          }).catch(() => null)
+            repeat: settings.repeat,
+            quality: settings.quality
+          })
         ]);
 
-        setFloorTexture(floor);
-        setWallTexture(wall);
-        setCeilingTexture(ceiling);
-
-        console.log('✅ Museum textures loaded:', { floor: !!floor, wall: !!wall, ceiling: !!ceiling });
+        setTextures({ floor, wall, ceiling });
       } catch (error) {
-        console.error('❌ Failed to load textures:', error);
+        console.error('Failed to load building textures:', error);
       }
     };
 
     loadTextures();
-  }, []);
+  }, [quality]);
 
-  // Optimized materials
-  const materials = useMemo(() => ({
-    floor: new THREE.MeshStandardMaterial({
-      map: floorTexture,
-      color: floorTexture ? 0xffffff : 0xd2b48c,
-      roughness: 0.8,
-      metalness: 0.1,
-    }),
-    wall: new THREE.MeshStandardMaterial({
-      map: wallTexture,
-      color: wallTexture ? 0xffffff : 0xf5f5dc,
-      roughness: 0.7,
-      metalness: 0.1,
-    }),
-    ceiling: new THREE.MeshStandardMaterial({
-      map: ceilingTexture,
-      color: ceilingTexture ? 0xffffff : 0xf0f0f0,
-      roughness: 0.3,
-      metalness: 0.1,
-    }),
-  }), [floorTexture, wallTexture, ceilingTexture]);
+  // Optimized materials based on quality
+  const materials = useMemo(() => {
+    const baseSettings = {
+      low: { roughness: 0.8, metalness: 0.1 },
+      medium: { roughness: 0.7, metalness: 0.1 },
+      high: { roughness: 0.6, metalness: 0.2 },
+    };
+
+    const settings = baseSettings[quality];
+
+    return {
+      floor: new THREE.MeshStandardMaterial({
+        map: textures.floor,
+        color: textures.floor ? 0xffffff : 0xd2b48c,
+        ...settings,
+      }),
+      wall: new THREE.MeshStandardMaterial({
+        map: textures.wall,
+        color: textures.wall ? 0xffffff : 0xf5f5dc,
+        ...settings,
+      }),
+      ceiling: new THREE.MeshStandardMaterial({
+        map: textures.ceiling,
+        color: textures.ceiling ? 0xffffff : 0xf0f0f0,
+        roughness: 0.3,
+        metalness: 0.1,
+      }),
+    };
+  }, [textures, quality]);
+
+  // Lighting configuration based on quality
+  const lightingConfig = useMemo(() => {
+    switch (quality) {
+      case 'low':
+        return {
+          intensity: 0.6,
+          distance: 15,
+          count: 2, // Fewer lights per floor
+        };
+      case 'medium':
+        return {
+          intensity: 0.8,
+          distance: 18,
+          count: 4,
+        };
+      case 'high':
+        return {
+          intensity: 1.0,
+          distance: 20,
+          count: 6, // More lights for better illumination
+        };
+    }
+  }, [quality]);
+
+  // Animated lighting (subtle)
+  useFrame((state) => {
+    if (buildingRef.current && quality === 'high') {
+      // Subtle breathing effect for high quality
+      const time = state.clock.elapsedTime;
+      buildingRef.current.children.forEach((child, index) => {
+        if (child.type === 'PointLight') {
+          const light = child as THREE.PointLight;
+          light.intensity = lightingConfig.intensity + Math.sin(time + index) * 0.1;
+        }
+      });
+    }
+  });
 
   return (
     <group ref={buildingRef}>
@@ -92,7 +143,7 @@ export function MuseumBuilding() {
         </Plane>
       </RigidBody>
 
-      {/* Simple Box Rooms - 3 Floors */}
+      {/* Museum Structure - 3 Floors */}
       {[1, 2, 3].map((floorLevel) => {
         const floorY = (floorLevel - 1) * 6;
         const ceilingY = floorLevel * 6 - 0.5;
@@ -112,11 +163,12 @@ export function MuseumBuilding() {
                 <primitive object={materials.ceiling} />
               </Box>
             </RigidBody>
+
           </group>
         );
       })}
 
-      {/* Simple Box Walls */}
+      {/* Walls */}
       {[
         { position: [0, 9, -25], args: [50, 18, 1] as [number, number, number] }, // Back
         { position: [0, 9, 25], args: [50, 18, 1] as [number, number, number] },  // Front
@@ -130,21 +182,57 @@ export function MuseumBuilding() {
         </RigidBody>
       ))}
 
-      {/* Minimal Lighting - Only 4 ceiling lamps per floor */}
+      {/* Optimized Lighting System */}
       {[1, 2, 3].map((floor) => {
         const y = floor * 6 - 2;
+        const lightPositions = [];
+        
+        // Generate light positions based on quality
+        const gridSize = lightingConfig.count === 2 ? 1 : lightingConfig.count === 4 ? 2 : 3;
+        const spacing = 20 / gridSize;
+        
+        for (let x = 0; x < gridSize; x++) {
+          for (let z = 0; z < gridSize; z++) {
+            lightPositions.push([
+              -10 + (x * spacing),
+              y,
+              -10 + (z * spacing)
+            ]);
+          }
+        }
+        
         return (
           <group key={`lighting-${floor}`}>
-            {/* Corner lighting only */}
-            <pointLight position={[-12, y, -12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
-            <pointLight position={[12, y, -12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
-            <pointLight position={[-12, y, 12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
-            <pointLight position={[12, y, 12]} intensity={0.8} distance={20} decay={2} color="#fff8dc" />
+            {lightPositions.map((pos, index) => (
+              <pointLight
+                key={`light-${floor}-${index}`}
+                position={pos as [number, number, number]}
+                intensity={lightingConfig.intensity}
+                distance={lightingConfig.distance}
+                decay={2}
+                color="#fff8dc"
+                castShadow={quality === 'high'}
+              />
+            ))}
+            
+            {/* Ambient lighting for each floor */}
+            <ambientLight 
+              intensity={quality === 'low' ? 0.3 : 0.2} 
+              color="#f0f8ff" 
+            />
           </group>
         );
       })}
 
-      
+      {/* Emergency lighting (low quality fallback) */}
+      {quality === 'low' && (
+        <directionalLight
+          position={[10, 20, 10]}
+          intensity={0.8}
+          color="#fff8dc"
+          castShadow={false}
+        />
+      )}
     </group>
   );
 }
