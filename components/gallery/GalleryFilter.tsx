@@ -20,7 +20,7 @@ interface FilterState {
 interface GalleryFilterProps {
   themes: Theme[];
   filters: FilterState;
-  onFilterChange: (key: keyof FilterState, value: any) => void;
+  onFilterChange: (key: keyof FilterState, value: string | string[] | number | number[]) => void;
   onClearFilters: () => void;
 }
 

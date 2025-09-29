@@ -5,8 +5,6 @@ import { useRef, useEffect, useCallback } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3, Euler, MathUtils } from 'three';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-import * as THREE from 'three';
-
 interface FirstPersonControlsProps {
   speed?: number;
   sensitivity?: number;
@@ -16,14 +14,12 @@ interface FirstPersonControlsProps {
 export function FirstPersonControls({ 
   speed = 2.5, // Dikurangi dari 5 ke 2.5
   sensitivity = 0.0015, // Dikurangi dari 0.002 ke 0.0015
-  smoothing = 0.15 // Ditingkatkan dari 0.1 ke 0.15 untuk movement yang lebih smooth
 }: FirstPersonControlsProps) {
   const { camera, gl } = useThree();
   const { 
     currentFloor, 
     setCurrentFloor, 
     totalFloors,
-    cameraPosition,
     isTransitioning,
     setCameraPosition,
     quality
@@ -43,8 +39,6 @@ export function FirstPersonControls({
   
   // Control state
   const isLocked = useRef(false);
-  const minPolarAngle = useRef(0);
-  const maxPolarAngle = useRef(Math.PI);
 
   // Initialize camera position and rotation
   useEffect(() => {

@@ -45,7 +45,7 @@ export function usePagination<T>({
   // Reset to page 1 when items change
   useMemo(() => {
     setCurrentPage(1);
-  }, [items.length]);
+  }, []);
 
   return {
     currentPage,

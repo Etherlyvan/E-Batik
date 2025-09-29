@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMuseumStore } from '@/lib/stores/museumStore';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
-import { Map, Maximize2, Minimize2, Navigation, Search } from 'lucide-react';
+import { Map, Maximize2, Minimize2 } from 'lucide-react';
 
 interface MinimapProps {
   size?: 'small' | 'medium' | 'large';
@@ -68,9 +68,7 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
     // Draw player position
     drawPlayerPosition(ctx, scale, width, height);
     
-    // Draw bookmarked batiks
-    drawBookmarkedBatiks(ctx, scale, width, height);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFloor, cameraPosition, floorBatiks, bookmarkedBatiks, isExpanded]);
 
   const drawMuseumLayout = (ctx: CanvasRenderingContext2D, width: number, height: number, scale: number) => {
@@ -146,10 +144,6 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
     ctx.moveTo(x, y);
     ctx.lineTo(x, y - 8);
     ctx.stroke();
-  };
-
-  const drawBookmarkedBatiks = (ctx: CanvasRenderingContext2D, scale: number, width: number, height: number) => {
-    // Already handled in drawBatikFrames
   };
 
   const getBatikFramePositions = () => {
@@ -254,14 +248,10 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
             height={200}
             className={`${isExpanded ? expandedSizeClasses[size] : sizeClasses[size]} cursor-pointer border border-amber-600 rounded`}
             onClick={handleCanvasClick}
-            onMouseMove={(e) => {
+            onMouseMove={() => {
               // Handle hover effects for batik frames
               const canvas = canvasRef.current;
               if (!canvas) return;
-              
-              const rect = canvas.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const y = e.clientY - rect.top;
               
               // Check if hovering over batik frame
               // Implementation would check frame positions and set hoveredBatik

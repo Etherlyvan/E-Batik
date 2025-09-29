@@ -1,6 +1,8 @@
 // lib/utils/PerformanceMonitor.ts (Fixed)
 'use client';
 
+import * as THREE from 'three';
+
 interface PerformanceMetrics {
   fps: number;
   memory: number;
@@ -38,7 +40,7 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
-  updateMetrics(renderer: any, scene: any) {
+  updateMetrics(renderer: THREE.WebGLRenderer) {
     const now = performance.now();
     this.frameCount++;
 

@@ -15,12 +15,11 @@ interface BenchProps {
 function BenchModel({ position, rotation = [0, 0, 0] }: BenchProps) {
   const meshRef = useRef<THREE.Group>(null);
   
-  let gltf;
-  try {
-    gltf = useGLTF('/models/modern_bench_1/scene.gltf');
-  } catch (error) {
-    console.error('Failed to load modern bench model:', error);
-    // Fallback to simple geometry
+  // Always call useGLTF at top level - hooks must be unconditional
+  const gltf = useGLTF('/models/modern_bench_1/scene.gltf');
+  
+  // If model failed to load, render fallback
+  if (!gltf?.scene) {
     return (
       <RigidBody type="fixed" colliders="cuboid">
         <group ref={meshRef} position={position} rotation={rotation}>

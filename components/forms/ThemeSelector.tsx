@@ -9,21 +9,44 @@ import type { Theme } from '@/lib/types';
 interface ThemeSelectorProps {
   themes: Theme[];
   selectedThemes: number[];
-  onThemeChange: (themeIds: number[]) => void;
+  selectedSubThemes?: number[];
+  onThemeChange: (themeIds: number[], subThemeIds: number[]) => void;
 }
 
 export function ThemeSelector({ 
   themes, 
   selectedThemes, 
+  selectedSubThemes: initialSelectedSubThemes = [],
   onThemeChange 
 }: ThemeSelectorProps) {
   const [expandedThemes, setExpandedThemes] = useState<number[]>([]);
-  const [selectedSubThemes, setSelectedSubThemes] = useState<number[]>([]);
+  const [selectedSubThemes, setSelectedSubThemes] = useState<number[]>(initialSelectedSubThemes);
 
-  // Auto-expand selected themes
+  // Function to get multi-language name
+  const getMultiLanguageName = (item: Theme | { id: number; nama: string; translations: Array<{ languageId: number; nama: string }> }) => {
+    const translations = item.translations || [];
+    const id = translations.find(t => t.languageId === 1)?.nama || item.nama || '';
+    const en = translations.find(t => t.languageId === 2)?.nama || '';
+    const jp = translations.find(t => t.languageId === 3)?.nama || '';
+    
+    return `${id}${en ? ` / ${en}` : ''}${jp ? ` / ${jp}` : ''}`;
+  };
+
+  // Auto-expand selected themes and sync subtemas
   useEffect(() => {
-    setExpandedThemes(selectedThemes);
+    setExpandedThemes(prev => {
+      const newExpanded = [...selectedThemes];
+      return JSON.stringify(prev) !== JSON.stringify(newExpanded) ? newExpanded : prev;
+    });
   }, [selectedThemes]);
+
+  useEffect(() => {
+    setSelectedSubThemes(prev => {
+      return JSON.stringify(prev) !== JSON.stringify(initialSelectedSubThemes) 
+        ? initialSelectedSubThemes 
+        : prev;
+    });
+  }, [initialSelectedSubThemes]);
 
   const toggleTheme = (themeId: number) => {
     const isSelected = selectedThemes.includes(themeId);
@@ -38,22 +61,26 @@ export function ThemeSelector({
       );
       
       setSelectedSubThemes(newSelectedSubThemes);
-      onThemeChange(newSelectedThemes);
+      onThemeChange(newSelectedThemes, newSelectedSubThemes);
     } else {
       // Add theme
       const newSelectedThemes = [...selectedThemes, themeId];
-      onThemeChange(newSelectedThemes);
+      onThemeChange(newSelectedThemes, selectedSubThemes);
     }
   };
 
   const toggleSubTheme = (subThemeId: number) => {
     const isSelected = selectedSubThemes.includes(subThemeId);
     
+    let newSelectedSubThemes;
     if (isSelected) {
-      setSelectedSubThemes(prev => prev.filter(id => id !== subThemeId));
+      newSelectedSubThemes = selectedSubThemes.filter(id => id !== subThemeId);
     } else {
-      setSelectedSubThemes(prev => [...prev, subThemeId]);
+      newSelectedSubThemes = [...selectedSubThemes, subThemeId];
     }
+    
+    setSelectedSubThemes(newSelectedSubThemes);
+    onThemeChange(selectedThemes, newSelectedSubThemes);
   };
 
   const toggleExpanded = (themeId: number) => {
@@ -85,7 +112,7 @@ export function ThemeSelector({
                   htmlFor={`theme-${theme.id}`}
                   className="text-sm font-medium cursor-pointer"
                 >
-                  {theme.translations[0]?.nama || theme.nama}
+                  {getMultiLanguageName(theme)}
                 </label>
               </div>
               
@@ -127,7 +154,7 @@ export function ThemeSelector({
                           !selectedThemes.includes(theme.id) && "text-gray-400"
                         )}
                       >
-                        {subTheme.translations[0]?.nama || subTheme.nama}
+                        {getMultiLanguageName(subTheme)}
                       </label>
                     </div>
                   ))}

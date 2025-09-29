@@ -2,11 +2,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface HeroProps {
   backgroundImages?: string[];
@@ -18,8 +17,6 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [heroImages, setHeroImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const isIndonesian = currentLanguage.code === 'id';
 
   // Memoize preload function
   const preloadImages = useCallback((images: string[]) => {
@@ -59,7 +56,7 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
 
     const fetchHeroPhotos = async () => {
       if (isLoading) return; // Prevent multiple calls
-      
+
       setIsLoading(true);
       try {
         const response = await fetch('/api/hero');
@@ -112,14 +109,14 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
-  const currentImage = heroImages.length > 0 
-    ? heroImages[currentImageIndex] 
+  const currentImage = heroImages.length > 0
+    ? heroImages[currentImageIndex]
     : '/images/gallery-hero-bg.jpg';
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Background Pattern */}
-      <div 
+      <div
         className="absolute inset-0"
         style={{
           backgroundImage: 'url(/images/corner-patttern-like-the-image.jpg)',
@@ -177,23 +174,25 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
         >
           <div className="text-right flex flex-col justify-center items-end w-full py-8 sm:py-12 md:py-16 lg:py-20">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-black mb-2 sm:mb-3 md:mb-4 leading-tight tracking-tight">
-              {isIndonesian
-                ? 'Selamat Datang di'
-                : 'Welcome to'}
+              {currentLanguage.code === 'id' ? 'Selamat Datang di' :
+               currentLanguage.code === 'en' ? 'Welcome to' :
+               'ようこそ'}
             </h1>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-black mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight">
-              {isIndonesian ? (
-                'Database Batik Pertama!'
-              ) : (
+              {currentLanguage.code === 'id' ? 'Database Batik Pertama!' :
+               currentLanguage.code === 'en' ? (
                 <>
                   1<sup className="text-lg sm:text-xl md:text-2xl lg:text-3xl">st</sup> Batik Database!
                 </>
-              )}
+               ) :
+               '第一のバティックデータベース!'}
             </h2>
             <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-700 mb-6 sm:mb-8 md:mb-10 text-right max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-lg xl:max-w-xl leading-relaxed">
-              {isIndonesian
+              {currentLanguage.code === 'id'
                 ? "Dengan ratusan desain Batik dari butik di Jawa Timur, kami adalah database Batik terbesar di Indonesia!"
-                : "With hundreds of Batik designs from boutiques in East Java, we are Indonesia's largest Batik database!"}
+                : currentLanguage.code === 'en'
+                ? "With hundreds of Batik designs from boutiques in East Java, we are Indonesia's largest Batik database!"
+                : "東ジャワのブティックから数百のバティックデザインを集めた、インドネシア最大のバティックデータベースです！"}
             </p>
 
             {/* Action Buttons */}
@@ -203,11 +202,13 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
                 className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={() => window.location.href = '/gallery'}
               >
-                {isIndonesian ? 'Jelajahi Koleksi' : 'Explore Collection'}
+                {currentLanguage.code === 'id' ? 'Jelajahi Koleksi' :
+                 currentLanguage.code === 'en' ? 'Explore Collection' :
+                 'コレクションを探索'}
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
               </Button>
 
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="lg"
                 className="w-full sm:w-auto text-black border-2 border-black hover:bg-black hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300"
@@ -219,8 +220,10 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
                 }}
               >
                 <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                {isIndonesian ? 'Tonton Video' : 'Watch Video'}
-              </Button>
+                {currentLanguage.code === 'id' ? 'Tonton Video' :
+                 currentLanguage.code === 'en' ? 'Watch Video' :
+                 'ビデオを見る'}
+              </Button> */}
             </div>
           </div>
         </motion.div>
@@ -235,7 +238,9 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
       >
         <div className="flex flex-col items-center text-black">
           <span className="text-xs sm:text-sm mb-2">
-            {isIndonesian ? 'Gulir ke bawah' : 'Scroll down'}
+            {currentLanguage.code === 'id' ? 'Gulir ke bawah' :
+             currentLanguage.code === 'en' ? 'Scroll down' :
+             'スクロールダウン'}
           </span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
@@ -255,8 +260,8 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
               key={index}
               onClick={() => setCurrentImageIndex(index)}
               className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
-                index === currentImageIndex 
-                  ? 'bg-black scale-125' 
+                index === currentImageIndex
+                  ? 'bg-black scale-125'
                   : 'bg-black/50 hover:bg-black/75'
               }`}
             />

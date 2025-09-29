@@ -1,40 +1,28 @@
-// 🔄 UPLOAD FEATURE - File upload service for Cloudinary
-import { v2 as cloudinary } from 'cloudinary';
+// 🔄 UPLOAD FEATURE - File upload service via API route
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-export async function uploadToCloudinary(file: File): Promise<{
+interface CloudinaryUploadResult {
   secure_url: string;
   public_id: string;
-}> {
-  try {
-    // Convert file to buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+}
 
-    // Upload to Cloudinary
-    const result = await new Promise<any>((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'auto',
-          folder: 'batik-uploads',
-          transformation: [
-            { width: 800, height: 800, crop: 'limit' },
-            { quality: 'auto' },
-            { format: 'webp' },
-          ],
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      ).end(buffer);
+export async function uploadToCloudinary(file: File): Promise<CloudinaryUploadResult> {
+  try {
+    // Create FormData for API route
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Upload via our API route (server-side)
+    const response = await fetch('/api/cloudinary/upload', {
+      method: 'POST',
+      body: formData,
     });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Upload failed: ${response.status} ${errorData}`);
+    }
+
+    const result = await response.json();
 
     return {
       secure_url: result.secure_url,
@@ -48,7 +36,20 @@ export async function uploadToCloudinary(file: File): Promise<{
 
 export async function deleteFromCloudinary(publicId: string): Promise<void> {
   try {
-    await cloudinary.uploader.destroy(publicId);
+    // Create FormData for delete request
+    const formData = new FormData();
+    formData.append('public_id', publicId);
+    
+    // For delete operations, we need to use server-side API route
+    const response = await fetch('/api/cloudinary/delete', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Delete failed: ${response.status} ${errorData}`);
+    }
   } catch (error) {
     console.error('Error deleting from Cloudinary:', error);
     throw new Error('Failed to delete image');

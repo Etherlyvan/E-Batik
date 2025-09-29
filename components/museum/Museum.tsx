@@ -11,7 +11,6 @@ import { BatikFrame } from './BatikFrame';
 import { FirstPersonControls } from './FirstPersonControls';
 import { MuseumUI } from './MuseumUI';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-import { useLanguage } from '@/lib/contexts/LanguageContext';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import type { Batik } from '@/lib/types';
 

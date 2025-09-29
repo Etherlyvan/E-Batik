@@ -17,16 +17,15 @@ interface PictureFrameProps {
 function PictureFrameModel({ 
   position, 
   rotation = [0, 0, 0], 
-  scale = [1, 1, 1],
-  imageUrl = '/images/placeholder.jpg'
+  scale = [1, 1, 1]
 }: PictureFrameProps) {
   const meshRef = useRef<THREE.Group>(null);
   
-  let gltf;
-  try {
-    gltf = useGLTF('/models/wooden_picture_frame/scene.gltf');
-  } catch (error) {
-    console.error('Failed to load wooden picture frame model:', error);
+  // Always call useGLTF at top level
+  const gltf = useGLTF('/models/wooden_picture_frame/scene.gltf');
+  
+  // If model failed to load, render fallback
+  if (!gltf?.scene) {
     // Wooden frame fallback
     return (
       <RigidBody type="fixed" colliders="cuboid">

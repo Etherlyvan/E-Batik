@@ -26,12 +26,18 @@ function StatueModel({
   const meshRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   
-  let gltf;
-  try {
-    gltf = useGLTF('/models/aphrodite_kallipygos_statue/scene.gltf');
-  } catch (error) {
-    console.error('Failed to load Aphrodite statue model:', error);
-    // Classical statue fallback
+  // Always call useGLTF at top level
+  const gltf = useGLTF('/models/aphrodite_kallipygos_statue/scene.gltf');
+  
+  // Animation hook must be called before any early returns
+  useFrame((state) => {
+    if (meshRef.current && hovered && gltf?.scene) {
+      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.05;
+    }
+  });
+  
+  // If model failed to load, render fallback
+  if (!gltf?.scene) {
     return (
       <RigidBody type="fixed" colliders="cuboid">
         <group 
@@ -104,12 +110,6 @@ function StatueModel({
   }
 
   const clonedScene = gltf.scene.clone();
-  
-  useFrame((state) => {
-    if (meshRef.current && hovered) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.05;
-    }
-  });
   
   return (
     <RigidBody type="fixed" colliders="trimesh">

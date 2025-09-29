@@ -9,7 +9,7 @@ export const BatikTranslationSchema = z.object({
   jenisKain: z.string().min(1, 'Fabric type is required'),
   histori: z.string().min(1, 'History is required'),
   pewarna: z.string().min(1, 'Dye is required'),
-  bentuk: z.string().min(1, 'Shape is required'),
+  bentuk: z.string().optional().default(''),
 });
 
 export const CreateBatikSchema = z.object({
@@ -26,7 +26,30 @@ export const CreateBatikSchema = z.object({
   foto: z.array(z.string()).min(1, 'At least one photo is required'),
 });
 
-export const UpdateBatikSchema = CreateBatikSchema.partial();
+// Update schema with more flexible translation validation
+export const UpdateBatikSchema = z.object({
+  nama: z.string().min(1, 'Name is required').optional(),
+  kode: z.string().optional(),
+  alamat: z.string().optional(),
+  seniman: z.string().optional(),
+  pointmap: z.string().optional(),
+  tahun: z.string().min(1, 'Year is required').optional(),
+  dimensi: z.string().min(1, 'Dimensions are required').optional(),
+  translations: z.array(
+    z.object({
+      languageId: z.number(),
+      warna: z.string().optional().default(''),
+      teknik: z.string().optional().default(''),
+      jenisKain: z.string().optional().default(''),
+      histori: z.string().optional().default(''),
+      pewarna: z.string().optional().default(''),
+      bentuk: z.string().optional().default(''),
+    })
+  ).optional(),
+  temaIds: z.array(z.number()).min(1, 'At least one theme is required').optional(),
+  subTemaIds: z.array(z.number()).default([]).optional(),
+  foto: z.array(z.string()).min(1, 'At least one photo is required').optional(),
+});
 
 // TypeScript types
 export type BatikTranslation = z.infer<typeof BatikTranslationSchema>;

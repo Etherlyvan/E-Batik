@@ -11,12 +11,12 @@ interface PerformanceOptimizerProps {
 }
 
 export function PerformanceOptimizer({ onQualityChange }: PerformanceOptimizerProps) {
-  const { gl, scene } = useThree();
+  const { gl } = useThree();
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [monitor] = useState(() => PerformanceMonitor.getInstance());
 
   useEffect(() => {
-    const unsubscribe = monitor.subscribe((metrics: any) => {
+    const unsubscribe = monitor.subscribe(() => {
       const recommendedQuality = monitor.getQualityRecommendation();
       
       if (recommendedQuality !== quality) {
@@ -29,6 +29,7 @@ export function PerformanceOptimizer({ onQualityChange }: PerformanceOptimizerPr
     });
 
     return unsubscribe;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monitor, quality, onQualityChange]);
 
   const applyQualitySettings = (newQuality: 'low' | 'medium' | 'high') => {
@@ -53,7 +54,7 @@ export function PerformanceOptimizer({ onQualityChange }: PerformanceOptimizerPr
   };
 
   useFrame(() => {
-    monitor.updateMetrics(gl, scene);
+    monitor.updateMetrics(gl);
   });
 
   return null;

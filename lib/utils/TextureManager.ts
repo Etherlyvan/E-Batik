@@ -175,7 +175,7 @@ class TextureManager {
   }
 
   disposeAll() {
-    this.textureCache.forEach((cached, key) => {
+    this.textureCache.forEach((cached) => {
       cached.texture.dispose();
     });
     this.textureCache.clear();

@@ -1,7 +1,7 @@
 // 🏡 HOME FEATURE - Animated statistics counter
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
 
@@ -19,34 +19,40 @@ export function StatsCounter() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
-  const isIndonesian = currentLanguage.code === 'id';
-
-  const stats: Stat[] = [
+  const stats: Stat[] = useMemo(() => [
     { 
       value: 500, 
-      label: ['Digitalized Batik', 'Batik Terdigitalisasi'],
+      label: currentLanguage.code === 'id' ? ['Batik Terdigitalisasi'] :
+             currentLanguage.code === 'en' ? ['Digitalized Batik'] :
+             ['デジタル化されたバティック'],
       icon: '🎨',
       suffix: '+'
     },
     { 
       value: 30, 
-      label: ['Batik Boutiques', 'Butik Batik'],
+      label: currentLanguage.code === 'id' ? ['Butik Batik'] :
+             currentLanguage.code === 'en' ? ['Batik Boutiques'] :
+             ['バティックブティック'],
       icon: '🏪',
       suffix: '+'
     },
     { 
       value: 90, 
-      label: ['Themes & Subthemes', 'Tema & Subtema'],
+      label: currentLanguage.code === 'id' ? ['Tema & Subtema'] :
+             currentLanguage.code === 'en' ? ['Themes & Subthemes'] :
+             ['テーマ & サブテーマ'],
       icon: '🏷️',
       suffix: '+'
     },
     { 
       value: 10, 
-      label: ['Team Members', 'Anggota Tim'],
+      label: currentLanguage.code === 'id' ? ['Anggota Tim'] :
+             currentLanguage.code === 'en' ? ['Team Members'] :
+             ['チームメンバー'],
       icon: '👥',
       suffix: '+'
     },
-  ];
+  ], [currentLanguage.code]);
 
   // Animate counters when in view
   useEffect(() => {
@@ -85,12 +91,16 @@ export function StatsCounter() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            {isIndonesian ? 'Pencapaian Kami' : 'Our Achievements'}
+            {currentLanguage.code === 'id' ? 'Pencapaian Kami' :
+             currentLanguage.code === 'en' ? 'Our Achievements' :
+             '私たちの成果'}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            {isIndonesian 
+            {currentLanguage.code === 'id' 
               ? 'Angka-angka yang menunjukkan dedikasi kami dalam melestarikan warisan budaya batik Indonesia'
-              : 'Numbers that show our dedication to preserving Indonesian batik cultural heritage'}
+              : currentLanguage.code === 'en'
+              ? 'Numbers that show our dedication to preserving Indonesian batik cultural heritage'
+              : 'インドネシアのバティック文化遺産の保存に対する私たちの献身を示す数値'}
           </p>
         </motion.div>
 
@@ -120,7 +130,7 @@ export function StatsCounter() {
                 
                 {/* Label */}
                 <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium">
-                  {stat.label[isIndonesian ? 1 : 0]}
+                  {stat.label[0]}
                 </div>
               </div>
             </motion.div>
@@ -136,9 +146,11 @@ export function StatsCounter() {
           className="text-center mt-16"
         >
           <p className="text-gray-600 max-w-3xl mx-auto">
-            {isIndonesian 
+            {currentLanguage.code === 'id' 
               ? 'Setiap angka mewakili komitmen kami untuk menjaga, mendokumentasikan, dan mempromosikan kekayaan budaya batik Indonesia untuk generasi mendatang.'
-              : 'Each number represents our commitment to preserve, document, and promote the richness of Indonesian batik culture for future generations.'}
+              : currentLanguage.code === 'en'
+              ? 'Each number represents our commitment to preserve, document, and promote the richness of Indonesian batik culture for future generations.'
+              : '各数字は、将来の世代のためにインドネシアのバティック文化の豊かさを保存、記録、促進する私たちのコミットメントを表しています。'}
           </p>
         </motion.div>
       </div>

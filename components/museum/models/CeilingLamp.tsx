@@ -21,12 +21,11 @@ function CeilingLampModel({
 }: CeilingLampProps) {
   const meshRef = useRef<THREE.Group>(null);
   
-  let gltf;
-  try {
-    gltf = useGLTF('/models/ceiling_lamp_-_11mb/scene.gltf');
-  } catch (error) {
-    console.error('Failed to load ceiling lamp model:', error);
-    // Modern ceiling lamp fallback
+  // Always call useGLTF at top level
+  const gltf = useGLTF('/models/ceiling_lamp_-_11mb/scene.gltf');
+  
+  // If model failed to load, render fallback
+  if (!gltf?.scene) {
     return (
       <group ref={meshRef} position={position} rotation={rotation}>
         {/* Modern pendant lamp */}

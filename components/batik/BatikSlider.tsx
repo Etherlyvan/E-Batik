@@ -15,7 +15,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
   const { currentLanguage } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const isIndonesian = currentLanguage.code === 'id';
+
 
   // Auto-slide unlimited
   useEffect(() => {
@@ -41,7 +41,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
     <section className="w-full py-16 relative overflow-hidden" style={{ backgroundColor: '#A0522D' }}>
       {/* Background Pattern - subtle texture */}
       <div className="absolute inset-0 opacity-10">
-        <div 
+        <div
           className="w-full h-full"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.3'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -52,24 +52,26 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="text-center mb-12">
-     
 
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
             className="text-4xl font-bold mb-8"
-            style={{ 
+            style={{
               color: '#F5E6D3',
               fontFamily: 'Georgia, serif',
               letterSpacing: '0.5px'
             }}
           >
-            {isIndonesian ? 'Koleksi Batik Nusantara' : 'Indonesian Batik Collection'}
+            {currentLanguage.code === 'id' ? 'Koleksi Batik Nusantara' :
+             currentLanguage.code === 'en' ? 'Indonesian Batik Collection' :
+             'インドネシアバティックコレクション'}
           </motion.h2>
 
- 
+
         </div>
 
         {/* Infinite Sliding Carousel */}
@@ -88,8 +90,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
             }}
           >
             {infiniteBatiks.map((batik, index) => {
-              const actualIndex = index % batiks.length;
-              
+
               return (
                 <motion.div
                   key={`${batik.id}-${index}`}
@@ -97,7 +98,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
                   style={{ width: `${itemWidth - 24}px` }}
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
+                  transition={{
                     duration: 0.6,
                     delay: (index % itemsToShow) * 0.1
                   }}
@@ -112,10 +113,10 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
                         className="object-cover"
                         sizes="256px"
                       />
-                      
+
                       {/* Overlay Gradient */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                      
+
                       {/* Code Badge */}
                       {batik.kode && (
                         <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-600 to-orange-700 text-white px-2 py-1 rounded-full text-xs font-medium shadow-lg">
@@ -127,9 +128,9 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
                     {/* Content */}
                     <div className="p-4">
                       {/* Title */}
-                      <h3 
+                      <h3
                         className="font-bold text-lg mb-2 line-clamp-2 min-h-[3rem]"
-                        style={{ 
+                        style={{
                           color: '#8B4513',
                           fontFamily: 'Georgia, serif'
                         }}
@@ -139,9 +140,9 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
 
                       {/* Artist */}
                       {batik.seniman && (
-                        <p 
+                        <p
                           className="mb-2 text-sm line-clamp-1"
-                          style={{ 
+                          style={{
                             color: '#A0522D',
                             fontFamily: 'Georgia, serif'
                           }}
@@ -156,7 +157,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
                           const translation = tema.translations.find(
                             t => t.languageId === currentLanguage.id
                           ) || tema.translations[0];
-                          
+
                           return (
                             <span
                               key={tema.id}
@@ -173,7 +174,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
                       </div>
 
                       {/* Year */}
-                      <div 
+                      <div
                         className="text-center text-sm font-medium"
                         style={{ color: '#A0522D' }}
                       >
@@ -195,7 +196,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
                 key={index}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === (currentIndex % 4)
-                    ? 'bg-yellow-400 scale-125 shadow-lg' 
+                    ? 'bg-yellow-400 scale-125 shadow-lg'
                     : 'bg-yellow-600/50'
                 }`}
               />
@@ -204,7 +205,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
         </div>
 
         {/* Statistics */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -214,56 +215,62 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
           <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-white/30">
             <div className="flex items-center space-x-6">
               <div className="text-center">
-                <div 
+                <div
                   className="text-2xl font-bold"
                   style={{ color: '#F5E6D3' }}
                 >
                   {batiks.length}
                 </div>
-                <div 
+                <div
                   className="text-sm"
-                  style={{ 
+                  style={{
                     color: '#E6D4C1',
                     fontFamily: 'Georgia, serif'
                   }}
                 >
-                  {isIndonesian ? 'Koleksi Batik' : 'Batik Collection'}
+                  {currentLanguage.code === 'id' ? 'Koleksi Batik' :
+                   currentLanguage.code === 'en' ? 'Batik Collection' :
+                   'バティックコレクション'}
                 </div>
               </div>
               <div className="w-px h-8 bg-white/30" />
               <div className="text-center">
-                <div 
+                <div
                   className="text-2xl font-bold"
                   style={{ color: '#F5E6D3' }}
                 >
                   {new Set(batiks.flatMap(b => b.tema.map(t => t.id))).size}
                 </div>
-                <div 
+                <div
                   className="text-sm"
-                  style={{ 
+                  style={{
                     color: '#E6D4C1',
                     fontFamily: 'Georgia, serif'
                   }}
                 >
-                  {isIndonesian ? 'Tema Unik' : 'Unique Themes'}
+                  {currentLanguage.code === 'id' ? 'Tema Unik' :
+                   currentLanguage.code === 'en' ? 'Unique Themes' :
+                   'ユニークなテーマ'}
                 </div>
               </div>
               <div className="w-px h-8 bg-white/30" />
               <div className="text-center">
-                <div 
+                <div
                   className="text-2xl font-bold"
                   style={{ color: '#F5E6D3' }}
                 >
                   ∞
                 </div>
-                <div 
+                <div
                   className="text-sm"
-                  style={{ 
+                  style={{
                     color: '#E6D4C1',
                     fontFamily: 'Georgia, serif'
                   }}
                 >
-                  {isIndonesian ? 'Eksplorasi' : 'Exploration'}
+                  {currentLanguage.code === 'id' ? 'Eksplorasi' :
+                   currentLanguage.code === 'en' ? 'Exploration' :
+                   '探索'}
                 </div>
               </div>
             </div>
@@ -271,7 +278,7 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
         </motion.div>
 
         {/* Call to Action */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -288,7 +295,9 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
               fontFamily: 'Georgia, serif'
             }}
           >
-            {isIndonesian ? 'Jelajahi Koleksi Lengkap' : 'Explore Full Collection'}
+            {currentLanguage.code === 'id' ? 'Jelajahi Koleksi Lengkap' :
+             currentLanguage.code === 'en' ? 'Explore Full Collection' :
+             '完全なコレクションを探索'}
             <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
