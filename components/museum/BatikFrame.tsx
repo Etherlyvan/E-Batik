@@ -33,12 +33,19 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
   const [isNearby, setIsNearby] = useState(false);
   const [distance, setDistance] = useState(100);
   const [batikTexture, setBatikTexture] = useState<THREE.Texture | null>(null);
+  const textureRef = useRef<THREE.Texture | null>(null);
 
   const isSelected = selectedBatik?.id === batik.id;
   const isBookmarked = bookmarkedBatiks.includes(batik.id);
 
   // Load batik texture with optimization
   useEffect(() => {
+    // Cleanup previous texture
+    if (textureRef.current) {
+      textureRef.current.dispose();
+      textureRef.current = null;
+    }
+
     if (batik.foto && batik.foto.length > 0) {
       const loader = new THREE.TextureLoader();
       loader.load(
@@ -59,6 +66,7 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
           texture.wrapT = THREE.ClampToEdgeWrapping;
           texture.flipY = false;
           
+          textureRef.current = texture;
           setBatikTexture(texture);
         },
         undefined,
@@ -71,11 +79,12 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
 
     // Cleanup texture on unmount
     return () => {
-      if (batikTexture) {
-        batikTexture.dispose();
+      if (textureRef.current) {
+        textureRef.current.dispose();
+        textureRef.current = null;
       }
     };
-  }, [batik.foto, quality, batikTexture]);
+  }, [batik.foto, quality]);
 
   // Distance calculation (optimized)
   useFrame(() => {

@@ -14,6 +14,7 @@ export function PerformanceOptimizer({ onQualityChange }: PerformanceOptimizerPr
   const { gl } = useThree();
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [monitor] = useState(() => PerformanceMonitor.getInstance());
+  const [lastUpdate, setLastUpdate] = useState(0);
 
   useEffect(() => {
     const unsubscribe = monitor.subscribe(() => {
@@ -53,8 +54,13 @@ export function PerformanceOptimizer({ onQualityChange }: PerformanceOptimizerPr
     }
   };
 
-  useFrame(() => {
-    monitor.updateMetrics(gl);
+  useFrame((state) => {
+    // Only update metrics every 100ms to reduce overhead
+    const now = state.clock.elapsedTime * 1000;
+    if (now - lastUpdate >= 100) {
+      monitor.updateMetrics(gl);
+      setLastUpdate(now);
+    }
   });
 
   return null;
