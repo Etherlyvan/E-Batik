@@ -19,16 +19,16 @@ interface BatikFrameProps {
 export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }: BatikFrameProps) {
   const meshRef = useRef<THREE.Group>(null);
   const frameRef = useRef<THREE.Mesh>(null);
-  
+
   const { camera } = useThree();
-  const { 
-    setSelectedBatik, 
-    selectedBatik, 
+  const {
+    setSelectedBatik,
+    selectedBatik,
     quality,
     bookmarkedBatiks,
-    toggleBookmark 
+    toggleBookmark
   } = useMuseumStore();
-  
+
   const [isHovered, setIsHovered] = useState(false);
   const [isNearby, setIsNearby] = useState(false);
   const [distance, setDistance] = useState(100);
@@ -61,11 +61,11 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
             texture.magFilter = THREE.LinearFilter;
             texture.generateMipmaps = true;
           }
-          
+
           texture.wrapS = THREE.ClampToEdgeWrapping;
           texture.wrapT = THREE.ClampToEdgeWrapping;
           texture.flipY = false;
-          
+
           textureRef.current = texture;
           setBatikTexture(texture);
         },
@@ -120,7 +120,7 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
   // Handle interactions
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    
+
     if (event.detail === 2) {
       setSelectedBatik(batik);
     } else if (event.shiftKey) {
@@ -147,22 +147,22 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
   const frameWidth = 2.5;
   const frameHeight = 3.5;
   const frameDepth = 0.2;
-  
+
   const fabricWidth = frameWidth - 0.3;
   const fabricHeight = frameHeight - 0.3;
 
   return (
-    <group 
-      ref={meshRef} 
-      position={position} 
-      rotation={rotation} 
+    <group
+      ref={meshRef}
+      position={position}
+      rotation={rotation}
       scale={scale}
     >
       {/* Portrait Frame */}
       <RigidBody type="fixed" colliders="cuboid">
-        <Box 
+        <Box
           ref={frameRef}
-          args={[frameWidth, frameHeight, frameDepth]} 
+          args={[frameWidth, frameHeight, frameDepth]}
           position={[0, 0, 0]}
           onClick={handleClick}
           onPointerOver={handlePointerOver}
@@ -173,7 +173,7 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
       </RigidBody>
 
       {/* Batik Fabric */}
-      <mesh 
+      <mesh
         position={[0, 0, frameDepth/2 + 0.01]}
         onClick={handleClick}
         onPointerOver={handlePointerOver}

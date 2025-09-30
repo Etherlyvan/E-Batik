@@ -19,11 +19,11 @@ export function PerformanceOptimizer({ onQualityChange }: PerformanceOptimizerPr
   useEffect(() => {
     const unsubscribe = monitor.subscribe(() => {
       const recommendedQuality = monitor.getQualityRecommendation();
-      
+
       if (recommendedQuality !== quality) {
         setQuality(recommendedQuality);
         onQualityChange?.(recommendedQuality);
-        
+
         // Apply quality settings to renderer
         applyQualitySettings(recommendedQuality);
       }
