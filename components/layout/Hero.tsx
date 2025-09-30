@@ -178,15 +178,23 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
                currentLanguage.code === 'en' ? 'Welcome to' :
                'ようこそ'}
             </h1>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-black mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight">
-              {currentLanguage.code === 'id' ? 'Database Batik Pertama!' :
-               currentLanguage.code === 'en' ? (
-                <>
-                  1<sup className="text-lg sm:text-xl md:text-2xl lg:text-3xl">st</sup> Batik Database!
-                </>
-               ) :
-               '第一のバティックデータベース!'}
+           <h2
+              className={`font-extrabold text-black mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight
+                ${currentLanguage.code === 'id' ? 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl'
+                : currentLanguage.code === 'en' ? 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl'
+                : 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl'}`}
+            >
+              {currentLanguage.code === 'id'
+                ? 'Database Batik Pertama!'
+                : currentLanguage.code === 'en'
+                ? (
+                  <>
+                    1<sup className="text-lg sm:text-xl md:text-2xl lg:text-3xl">st</sup> Batik Database!
+                  </>
+                )
+                : '第一のバティックデータベース!'}
             </h2>
+
             <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-700 mb-6 sm:mb-8 md:mb-10 text-right max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-lg xl:max-w-xl leading-relaxed">
               {currentLanguage.code === 'id'
                 ? "Dengan ratusan desain Batik dari butik di Jawa Timur, kami adalah database Batik terbesar di Indonesia!"
