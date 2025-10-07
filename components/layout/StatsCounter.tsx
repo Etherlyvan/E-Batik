@@ -57,11 +57,7 @@ export function StatsCounter() {
       icon: '👥',
       suffix: '+'
     },
-<<<<<<< HEAD
   ], []);
-=======
-  ], [currentLanguage.code]);
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 
   // Animate counters when in view
   useEffect(() => {

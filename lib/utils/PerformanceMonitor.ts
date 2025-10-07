@@ -1,8 +1,6 @@
 // lib/utils/PerformanceMonitor.ts (Fixed)
 'use client';
 
-import * as THREE from 'three';
-
 interface PerformanceMetrics {
   fps: number;
   memory: number;

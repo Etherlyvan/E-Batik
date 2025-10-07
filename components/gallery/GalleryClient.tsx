@@ -49,7 +49,11 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
         itemsPerPage: 12,
     });
 
-
+    // Add the missing function
+    const handleClearSearch = () => {
+        setSearchTerm('');
+        clearFilters();
+    };
 
     // Prefetch visible batik pages for faster navigation
     const prefetchBatikPages = useCallback(() => {
@@ -107,11 +111,6 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
                 setDeleteLoading(false);
             }
         }
-    };
-
-    const handleClearSearch = () => {
-        setSearchTerm('');
-        clearFilters();
     };
 
     return (
@@ -173,7 +172,7 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
                                             ? 'Search batik by name, artist, or location...'
                                             : '名前、アーティスト、場所でバティックを検索...'
                                     }
-                                    className='flex-1 px-3 md:px-4 py-3 md:py-4 focus:outline-none text-base md:text-lg text-white bg-transparent placeholder-gray-500 min-w-0'
+                                    className='flex-1 px-3 md:px-4 py-3 md:py-4 focus:outline-none text-base md:text-lg text-gray-900 bg-transparent placeholder-gray-500 min-w-0'
                                 />
                                 {searchTerm && (
                                     <button
