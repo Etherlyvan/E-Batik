@@ -6,11 +6,10 @@ import { ReactNode } from 'react';
 
 interface ModelErrorFallbackProps {
   error: Error;
-  resetErrorBoundary: () => void;
   modelName: string;
 }
 
-function ModelErrorFallback({ error, resetErrorBoundary, modelName }: ModelErrorFallbackProps) {
+function ModelErrorFallback({ error, modelName }: ModelErrorFallbackProps) {
   console.error(`Failed to load model: ${modelName}`, error);
   
   return (

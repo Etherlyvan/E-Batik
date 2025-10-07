@@ -1,11 +1,11 @@
 // components/museum/Minimap.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMuseumStore } from '@/lib/stores/museumStore';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
-import { Map, Maximize2, Minimize2, Navigation, Search } from 'lucide-react';
+import { Map, Maximize2, Minimize2 } from 'lucide-react';
 
 interface MinimapProps {
   size?: 'small' | 'medium' | 'large';
@@ -44,36 +44,7 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
     large: 'w-96 h-96'
   };
 
-  // Draw minimap on canvas
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const width = canvas.width;
-    const height = canvas.height;
-    const scale = width / 50; // Museum is 50x50 units
-
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
-
-    // Draw museum layout
-    drawMuseumLayout(ctx, width, height, scale);
-    
-    // Draw batik frames
-    drawBatikFrames(ctx, scale, width, height);
-    
-    // Draw player position
-    drawPlayerPosition(ctx, scale, width, height);
-    
-    // Draw bookmarked batiks
-    drawBookmarkedBatiks(ctx, scale, width, height);
-
-  }, [currentFloor, cameraPosition, floorBatiks, bookmarkedBatiks, isExpanded]);
-
-  const drawMuseumLayout = (ctx: CanvasRenderingContext2D, width: number, height: number, scale: number) => {
+  const drawMuseumLayout = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number, scale: number) => {
     // Museum walls
     ctx.strokeStyle = '#8B4513';
     ctx.lineWidth = 2;
@@ -98,9 +69,9 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
       ctx.lineTo(width - scale, y);
       ctx.stroke();
     }
-  };
+  }, []);
 
-  const drawBatikFrames = (ctx: CanvasRenderingContext2D, scale: number, width: number, height: number) => {
+  const drawBatikFrames = useCallback((ctx: CanvasRenderingContext2D, scale: number, width: number, height: number) => {
     const framePositions = getBatikFramePositions();
     
     framePositions.forEach((position, index) => {
@@ -127,9 +98,9 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
         ctx.fill();
       }
     });
-  };
+  }, [floorBatiks, hoveredBatik, selectedBatik, bookmarkedBatiks]);
 
-  const drawPlayerPosition = (ctx: CanvasRenderingContext2D, scale: number, width: number, height: number) => {
+  const drawPlayerPosition = useCallback((ctx: CanvasRenderingContext2D, scale: number, width: number, height: number) => {
     const x = ((cameraPosition[0] + 25) / 50) * width;
     const y = ((25 - cameraPosition[2]) / 50) * height;
     
@@ -146,11 +117,33 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
     ctx.moveTo(x, y);
     ctx.lineTo(x, y - 8);
     ctx.stroke();
-  };
+  }, [cameraPosition]);
 
-  const drawBookmarkedBatiks = (ctx: CanvasRenderingContext2D, scale: number, width: number, height: number) => {
-    // Already handled in drawBatikFrames
-  };
+  // Draw minimap on canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const scale = width / 50; // Museum is 50x50 units
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw museum layout
+    drawMuseumLayout(ctx, width, height, scale);
+    
+    // Draw batik frames
+    drawBatikFrames(ctx, scale, width, height);
+    
+    // Draw player position
+    drawPlayerPosition(ctx, scale, width, height);
+
+  }, [currentFloor, cameraPosition, floorBatiks, bookmarkedBatiks, isExpanded, drawMuseumLayout, drawBatikFrames, drawPlayerPosition]);
 
   const getBatikFramePositions = () => {
     const positions: Array<{ position: [number, number, number] }> = [];
@@ -206,14 +199,45 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
     });
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Check if hovering over batik frame
+    const worldX = ((x / canvas.width) * 50) - 25;
+    const worldZ = 25 - ((y / canvas.height) * 50);
+    
+    const framePositions = getBatikFramePositions();
+    let foundHover = null;
+    
+    framePositions.forEach((position, index) => {
+      const distance = Math.sqrt(
+        Math.pow(worldX - position.position[0], 2) + 
+        Math.pow(worldZ - position.position[2], 2)
+      );
+      
+      if (distance < 3 && floorBatiks[index]) {
+        foundHover = floorBatiks[index].id;
+      }
+    });
+    
+    setHoveredBatik(foundHover);
+  };
+
   if (!showMinimap) return null;
 
   return (
     <AnimatePresence>
       <motion.div
+        key={`minimap-${currentFloor}`}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.3 }}
         className="fixed top-20 right-4 z-40 bg-black/80 backdrop-blur-sm rounded-xl border border-amber-500 overflow-hidden"
       >
         {/* Header */}
@@ -254,18 +278,7 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
             height={200}
             className={`${isExpanded ? expandedSizeClasses[size] : sizeClasses[size]} cursor-pointer border border-amber-600 rounded`}
             onClick={handleCanvasClick}
-            onMouseMove={(e) => {
-              // Handle hover effects for batik frames
-              const canvas = canvasRef.current;
-              if (!canvas) return;
-              
-              const rect = canvas.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const y = e.clientY - rect.top;
-              
-              // Check if hovering over batik frame
-              // Implementation would check frame positions and set hoveredBatik
-            }}
+            onMouseMove={handleMouseMove}
             onMouseLeave={() => setHoveredBatik(null)}
           />
         </div>

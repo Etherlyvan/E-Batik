@@ -15,11 +15,10 @@ interface BenchProps {
 function BenchModel({ position, rotation = [0, 0, 0] }: BenchProps) {
   const meshRef = useRef<THREE.Group>(null);
   
-  let gltf;
-  try {
-    gltf = useGLTF('/models/modern_bench_1/scene.gltf');
-  } catch (error) {
-    console.error('Failed to load modern bench model:', error);
+  // Always call useGLTF at the top level
+  const gltf = useGLTF('/models/modern_bench_1/scene.gltf');
+  
+  if (!gltf || !gltf.scene) {
     // Fallback to simple geometry
     return (
       <RigidBody type="fixed" colliders="cuboid">
@@ -49,19 +48,6 @@ function BenchModel({ position, rotation = [0, 0, 0] }: BenchProps) {
           {/* Backrest */}
           <mesh position={[0, 0.4, -0.45]}>
             <boxGeometry args={[2.5, 0.8, 0.1]} />
-            <meshStandardMaterial color="#2c3e50" />
-          </mesh>
-        </group>
-      </RigidBody>
-    );
-  }
-  
-  if (!gltf || !gltf.scene) {
-    return (
-      <RigidBody type="fixed" colliders="cuboid">
-        <group ref={meshRef} position={position} rotation={rotation}>
-          <mesh>
-            <boxGeometry args={[2.5, 0.5, 1]} />
             <meshStandardMaterial color="#2c3e50" />
           </mesh>
         </group>
@@ -99,7 +85,7 @@ export function Bench(props: BenchProps) {
   );
 }
 
-// Preload model
+// Preload model safely
 try {
   useGLTF.preload('/models/modern_bench_1/scene.gltf');
 } catch (error) {

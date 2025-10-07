@@ -1,25 +1,26 @@
-// 🎨 BATIK FEATURE - API endpoints for individual batik operations
+// app/api/batik/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getBatikById, updateBatik, deleteBatik } from '@/lib/actions/batik';
+import { getBatikById, deleteBatik } from '@/lib/actions/batik';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 
-interface Props {
-  params: { id: string };
-}
-
 // GET /api/batik/[id] - Fetch specific batik
-export async function GET(request: NextRequest, { params }: Props) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
+    const { id } = await params;
+    const batikId = parseInt(id);
+    
+    if (isNaN(batikId)) {
       return NextResponse.json(
         { error: 'Invalid batik ID' },
         { status: 400 }
       );
     }
 
-    const batik = await getBatikById(id);
+    const batik = await getBatikById(batikId);
     if (!batik) {
       return NextResponse.json(
         { error: 'Batik not found' },
@@ -38,7 +39,10 @@ export async function GET(request: NextRequest, { params }: Props) {
 }
 
 // DELETE /api/batik/[id] - Delete specific batik
-export async function DELETE(request: NextRequest, { params }: Props) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -49,15 +53,17 @@ export async function DELETE(request: NextRequest, { params }: Props) {
       );
     }
 
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
+    const { id } = await params;
+    const batikId = parseInt(id);
+    
+    if (isNaN(batikId)) {
       return NextResponse.json(
         { error: 'Invalid batik ID' },
         { status: 400 }
       );
     }
 
-    await deleteBatik(id);
+    await deleteBatik(batikId);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting batik:', error);

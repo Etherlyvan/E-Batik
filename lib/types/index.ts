@@ -111,7 +111,7 @@ export interface PaginationState {
 }
 
 // API response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -147,4 +147,3 @@ export interface AuthSession {
   };
   expires: string;
 }
-

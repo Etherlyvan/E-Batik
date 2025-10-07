@@ -11,7 +11,6 @@ import { BatikFrame } from './BatikFrame';
 import { FirstPersonControls } from './FirstPersonControls';
 import { MuseumUI } from './MuseumUI';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-import { useLanguage } from '@/lib/contexts/LanguageContext';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import type { Batik } from '@/lib/types';
 
@@ -140,11 +139,10 @@ function MuseumContent({ batiks }: { batiks: Batik[] }) {
               })()}
 
               {/* First Person Controls */}
-                <FirstPersonControls 
-                    speed={quality === 'low' ? 2 : 2.5} // Dikurangi dari 4-5 ke 2-2.5
-                    sensitivity={0.0015} // Dikurangi dari 0.002
-                    smoothing={0.15} // Ditingkatkan untuk movement yang lebih smooth
-                />
+              <FirstPersonControls 
+                speed={quality === 'low' ? 2 : 2.5} // Dikurangi dari 4-5 ke 2-2.5
+                sensitivity={0.0015} // Dikurangi dari 0.002
+              />
             </Physics>
           </Suspense>
         </Canvas>

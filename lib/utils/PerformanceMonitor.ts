@@ -9,6 +9,17 @@ interface PerformanceMetrics {
   textures: number;
 }
 
+interface RendererInfo {
+  render: {
+    calls: number;
+    triangles: number;
+  };
+}
+
+interface WebGLRenderer {
+  info: RendererInfo;
+}
+
 // Extend Performance interface for Chrome's memory API
 interface ExtendedPerformance extends Performance {
   memory?: {
@@ -38,7 +49,7 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
-  updateMetrics(renderer: any, scene: any) {
+  updateMetrics(renderer: WebGLRenderer, scene?: unknown) {
     const now = performance.now();
     this.frameCount++;
 
@@ -55,10 +66,15 @@ export class PerformanceMonitor {
       this.metrics.triangles = renderer.info.render.triangles;
     }
 
-    // Memory usage (approximate) - Fixed type assertion
+    // Memory usage (approximate)
     const extendedPerf = performance as ExtendedPerformance;
     if (extendedPerf.memory) {
       this.metrics.memory = Math.round(extendedPerf.memory.usedJSHeapSize / 1024 / 1024);
+    }
+
+    // Use scene parameter to avoid unused warning (even if we don't need it right now)
+    if (scene) {
+      // Scene is available for future use if needed
     }
 
     // Notify callbacks

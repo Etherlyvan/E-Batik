@@ -21,11 +21,10 @@ function CeilingLampModel({
 }: CeilingLampProps) {
   const meshRef = useRef<THREE.Group>(null);
   
-  let gltf;
-  try {
-    gltf = useGLTF('/models/ceiling_lamp_-_11mb/scene.gltf');
-  } catch (error) {
-    console.error('Failed to load ceiling lamp model:', error);
+  // Always call useGLTF at the top level
+  const gltf = useGLTF('/models/ceiling_lamp_-_11mb/scene.gltf');
+  
+  if (!gltf || !gltf.scene) {
     // Modern ceiling lamp fallback
     return (
       <group ref={meshRef} position={position} rotation={rotation}>
@@ -70,24 +69,6 @@ function CeilingLampModel({
           decay={2}
           color={lightColor}
           target-position={[0, -10, 0]}
-        />
-      </group>
-    );
-  }
-  
-  if (!gltf || !gltf.scene) {
-    return (
-      <group ref={meshRef} position={position} rotation={rotation}>
-        <mesh>
-          <cylinderGeometry args={[0.4, 0.6, 1.2, 12]} />
-          <meshStandardMaterial color="#f8f9fa" />
-        </mesh>
-        <pointLight
-          position={[0, -0.8, 0]}
-          intensity={lightIntensity}
-          distance={15}
-          decay={2}
-          color={lightColor}
         />
       </group>
     );

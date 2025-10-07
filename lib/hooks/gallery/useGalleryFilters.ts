@@ -67,7 +67,7 @@ export function useGalleryFilters({ batiks, searchTerm }: UseGalleryFiltersProps
     });
   }, [batiks, searchTerm, filters, currentLanguage.id]);
 
-  const updateFilter = (key: keyof FilterState, value: any) => {
+  const updateFilter = (key: keyof FilterState, value: string | string[] | number[]) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 

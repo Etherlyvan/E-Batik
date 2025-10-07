@@ -4,14 +4,12 @@
 import { useMemo } from 'react';
 import { BatikFrame } from './BatikFrame';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-import type { Batik } from '@/lib/types';
 
 interface BatikGalleryProps {
-  batiks: Batik[];
   currentFloor: number;
 }
 
-export function BatikGallery({ batiks, currentFloor }: BatikGalleryProps) {
+export function BatikGallery({ currentFloor }: BatikGalleryProps) {
   const { getBatiksByFloor } = useMuseumStore();
   
   const floorBatiks = useMemo(() => {

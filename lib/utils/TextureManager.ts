@@ -149,10 +149,10 @@ class TextureManager {
     entries.sort((a, b) => a[1].lastUsed - b[1].lastUsed);
 
     // Remove oldest textures until memory is under limit
-    for (const [key, cached] of entries) {
+    for (const [cacheKey, cached] of entries) {
       if (this.currentMemoryMB <= this.maxMemoryMB * 0.8) break;
       if (cached.references <= 0) {
-        this.disposeTexture(key);
+        this.disposeTexture(cacheKey);
       }
     }
   }
@@ -175,7 +175,7 @@ class TextureManager {
   }
 
   disposeAll() {
-    this.textureCache.forEach((cached, key) => {
+    this.textureCache.forEach((cached) => {
       cached.texture.dispose();
     });
     this.textureCache.clear();

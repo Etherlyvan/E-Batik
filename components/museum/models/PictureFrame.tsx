@@ -11,22 +11,19 @@ interface PictureFrameProps {
   position: [number, number, number];
   rotation?: [number, number, number];
   scale?: [number, number, number];
-  imageUrl?: string;
 }
 
 function PictureFrameModel({ 
   position, 
   rotation = [0, 0, 0], 
   scale = [1, 1, 1],
-  imageUrl = '/images/placeholder.jpg'
 }: PictureFrameProps) {
   const meshRef = useRef<THREE.Group>(null);
   
-  let gltf;
-  try {
-    gltf = useGLTF('/models/wooden_picture_frame/scene.gltf');
-  } catch (error) {
-    console.error('Failed to load wooden picture frame model:', error);
+  // Always call useGLTF at the top level
+  const gltf = useGLTF('/models/wooden_picture_frame/scene.gltf');
+  
+  if (!gltf || !gltf.scene) {
     // Wooden frame fallback
     return (
       <RigidBody type="fixed" colliders="cuboid">
@@ -57,19 +54,6 @@ function PictureFrameModel({
               opacity={0.1} 
               color="#ffffff"
             />
-          </mesh>
-        </group>
-      </RigidBody>
-    );
-  }
-  
-  if (!gltf || !gltf.scene) {
-    return (
-      <RigidBody type="fixed" colliders="cuboid">
-        <group ref={meshRef} position={position} rotation={rotation}>
-          <mesh>
-            <boxGeometry args={[3.2, 2.4, 0.3]} />
-            <meshStandardMaterial color="#8b4513" />
           </mesh>
         </group>
       </RigidBody>

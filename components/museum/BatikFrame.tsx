@@ -1,12 +1,11 @@
-// components/museum/BatikFrame.tsx (Optimized)
+// components/museum/BatikFrame.tsx (Fixed)
 'use client';
 
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Text, Box, Plane } from '@react-three/drei';
+import { Text, Box } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-import { useLanguage } from '@/lib/contexts/LanguageContext';
 import * as THREE from 'three';
 import type { Batik } from '@/lib/types';
 
@@ -15,6 +14,12 @@ interface BatikFrameProps {
   position: [number, number, number];
   rotation?: [number, number, number];
   scale?: number;
+}
+
+interface ClickEvent {
+  stopPropagation?: () => void;
+  detail?: number;
+  shiftKey?: boolean;
 }
 
 export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }: BatikFrameProps) {
@@ -29,7 +34,6 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
     bookmarkedBatiks,
     toggleBookmark 
   } = useMuseumStore();
-  const { currentLanguage } = useLanguage();
   
   const [isHovered, setIsHovered] = useState(false);
   const [isNearby, setIsNearby] = useState(false);
@@ -38,12 +42,6 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
 
   const isSelected = selectedBatik?.id === batik.id;
   const isBookmarked = bookmarkedBatiks.includes(batik.id);
-  const isIndonesian = currentLanguage.code === 'id';
-
-  // Get current translation
-  const translation = useMemo(() => {
-    return batik.translations.find(t => t.languageId === currentLanguage.id) || batik.translations[0];
-  }, [batik.translations, currentLanguage.id]);
 
   // Load batik texture with optimization
   useEffect(() => {
@@ -76,13 +74,6 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
         }
       );
     }
-
-    // Cleanup texture on unmount
-    return () => {
-      if (batikTexture) {
-        batikTexture.dispose();
-      }
-    };
   }, [batik.foto, quality]);
 
   // Distance calculation (optimized)
@@ -116,9 +107,11 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
     return { frameMaterial, fabricMaterial };
   }, [isBookmarked, batikTexture]);
 
-  // Handle interactions
-  const handleClick = (event: any) => {
-    event.stopPropagation();
+  // Handle interactions - Fixed event type
+  const handleClick = (event: ClickEvent) => {
+    if (event.stopPropagation) {
+      event.stopPropagation();
+    }
     
     if (event.detail === 2) {
       setSelectedBatik(batik);

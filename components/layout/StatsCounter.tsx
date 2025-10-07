@@ -1,7 +1,7 @@
-// 🏡 HOME FEATURE - Animated statistics counter
+// components/layout/StatsCounter.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
 
@@ -21,7 +21,7 @@ export function StatsCounter() {
 
   const isIndonesian = currentLanguage.code === 'id';
 
-  const stats: Stat[] = [
+  const stats: Stat[] = useMemo(() => [
     { 
       value: 500, 
       label: ['Digitalized Batik', 'Batik Terdigitalisasi'],
@@ -46,7 +46,7 @@ export function StatsCounter() {
       icon: '👥',
       suffix: '+'
     },
-  ];
+  ], []);
 
   // Animate counters when in view
   useEffect(() => {
