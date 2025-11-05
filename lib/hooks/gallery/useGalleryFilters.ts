@@ -67,11 +67,7 @@ export function useGalleryFilters({ batiks, searchTerm }: UseGalleryFiltersProps
     });
   }, [batiks, searchTerm, filters, currentLanguage.id]);
 
-<<<<<<< HEAD
   const updateFilter = (key: keyof FilterState, value: string | string[] | number[]) => {
-=======
-  const updateFilter = (key: keyof FilterState, value: string | string[] | number | number[]) => {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 

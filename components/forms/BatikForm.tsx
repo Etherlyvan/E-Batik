@@ -39,11 +39,7 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
     try {
       await submitForm();
       router.push('/gallery');
-<<<<<<< HEAD
     } catch (err) {
-=======
-    } catch {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
       // Error handling is done in the hook
       console.error('Form submission error:', err);
     }

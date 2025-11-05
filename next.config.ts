@@ -2,7 +2,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-<<<<<<< HEAD
   // Enable standalone output for Docker
   output: 'standalone',
   
@@ -20,15 +19,6 @@ const nextConfig: NextConfig = {
     return config;
   },
   
-=======
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
-  },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

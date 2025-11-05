@@ -5,10 +5,6 @@ import { useRef, useEffect, useCallback } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3, Euler, MathUtils } from 'three';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-<<<<<<< HEAD
-
-=======
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 interface FirstPersonControlsProps {
   speed?: number;
   sensitivity?: number;

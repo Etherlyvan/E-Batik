@@ -44,38 +44,7 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
     large: 'w-96 h-96'
   };
 
-<<<<<<< HEAD
   const drawMuseumLayout = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number, scale: number) => {
-=======
-  // Draw minimap on canvas
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const width = canvas.width;
-    const height = canvas.height;
-    const scale = width / 50; // Museum is 50x50 units
-
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
-
-    // Draw museum layout
-    drawMuseumLayout(ctx, width, height, scale);
-    
-    // Draw batik frames
-    drawBatikFrames(ctx, scale, width, height);
-    
-    // Draw player position
-    drawPlayerPosition(ctx, scale, width, height);
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFloor, cameraPosition, floorBatiks, bookmarkedBatiks, isExpanded]);
-
-  const drawMuseumLayout = (ctx: CanvasRenderingContext2D, width: number, height: number, scale: number) => {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     // Museum walls
     ctx.strokeStyle = '#8B4513';
     ctx.lineWidth = 2;
@@ -150,7 +119,6 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
     ctx.stroke();
   }, [cameraPosition]);
 
-<<<<<<< HEAD
   // Draw minimap on canvas
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -177,8 +145,6 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
 
   }, [currentFloor, cameraPosition, floorBatiks, bookmarkedBatiks, isExpanded, drawMuseumLayout, drawBatikFrames, drawPlayerPosition]);
 
-=======
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   const getBatikFramePositions = () => {
     const positions: Array<{ position: [number, number, number] }> = [];
     
@@ -312,18 +278,7 @@ export function Minimap({ size = 'medium' }: MinimapProps) {
             height={200}
             className={`${isExpanded ? expandedSizeClasses[size] : sizeClasses[size]} cursor-pointer border border-amber-600 rounded`}
             onClick={handleCanvasClick}
-<<<<<<< HEAD
             onMouseMove={handleMouseMove}
-=======
-            onMouseMove={() => {
-              // Handle hover effects for batik frames
-              const canvas = canvasRef.current;
-              if (!canvas) return;
-              
-              // Check if hovering over batik frame
-              // Implementation would check frame positions and set hoveredBatik
-            }}
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
             onMouseLeave={() => setHoveredBatik(null)}
           />
         </div>

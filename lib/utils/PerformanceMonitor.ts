@@ -49,11 +49,7 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
-<<<<<<< HEAD
   updateMetrics(renderer: WebGLRenderer, scene?: unknown) {
-=======
-  updateMetrics(renderer: THREE.WebGLRenderer) {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     const now = performance.now();
     this.frameCount++;
 
