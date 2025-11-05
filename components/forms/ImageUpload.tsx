@@ -2,7 +2,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+<<<<<<< HEAD
 import { Upload, X } from 'lucide-react';
+=======
+import Image from 'next/image';
+import { Upload, X  } from 'lucide-react';
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { cn } from '@/lib/utils/cn';
@@ -26,7 +31,11 @@ export function ImageUpload({
 }: ImageUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+<<<<<<< HEAD
   const [uploading] = useState(false);
+=======
+  const [uploading] = useState(false); // Remove setUploading as it's not used
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   const [dragOver, setDragOver] = useState(false);
 
   const validateFile = useCallback((file: File): string | null => {
@@ -65,12 +74,16 @@ export function ImageUpload({
       }
 
       const newPreviews = validFiles.map((file) => URL.createObjectURL(file));
-      
+
       setFiles(prev => [...prev, ...validFiles]);
       setPreviews(prev => [...prev, ...newPreviews]);
       onUpload([...files, ...validFiles]);
     }
+<<<<<<< HEAD
   }, [files, maxFiles, onUpload, validateFile]);
+=======
+  }, [files, maxFiles, validateFile, onUpload]);
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -97,10 +110,10 @@ export function ImageUpload({
   const removeFile = useCallback((index: number) => {
     const newFiles = files.filter((_, i) => i !== index);
     const newPreviews = previews.filter((_, i) => i !== index);
-    
+
     // Revoke URL to prevent memory leaks
     URL.revokeObjectURL(previews[index]);
-    
+
     setFiles(newFiles);
     setPreviews(newPreviews);
     onUpload(newFiles);
@@ -174,7 +187,7 @@ export function ImageUpload({
                   className="w-full h-full object-cover"
                 />
               </div>
-              
+
               <Button
                 variant="danger"
                 size="sm"
@@ -183,7 +196,7 @@ export function ImageUpload({
               >
                 <X className="w-4 h-4" />
               </Button>
-              
+
               <div className="mt-1 text-xs text-gray-500 truncate">
                 {files[index].name}
               </div>

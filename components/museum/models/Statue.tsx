@@ -26,18 +26,32 @@ function StatueModel({
   const meshRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   
+<<<<<<< HEAD
   // Always call useGLTF at the top level
   const gltf = useGLTF('/models/aphrodite_kallipygos_statue/scene.gltf');
   
   // Always call useFrame at the top level
   useFrame((state) => {
     if (meshRef.current && hovered) {
+=======
+  // Always call useGLTF at top level
+  const gltf = useGLTF('/models/aphrodite_kallipygos_statue/scene.gltf');
+  
+  // Animation hook must be called before any early returns
+  useFrame((state) => {
+    if (meshRef.current && hovered && gltf?.scene) {
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
       meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.05;
     }
   });
   
+<<<<<<< HEAD
   if (!gltf || !gltf.scene) {
     // Classical statue fallback
+=======
+  // If model failed to load, render fallback
+  if (!gltf?.scene) {
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     return (
       <RigidBody type="fixed" colliders="cuboid">
         <group 

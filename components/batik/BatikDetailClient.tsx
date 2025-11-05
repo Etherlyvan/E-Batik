@@ -1,12 +1,11 @@
 // components/batik/BatikDetailClient.tsx (tambahkan loading state jika diperlukan)
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
 import { BatikImageSlider } from './BatikImageSlider';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import type { Batik } from '@/lib/types';
 
 interface BatikDetailClientProps {
@@ -17,32 +16,17 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
   const router = useRouter();
   const { currentLanguage } = useLanguage();
   const [showDetails, setShowDetails] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
 
-  const isIndonesian = currentLanguage.code === 'id';
-
-  // Get translation for current language
-  const translation = batik.translations.find(
-    t => t.languageId === currentLanguage.id
-  ) || batik.translations[0];
+  // Get translation for current language with memoization
+  const translation = useMemo(() => {
+    return batik.translations.find(
+      t => t.languageId === currentLanguage.id
+    ) || batik.translations[0];
+  }, [batik.translations, currentLanguage.id]);
 
   const handleBackClick = () => {
-    setIsNavigating(true);
     router.push('/gallery');
   };
-
-  if (isNavigating) {
-    return (
-      <div className="min-h-screen bg-[#E5D387] flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <LoadingSpinner size="lg" variant="secondary" />
-          <p className="text-amber-800 text-lg font-medium">
-            {isIndonesian ? 'Kembali ke galeri...' : 'Returning to gallery...'}
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="relative flex h-screen w-screen bg-[#E5D387]">
@@ -52,8 +36,12 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
         onClick={handleBackClick}
       >
         <ArrowLeft className="mr-2" />
-        {isIndonesian ? 'Kembali ke Galeri' : 'Back to Gallery'}
+        {currentLanguage.code === 'id' ? 'Kembali ke Galeri' : 
+         currentLanguage.code === 'en' ? 'Back to Gallery' : 
+         'ギャラリーに戻る'}
       </button>
+
+
 
       {/* Rest of the component remains the same... */}
       {/* Image Column */}
@@ -80,7 +68,11 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
           {batik.seniman && (
             <div className="bg-amber-50 p-4 rounded-xl shadow-md w-fit border border-amber-200">
               <div className="text-lg text-amber-800">
-                <p className="font-medium">{isIndonesian ? 'Dibuat Oleh' : 'Made By'}</p>
+                <p className="font-medium">
+                  {currentLanguage.code === 'id' ? 'Dibuat Oleh' : 
+                   currentLanguage.code === 'en' ? 'Made By' : 
+                   '作者'}
+                </p>
                 <p className="text-xl font-serif font-semibold border-b-2 border-amber-300 pb-2 mb-4 text-amber-900">
                   📍 {batik.seniman}
                 </p>
@@ -101,12 +93,16 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
           >
             {showDetails ? (
               <>
-                {isIndonesian ? 'Sembunyikan Deskripsi' : 'Hide Description'}
+                {currentLanguage.code === 'id' ? 'Sembunyikan Deskripsi' : 
+                 currentLanguage.code === 'en' ? 'Hide Description' : 
+                 '説明を隠す'}
                 <ArrowLeft className="ml-2" />
               </>
             ) : (
               <>
-                {isIndonesian ? 'Deskripsi Lengkap' : 'Full Description'}
+                {currentLanguage.code === 'id' ? 'Deskripsi Lengkap' : 
+                 currentLanguage.code === 'en' ? 'Full Description' : 
+                 '完全な説明'}
                 <ArrowRight className="ml-2" />
               </>
             )}
@@ -133,7 +129,9 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
                     className="bg-amber-50 shadow-lg rounded-lg p-6 border border-amber-200"
                   >
                     <h3 className="text-xl font-serif font-semibold border-b-2 border-amber-300 pb-2 mb-4 text-amber-900">
-                      {isIndonesian ? 'Tema: ' : 'Theme: '}
+                      {currentLanguage.code === 'id' ? 'Tema: ' : 
+                       currentLanguage.code === 'en' ? 'Theme: ' : 
+                       'テーマ: '}
                       {temaTranslation?.nama || tema.nama}
                     </h3>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
@@ -141,7 +139,7 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
                         const subTemaTranslation = subTema.translations.find(
                           (translation) => translation.languageId === currentLanguage.id
                         ) || subTema.translations[0];
-                        
+
                         return (
                           <li
                             key={subTema.id}
@@ -163,12 +161,48 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
             {translation && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                  { icon: '🎨', label: isIndonesian ? 'Warna: ' : 'Color: ', value: translation.warna },
-                  { icon: '🛠️', label: isIndonesian ? 'Teknik: ' : 'Technique: ', value: translation.teknik },
-                  { icon: '🧵', label: isIndonesian ? 'Jenis Kain: ' : 'Fabric Type: ', value: translation.jenisKain },
-                  { icon: '🌈', label: isIndonesian ? 'Pewarna: ' : 'Dye: ', value: translation.pewarna },
-                  { icon: '🔺', label: isIndonesian ? 'Bentuk: ' : 'Shape: ', value: translation.bentuk },
-                  { icon: '📏', label: isIndonesian ? 'Dimensi: ' : 'Dimension: ', value: batik.dimensi },
+                  { 
+                    icon: '🎨', 
+                    label: currentLanguage.code === 'id' ? 'Warna: ' : 
+                           currentLanguage.code === 'en' ? 'Color: ' : 
+                           '色: ', 
+                    value: translation.warna 
+                  },
+                  { 
+                    icon: '🛠️', 
+                    label: currentLanguage.code === 'id' ? 'Teknik: ' : 
+                           currentLanguage.code === 'en' ? 'Technique: ' : 
+                           '技法: ', 
+                    value: translation.teknik 
+                  },
+                  { 
+                    icon: '🧵', 
+                    label: currentLanguage.code === 'id' ? 'Jenis Kain: ' : 
+                           currentLanguage.code === 'en' ? 'Fabric Type: ' : 
+                           '生地の種類: ', 
+                    value: translation.jenisKain 
+                  },
+                  { 
+                    icon: '🌈', 
+                    label: currentLanguage.code === 'id' ? 'Pewarna: ' : 
+                           currentLanguage.code === 'en' ? 'Dye: ' : 
+                           '染料: ', 
+                    value: translation.pewarna 
+                  },
+                  { 
+                    icon: '🔺', 
+                    label: currentLanguage.code === 'id' ? 'Bentuk: ' : 
+                           currentLanguage.code === 'en' ? 'Shape: ' : 
+                           '形状: ', 
+                    value: translation.bentuk 
+                  },
+                  { 
+                    icon: '📏', 
+                    label: currentLanguage.code === 'id' ? 'Dimensi: ' : 
+                           currentLanguage.code === 'en' ? 'Dimension: ' : 
+                           '寸法: ', 
+                    value: batik.dimensi 
+                  },
                 ].map((item, index) => (
                   <div key={index} className="bg-amber-50 shadow-lg rounded-lg p-6 border border-amber-200 hover:shadow-xl transition-shadow duration-300">
                     <h3 className="text-lg font-serif font-semibold flex items-center text-amber-900">

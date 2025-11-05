@@ -15,7 +15,7 @@ export function LoginForm() {
     password: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  
+
   const { signIn, loading } = useAuth();
   const router = useRouter();
 
@@ -26,10 +26,10 @@ export function LoginForm() {
     try {
       // Validate form data
       const validatedData = LoginSchema.parse(formData);
-      
+
       // Attempt sign in
       await signIn(validatedData.email, validatedData.password);
-      
+
       // Redirect on success
       router.push('/gallery');
     } catch (error) {
@@ -50,7 +50,7 @@ export function LoginForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -94,7 +94,7 @@ export function LoginForm() {
       </Button>
 
       {/* Additional Links */}
-      <div className="text-center space-y-2">
+      {/* <div className="text-center space-y-2">
         <p className="text-sm text-gray-600">
           Don&apos;t have an account?{' '}
           <a href="/register" className="text-blue-600 hover:text-blue-800 font-medium">
@@ -106,7 +106,7 @@ export function LoginForm() {
             Forgot your password?
           </a>
         </p>
-      </div>
+      </div> */}
     </form>
   );
 }

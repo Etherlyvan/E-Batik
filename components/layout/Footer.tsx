@@ -8,7 +8,6 @@ import { useLanguage } from '@/lib/contexts/LanguageContext';
 
 export function Footer() {
   const { currentLanguage } = useLanguage();
-  const isIndonesian = currentLanguage.code === 'id';
 
   const partnerLogos = [
     { 
@@ -50,9 +49,11 @@ export function Footer() {
           <div className="flex flex-col items-start mb-6 md:mb-0">
             <h2 className="text-lg font-bold mb-4">Batik Sphere</h2>
             <p className="text-sm max-w-md leading-relaxed">
-              {isIndonesian 
+              {currentLanguage.code === 'id'
                 ? "Melestarikan dan merayakan warisan budaya batik Indonesia melalui inovasi digital dan eksplorasi budaya."
-                : "Preserving and celebrating the rich heritage of Indonesian batik through digital innovation and cultural exploration."
+                : currentLanguage.code === 'en'
+                ? "Preserving and celebrating the rich heritage of Indonesian batik through digital innovation and cultural exploration."
+                : "デジタルイノベーションと文化探求を通じて、インドネシアバティックの豊かな遺産を保存し祝福します。"
               }
             </p>
           </div>
@@ -96,7 +97,9 @@ export function Footer() {
                   href="/privacy-policy"
                   className="text-[#3A3A3A] hover:text-[#C76A39] transition-all duration-200 hover:underline"
                 >
-                  {isIndonesian ? 'Kebijakan Privasi' : 'Privacy Policy'}
+                  {currentLanguage.code === 'id' ? 'Kebijakan Privasi' : 
+                   currentLanguage.code === 'en' ? 'Privacy Policy' : 
+                   'プライバシーポリシー'}
                 </Link>
               </li>
               <li>
@@ -104,7 +107,9 @@ export function Footer() {
                   href="/terms"
                   className="text-[#3A3A3A] hover:text-[#C76A39] transition-all duration-200 hover:underline"
                 >
-                  {isIndonesian ? 'Syarat Layanan' : 'Terms of Service'}
+                  {currentLanguage.code === 'id' ? 'Syarat Layanan' : 
+                   currentLanguage.code === 'en' ? 'Terms of Service' : 
+                   '利用規約'}
                 </Link>
               </li>
             </ul>

@@ -74,7 +74,18 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
         }
       );
     }
+<<<<<<< HEAD
   }, [batik.foto, quality]);
+=======
+
+    // Cleanup texture on unmount
+    return () => {
+      if (batikTexture) {
+        batikTexture.dispose();
+      }
+    };
+  }, [batik.foto, quality, batikTexture]);
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 
   // Distance calculation (optimized)
   useFrame(() => {
@@ -107,11 +118,17 @@ export function BatikFrame({ batik, position, rotation = [0, 0, 0], scale = 1 }:
     return { frameMaterial, fabricMaterial };
   }, [isBookmarked, batikTexture]);
 
+<<<<<<< HEAD
   // Handle interactions - Fixed event type
   const handleClick = (event: ClickEvent) => {
     if (event.stopPropagation) {
       event.stopPropagation();
     }
+=======
+  // Handle interactions
+  const handleClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     
     if (event.detail === 2) {
       setSelectedBatik(batik);

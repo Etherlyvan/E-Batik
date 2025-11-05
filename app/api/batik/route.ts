@@ -1,8 +1,6 @@
 // 🎨 BATIK FEATURE - API endpoints for batik CRUD operations
 import { NextRequest, NextResponse } from 'next/server';
 import { getBatiks, createBatik } from '@/lib/actions/batik';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 import { CreateBatikSchema } from '@/lib/types/batik';
 import { z } from 'zod';
 
@@ -23,15 +21,6 @@ export async function GET() {
 // POST /api/batik - Create new batik
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
     // Validate request body
     const body = await request.json();
     const validatedData = CreateBatikSchema.parse(body);

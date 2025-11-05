@@ -1,12 +1,11 @@
 // app/batik/[id]/page.tsx
-import { Suspense } from 'react';
-import { PageLayout } from '@/components/layout/PageLayout';
-import { getBatikById } from '@/lib/actions/batik';
-import { BatikDetailClient } from '@/components/batik/BatikDetailClient';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
+'use client';
 
+import { useParams } from 'next/navigation';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { BatikDetailWithLoading } from '@/components/batik/BatikDetailWithLoading';
+
+<<<<<<< HEAD
 interface Props {
   params: Promise<{ id: string }>;
 }
@@ -47,11 +46,15 @@ function BatikDetailLoading() {
 }
 
 export default async function BatikDetailPage({ params }: Props) {
+=======
+export default function BatikDetailPage() {
+  const params = useParams();
+  const id = parseInt(params.id as string);
+
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   return (
     <PageLayout>
-      <Suspense fallback={<BatikDetailLoading />}>
-        <BatikDetailContent params={params} />
-      </Suspense>
+      <BatikDetailWithLoading batikId={id} />
     </PageLayout>
   );
 }

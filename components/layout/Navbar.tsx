@@ -19,8 +19,6 @@ export function Navbar() {
   const { currentLanguage } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const isIndonesian = currentLanguage.code === 'id';
-
   const isActive = (path: string) => pathname === path;
 
   const handleSignOut = async () => {
@@ -32,9 +30,24 @@ export function Navbar() {
   };
 
   const navLinks = [
-    { href: '/', label: isIndonesian ? 'Beranda' : 'Home' },
-    { href: '/gallery', label: isIndonesian ? 'Galeri' : 'Gallery' },
-    { href: '/museum', label: isIndonesian ? 'Museum 3D' : '3D Museum' }, // Tambahkan ini
+    { 
+      href: '/', 
+      label: currentLanguage.code === 'id' ? 'Beranda' : 
+             currentLanguage.code === 'en' ? 'Home' : 
+             'ホーム'
+    },
+    { 
+      href: '/gallery', 
+      label: currentLanguage.code === 'id' ? 'Galeri' : 
+             currentLanguage.code === 'en' ? 'Gallery' : 
+             'ギャラリー'
+    },
+    { 
+      href: '/museum', 
+      label: currentLanguage.code === 'id' ? 'Museum 3D' : 
+             currentLanguage.code === 'en' ? '3D Museum' : 
+             '3Dミュージアム'
+    },
   ];
 
   return (
@@ -110,7 +123,9 @@ export function Navbar() {
                       className="bg-[#5a2b2b] hover:bg-[#c4a484] text-[#e5d0b5] hover:text-[#5a2b2b]"
                     >
                       <Plus className="w-4 h-4 mr-2" />
-                      {isIndonesian ? 'Tambah Batik' : 'Add Batik'}
+                      {currentLanguage.code === 'id' ? 'Tambah Batik' : 
+                       currentLanguage.code === 'en' ? 'Add Batik' : 
+                       'バティック追加'}
                     </Button>
                   </Link>
                   
@@ -121,7 +136,9 @@ export function Navbar() {
                     className="text-[#5a2b2b] hover:text-red-600"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
-                    {isIndonesian ? 'Keluar' : 'Logout'}
+                    {currentLanguage.code === 'id' ? 'Keluar' : 
+                     currentLanguage.code === 'en' ? 'Logout' : 
+                     'ログアウト'}
                   </Button>
                 </>
               ) : (
@@ -131,7 +148,9 @@ export function Navbar() {
                     size="sm"
                     className="bg-[#5a2b2b] hover:bg-[#c4a484] text-[#e5d0b5] hover:text-[#5a2b2b]"
                   >
-                    {isIndonesian ? 'Masuk' : 'Sign In'}
+                    {currentLanguage.code === 'id' ? 'Masuk' : 
+                     currentLanguage.code === 'en' ? 'Sign In' : 
+                     'ログイン'}
                   </Button>
                 </Link>
               )}
@@ -202,7 +221,9 @@ export function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <Plus className="w-4 h-4 mr-2 inline" />
-                  {isIndonesian ? 'Tambah Batik' : 'Add Batik'}
+                  {currentLanguage.code === 'id' ? 'Tambah Batik' : 
+                   currentLanguage.code === 'en' ? 'Add Batik' : 
+                   'バティック追加'}
                 </Link>
               ) : (
                 <Link
@@ -210,7 +231,9 @@ export function Navbar() {
                   className="block px-3 py-2 text-base font-medium text-[#5a2b2b] hover:text-[#c4a484] hover:bg-[#e5d0b5] rounded-md"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {isIndonesian ? 'Masuk' : 'Sign In'}
+                  {currentLanguage.code === 'id' ? 'Masuk' : 
+                   currentLanguage.code === 'en' ? 'Sign In' : 
+                   'ログイン'}
                 </Link>
               )}
             </div>

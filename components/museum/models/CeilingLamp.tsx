@@ -21,11 +21,19 @@ function CeilingLampModel({
 }: CeilingLampProps) {
   const meshRef = useRef<THREE.Group>(null);
   
+<<<<<<< HEAD
   // Always call useGLTF at the top level
   const gltf = useGLTF('/models/ceiling_lamp_-_11mb/scene.gltf');
   
   if (!gltf || !gltf.scene) {
     // Modern ceiling lamp fallback
+=======
+  // Always call useGLTF at top level
+  const gltf = useGLTF('/models/ceiling_lamp_-_11mb/scene.gltf');
+  
+  // If model failed to load, render fallback
+  if (!gltf?.scene) {
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     return (
       <group ref={meshRef} position={position} rotation={rotation}>
         {/* Modern pendant lamp */}

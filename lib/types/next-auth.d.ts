@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 // lib/types/next-auth.d.ts
 import 'next-auth';
+=======
+// types/next-auth.d.ts
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 
 declare module 'next-auth' {
   interface Session {

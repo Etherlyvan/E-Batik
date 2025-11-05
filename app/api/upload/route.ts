@@ -1,20 +1,9 @@
 // 🔄 UPLOAD FEATURE - API endpoint for file uploads to Cloudinary
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadToCloudinary } from '@/lib/services/upload.service';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
     const formData = await request.formData();
     const file = formData.get('file') as File;
 

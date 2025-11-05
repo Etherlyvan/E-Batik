@@ -16,35 +16,49 @@ export function InfoSection() {
   const { currentLanguage } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const isIndonesian = currentLanguage.code === 'id';
-
   const slides: InfoSlide[] = [
     {
-      title: isIndonesian ? 'Bentuk: Bunga Teratai' : 'Form: Lotus Flower',
-      description: isIndonesian
+      title: currentLanguage.code === 'id' ? 'Bentuk: Bunga Teratai' :
+             currentLanguage.code === 'en' ? 'Form: Lotus Flower' :
+             '形: 蓮の花',
+      description: currentLanguage.code === 'id'
         ? 'Melambangkan regenerasi dan transformasi budaya dalam konteks digital. Teratai berfungsi sebagai medium pelestarian dan pengembangan, memungkinkan batik berevolusi tanpa kehilangan esensi tradisionalnya.'
-        : 'Symbolizes cultural regeneration and transformation in a digital context. The lotus serves as a medium for preservation and development, allowing batik to evolve without losing its traditional essence.',
+        : currentLanguage.code === 'en'
+        ? 'Symbolizes cultural regeneration and transformation in a digital context. The lotus serves as a medium for preservation and development, allowing batik to evolve without losing its traditional essence.'
+        : 'デジタル文脈での文化的再生と変革を象徴します。蓮は保存と発展の媒体として機能し、バティックが伝統的な本質を失うことなく進化することを可能にします。',
       icon: '🪷'
     },
     {
-      title: isIndonesian ? 'Elemen Topeng: Identitas dan Kearifan Lokal' : 'Mask Element: Identity and Local Wisdom',
-      description: isIndonesian
+      title: currentLanguage.code === 'id' ? 'Elemen Topeng: Identitas dan Kearifan Lokal' :
+             currentLanguage.code === 'en' ? 'Mask Element: Identity and Local Wisdom' :
+             '仮面要素: アイデンティティと地域の知恵',
+      description: currentLanguage.code === 'id'
         ? 'Mencerminkan identitas budaya Nusantara dengan nilai filosofis. Menegaskan bahwa digitalisasi motif batik bukan sekadar dokumentasi, tetapi juga upaya pelestarian budaya.'
-        : 'Reflects the cultural identity of the Nusantara with philosophical values. Emphasizes that digitizing batik motifs is not just documentation, but also an effort to preserve culture.',
+        : currentLanguage.code === 'en'
+        ? 'Reflects the cultural identity of the Nusantara with philosophical values. Emphasizes that digitizing batik motifs is not just documentation, but also an effort to preserve culture.'
+        : '哲学的価値を持つヌサンタラの文化的アイデンティティを反映します。バティックモチーフのデジタル化は単なる文書化ではなく、文化保存の努力でもあることを強調しています。',
       icon: '🎭'
     },
     {
-      title: isIndonesian ? 'Makna Warna: Kedalaman dan Inovasi' : 'Color Meaning: Depth and Innovation',
-      description: isIndonesian
+      title: currentLanguage.code === 'id' ? 'Makna Warna: Kedalaman dan Inovasi' :
+             currentLanguage.code === 'en' ? 'Color Meaning: Depth and Innovation' :
+             '色の意味: 深さとイノベーション',
+      description: currentLanguage.code === 'id'
         ? 'Warna biru tua melambangkan kedalaman dan kekayaan batik. Warna biru muda merepresentasikan inovasi digital, memungkinkan penyebaran global.'
-        : 'Dark blue symbolizes the depth and richness of batik. Light blue represents digital innovation, enabling global dissemination.',
+        : currentLanguage.code === 'en'
+        ? 'Dark blue symbolizes the depth and richness of batik. Light blue represents digital innovation, enabling global dissemination.'
+        : '濃い青はバティックの深さと豊かさを象徴します。薄い青はデジタルイノベーションを表し、世界的な普及を可能にします。',
       icon: '🎨'
     },
     {
-      title: isIndonesian ? 'Struktur Motif' : 'Motif Structure',
-      description: isIndonesian
+      title: currentLanguage.code === 'id' ? 'Struktur Motif' :
+             currentLanguage.code === 'en' ? 'Motif Structure' :
+             'モチーフ構造',
+      description: currentLanguage.code === 'id'
         ? 'Mencerminkan potensi eksplorasi dari berbagai pendekatan multidisipliner untuk mendukung penelitian dan pengembangan keilmuan.'
-        : 'Reflects the potential exploration from various multidisciplinary approaches to support research and scientific development.',
+        : currentLanguage.code === 'en'
+        ? 'Reflects the potential exploration from various multidisciplinary approaches to support research and scientific development.'
+        : '研究と科学的発展を支援するための様々な学際的アプローチからの探求の可能性を反映しています。',
       icon: '🔬'
     },
   ];
@@ -88,7 +102,9 @@ export function InfoSection() {
           viewport={{ once: true }}
           className="text-3xl sm:text-4xl font-bold mb-12 text-amber-100 text-center"
         >
-          {isIndonesian ? 'Filosofi Batik Sphere' : 'Batik Sphere Philosophy'}
+          {currentLanguage.code === 'id' ? 'Filosofi Batik Sphere' :
+           currentLanguage.code === 'en' ? 'Batik Sphere Philosophy' :
+           'バティックスフィア哲学'}
         </motion.h2>
 
         {/* Content */}

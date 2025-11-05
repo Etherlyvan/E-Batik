@@ -16,6 +16,7 @@ interface PictureFrameProps {
 function PictureFrameModel({ 
   position, 
   rotation = [0, 0, 0], 
+<<<<<<< HEAD
   scale = [1, 1, 1],
 }: PictureFrameProps) {
   const meshRef = useRef<THREE.Group>(null);
@@ -24,6 +25,17 @@ function PictureFrameModel({
   const gltf = useGLTF('/models/wooden_picture_frame/scene.gltf');
   
   if (!gltf || !gltf.scene) {
+=======
+  scale = [1, 1, 1]
+}: PictureFrameProps) {
+  const meshRef = useRef<THREE.Group>(null);
+  
+  // Always call useGLTF at top level
+  const gltf = useGLTF('/models/wooden_picture_frame/scene.gltf');
+  
+  // If model failed to load, render fallback
+  if (!gltf?.scene) {
+>>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     // Wooden frame fallback
     return (
       <RigidBody type="fixed" colliders="cuboid">

@@ -1,43 +1,58 @@
 // components/gallery/GalleryGrid.tsx
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { GalleryCard } from './GalleryCard';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
 import type { Batik } from '@/lib/types';
 
 interface GalleryGridProps {
   batiks: Batik[];
-  loading?: boolean;
-  onCardClick?: (batik: Batik) => void;
   onDelete?: (id: number) => void;
   showDeleteButton?: boolean;
+  showEditButton?: boolean;
 }
 
-export function GalleryGrid({ 
-  batiks, 
-  loading = false, 
-  onCardClick, 
+export function GalleryGrid({
+  batiks,
   onDelete,
-  showDeleteButton = false 
+  showDeleteButton = false,
+  showEditButton = false
 }: GalleryGridProps) {
   const { currentLanguage } = useLanguage();
+  const router = useRouter();
+  const gridRef = useRef<HTMLDivElement>(null);
   const isIndonesian = currentLanguage.code === 'id';
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <div className="flex flex-col items-center space-y-4">
-          <LoadingSpinner size="lg" variant="primary" />
-          <p className="text-amber-700 text-lg font-medium">
-            {isIndonesian ? 'Memuat galeri...' : 'Loading gallery...'}
-          </p>
-        </div>
-      </div>
+  // Intersection Observer for aggressive prefetching
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const batikId = entry.target.getAttribute('data-batik-id');
+            if (batikId) {
+              router.prefetch(`/batik/${batikId}`);
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '100px', // Prefetch when item is 100px away from viewport
+        threshold: 0.1,
+      }
     );
-  }
+
+    const cards = gridRef.current?.querySelectorAll('[data-batik-id]');
+    cards?.forEach((card) => observer.observe(card));
+
+    return () => {
+      cards?.forEach((card) => observer.unobserve(card));
+    };
+  }, [batiks, router]);
 
   if (batiks.length === 0) {
     return (
@@ -68,16 +83,20 @@ export function GalleryGrid({
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div
+        ref={gridRef}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      >
         <AnimatePresence>
           {batiks.map((batik, index) => (
             <motion.div
               key={batik.id}
+              data-batik-id={batik.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ 
-                duration: 0.4, 
+              transition={{
+                duration: 0.4,
                 delay: index * 0.05,
                 ease: "easeOut"
               }}
@@ -86,9 +105,9 @@ export function GalleryGrid({
             >
               <GalleryCard
                 batik={batik}
-                onClick={() => onCardClick?.(batik)}
                 onDelete={onDelete ? () => onDelete(batik.id) : undefined}
                 showDeleteButton={showDeleteButton}
+                showEditButton={showEditButton}
               />
             </motion.div>
           ))}
