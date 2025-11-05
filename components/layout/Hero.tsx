@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
@@ -117,7 +116,7 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
     : '/images/gallery-hero-bg.jpg';
 
   return (
-    <div className="relative w-full h-[80vh] overflow-hidden">
+    <div className="relative w-full min-h-screen overflow-hidden">
       {/* Background Pattern */}
       <div 
         className="absolute inset-0"
@@ -167,50 +166,50 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 flex items-center justify-end h-full px-4 sm:px-6 md:px-8 lg:px-20">
+      {/* Content Container - Fixed untuk navbar */}
+      <div className="relative z-10 flex items-center justify-end min-h-screen px-4 sm:px-6 md:px-8 lg:px-20 pt-16 md:pt-20">
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           className="flex-1 flex flex-col md:flex-row justify-center items-end w-full gap-x-4 sm:gap-x-8 lg:gap-x-12 px-2 sm:px-4"
         >
-          <div className="text-right flex flex-col justify-center items-end w-full py-4 sm:py-6 md:py-8">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-black mb-1 sm:mb-2 leading-tight tracking-tight">
+          <div className="text-right flex flex-col justify-center items-end w-full py-8 sm:py-12 md:py-16 lg:py-20">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-black mb-2 sm:mb-3 md:mb-4 leading-tight tracking-tight">
               {isIndonesian
                 ? 'Selamat Datang di'
                 : 'Welcome to'}
             </h1>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-black mb-2 sm:mb-3 md:mb-4 leading-tight tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-black mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight">
               {isIndonesian ? (
                 'Database Batik Pertama!'
               ) : (
                 <>
-                  1<sup className="text-lg sm:text-xl md:text-2xl">st</sup> Batik Database!
+                  1<sup className="text-lg sm:text-xl md:text-2xl lg:text-3xl">st</sup> Batik Database!
                 </>
               )}
             </h2>
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 mb-4 sm:mb-6 text-right max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-lg leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-700 mb-6 sm:mb-8 md:mb-10 text-right max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-lg xl:max-w-xl leading-relaxed">
               {isIndonesian
                 ? "Dengan ratusan desain Batik dari butik di Jawa Timur, kami adalah database Batik terbesar di Indonesia!"
                 : "With hundreds of Batik designs from boutiques in East Java, we are Indonesia's largest Batik database!"}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center w-full sm:w-auto">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-8 py-4 text-lg font-semibold"
+                className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={() => window.location.href = '/gallery'}
               >
                 {isIndonesian ? 'Jelajahi Koleksi' : 'Explore Collection'}
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
               </Button>
 
               <Button
                 variant="ghost"
                 size="lg"
-                className="text-black border-2 border-black hover:bg-black hover:text-white px-8 py-4 text-lg font-semibold"
+                className="w-full sm:w-auto text-black border-2 border-black hover:bg-black hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300"
                 onClick={() => {
                   const videoElement = document.getElementById('intro-video');
                   if (videoElement) {
@@ -218,7 +217,7 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
                   }
                 }}
               >
-                <Play className="w-5 h-5 mr-2" />
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 {isIndonesian ? 'Tonton Video' : 'Watch Video'}
               </Button>
             </div>
@@ -231,32 +230,32 @@ export function Hero({ backgroundImages = [] }: HeroProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
       >
         <div className="flex flex-col items-center text-black">
-          <span className="text-sm mb-2">
+          <span className="text-xs sm:text-sm mb-2">
             {isIndonesian ? 'Gulir ke bawah' : 'Scroll down'}
           </span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-black rounded-full flex justify-center"
+            className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-black rounded-full flex justify-center"
           >
-            <div className="w-1 h-3 bg-black rounded-full mt-2" />
+            <div className="w-1 h-2 sm:h-3 bg-black rounded-full mt-2" />
           </motion.div>
         </div>
       </motion.div>
 
       {/* Image Indicators */}
       {heroImages.length > 1 && (
-        <div className="absolute bottom-4 right-4 flex space-x-2">
+        <div className="absolute bottom-4 right-4 flex space-x-2 z-20">
           {heroImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentImageIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
+              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
                 index === currentImageIndex 
-                  ? 'bg-black' 
+                  ? 'bg-black scale-125' 
                   : 'bg-black/50 hover:bg-black/75'
               }`}
             />

@@ -21,7 +21,7 @@ function GalleryErrorFallback({ error, resetError }: GalleryErrorFallbackProps) 
         </h1>
         
         <p className="text-gray-600 mb-6">
-          We're having trouble loading the gallery. This might be a temporary issue.
+          We&apos;re having trouble loading the gallery. This might be a temporary issue.
         </p>
         
         {error && (

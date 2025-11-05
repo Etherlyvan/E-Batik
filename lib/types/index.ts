@@ -95,7 +95,6 @@ export interface Batik extends BaseEntity {
 // Filter types
 export interface FilterState {
   themes: number[];
-  subThemes: number[];
   year: string;
   technique: string;
   dye: string;
@@ -112,7 +111,7 @@ export interface PaginationState {
 }
 
 // API response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;

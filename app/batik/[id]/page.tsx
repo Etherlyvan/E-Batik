@@ -8,11 +8,12 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const batik = await getBatikById(parseInt(params.id));
+  const { id } = await params;
+  const batik = await getBatikById(parseInt(id));
   
   if (!batik) {
     return {
@@ -27,7 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function BatikDetailContent({ params }: Props) {
-  const batik = await getBatikById(parseInt(params.id));
+  const { id } = await params;
+  const batik = await getBatikById(parseInt(id));
 
   if (!batik) {
     notFound();
@@ -44,7 +46,7 @@ function BatikDetailLoading() {
   );
 }
 
-export default function BatikDetailPage({ params }: Props) {
+export default async function BatikDetailPage({ params }: Props) {
   return (
     <PageLayout>
       <Suspense fallback={<BatikDetailLoading />}>

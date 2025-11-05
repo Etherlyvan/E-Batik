@@ -1,12 +1,13 @@
-// 📝 FORM FEATURE - Image upload component with drag & drop
+// components/forms/ImageUpload.tsx
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { cn } from '@/lib/utils/cn';
 import { formatFileSize } from '@/lib/utils/helpers';
+import Image from 'next/image';
 
 interface ImageUploadProps {
   onUpload: (files: File[]) => void;
@@ -25,10 +26,10 @@ export function ImageUpload({
 }: ImageUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
+  const [uploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
-  const validateFile = (file: File): string | null => {
+  const validateFile = useCallback((file: File): string | null => {
     if (!acceptedTypes.includes(file.type)) {
       return `File type ${file.type} is not supported`;
     }
@@ -36,7 +37,7 @@ export function ImageUpload({
       return `File size exceeds ${formatFileSize(maxFileSize)}`;
     }
     return null;
-  };
+  }, [acceptedTypes, maxFileSize]);
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
     const fileArray = Array.from(newFiles);
@@ -69,7 +70,7 @@ export function ImageUpload({
       setPreviews(prev => [...prev, ...newPreviews]);
       onUpload([...files, ...validFiles]);
     }
-  }, [files, maxFiles, maxFileSize, acceptedTypes, onUpload]);
+  }, [files, maxFiles, onUpload, validateFile]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -165,9 +166,11 @@ export function ImageUpload({
           {previews.map((preview, index) => (
             <div key={index} className="relative group">
               <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                <img
+                <Image
                   src={preview}
                   alt={`Preview ${index + 1}`}
+                  width={200}
+                  height={200}
                   className="w-full h-full object-cover"
                 />
               </div>

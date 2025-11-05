@@ -1,7 +1,7 @@
 // lib/hooks/shared/usePagination.ts
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 interface UsePaginationProps<T> {
   items: T[];
@@ -43,7 +43,7 @@ export function usePagination<T>({
   };
 
   // Reset to page 1 when items change
-  useMemo(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [items.length]);
 

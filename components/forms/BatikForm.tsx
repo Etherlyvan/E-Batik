@@ -1,4 +1,4 @@
-// 🎨 BATIK FEATURE - Form for creating/editing batik entries
+// components/forms/BatikForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -38,8 +38,9 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
     try {
       await submitForm();
       router.push('/gallery');
-    } catch (error) {
+    } catch (err) {
       // Error handling is done in the hook
+      console.error('Form submission error:', err);
     }
   };
 

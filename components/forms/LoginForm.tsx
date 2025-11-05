@@ -1,4 +1,4 @@
-// 🔐 AUTH FEATURE - Login form component
+// components/forms/LoginForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -96,7 +96,7 @@ export function LoginForm() {
       {/* Additional Links */}
       <div className="text-center space-y-2">
         <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <a href="/register" className="text-blue-600 hover:text-blue-800 font-medium">
             Sign up
           </a>

@@ -1,4 +1,5 @@
-// 🛠️ SHARED UTILITY - Helper functions
+// lib/utils/helpers.ts
+
 /**
  * Format date to Indonesian locale
  */
@@ -59,7 +60,7 @@ export function generateId(): string {
 /**
  * Debounce function
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {

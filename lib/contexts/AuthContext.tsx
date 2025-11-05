@@ -1,7 +1,7 @@
-// 🔐 AUTH FEATURE - Authentication context provider
+// lib/contexts/AuthContext.tsx
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/db/supabase';
 import { signIn as signInService, signOut as signOutService } from '@/lib/services/auth.service';
