@@ -1,2 +1,0 @@
--- AddForeignKey
-ALTER TABLE "Batik" ADD CONSTRAINT "Batik_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

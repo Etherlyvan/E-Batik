@@ -8,42 +8,36 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
-
 model Batik {
-  id        Int       @id @default(autoincrement())
-  kode      String?
-  alamat    String?
-  seniman   String?
-  pointmap  String?
-  nama      String    
-  tahun     String
-  dimensi   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  
-  // Relations
+  nama         String
+  tahun        String
+  dimensi      String
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  id           Int                @id @default(autoincrement())
+  kode         String?
+  alamat       String?
+  pointmap     String?
+  seniman      String?
   translations BatikTranslation[]
   foto         Foto[]
-  tema         Tema[]    @relation("BatikTema")
-  subTema      SubTema[] @relation("BatikSubTema")
+  subTema      SubTema[]          @relation("BatikSubTema")
+  tema         Tema[]             @relation("BatikTema")
 }
 
 model BatikTranslation {
-  id          Int      @id @default(autoincrement())
-  batikId     Int
-  languageId  Int
-  warna       String
-  teknik      String
-  jenisKain   String
-  histori     String
-  pewarna     String
-  bentuk      String
-  
-  // Relations
-  batik       Batik    @relation(fields: [batikId], references: [id], onDelete: Cascade)
-  language    Language @relation(fields: [languageId], references: [id])
-  
+  id         Int      @id @default(autoincrement())
+  batikId    Int
+  languageId Int
+  warna      String
+  teknik     String
+  jenisKain  String
+  pewarna    String
+  bentuk     String
+  histori    String
+  batik      Batik    @relation(fields: [batikId], references: [id], onDelete: Cascade)
+  language   Language @relation(fields: [languageId], references: [id])
+
   @@unique([batikId, languageId])
 }
 
@@ -55,64 +49,122 @@ model Foto {
 }
 
 model TemaTranslation {
-  id          Int      @id @default(autoincrement())
-  temaId      Int
-  languageId  Int
-  nama        String
-  
-  // Relations
-  tema        Tema     @relation(fields: [temaId], references: [id], onDelete: Cascade)
-  language    Language @relation(fields: [languageId], references: [id])
-  
+  id         Int      @id @default(autoincrement())
+  temaId     Int
+  languageId Int
+  nama       String
+  language   Language @relation(fields: [languageId], references: [id])
+  tema       Tema     @relation(fields: [temaId], references: [id], onDelete: Cascade)
+
   @@unique([temaId, languageId])
 }
 
 model SubTemaTranslation {
-  id          Int      @id @default(autoincrement())
-  subTemaId   Int
-  languageId  Int
-  nama        String
-  
-  // Relations
-  subTema     SubTema  @relation(fields: [subTemaId], references: [id], onDelete: Cascade)
-  language    Language @relation(fields: [languageId], references: [id])
-  
+  id         Int      @id @default(autoincrement())
+  subTemaId  Int
+  languageId Int
+  nama       String
+  language   Language @relation(fields: [languageId], references: [id])
+  subTema    SubTema  @relation(fields: [subTemaId], references: [id], onDelete: Cascade)
+
   @@unique([subTemaId, languageId])
 }
 
-// And update your existing models to include the relations:
 model Tema {
   id           Int               @id @default(autoincrement())
-  nama         String           @unique
-  translations TemaTranslation[]  // Add this line
+  nama         String            @unique
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   subTema      SubTema[]
-  batiks       Batik[]          @relation("BatikTema")
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  translations TemaTranslation[]
+  batiks       Batik[]           @relation("BatikTema")
 }
 
 model SubTema {
   id           Int                  @id @default(autoincrement())
-  nama         String              @unique
+  nama         String               @unique
   temaId       Int
-  translations SubTemaTranslation[] // Add this line
-  tema         Tema                @relation(fields: [temaId], references: [id])
-  batiks       Batik[]             @relation("BatikSubTema")
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  tema         Tema                 @relation(fields: [temaId], references: [id])
+  translations SubTemaTranslation[]
+  batiks       Batik[]              @relation("BatikSubTema")
 
   @@unique([nama, temaId])
 }
 
-// Update Language model to include the new relations
 model Language {
-  id                   Int                  @id @default(autoincrement())
-  code                 String              @unique
-  name                 String
-  isDefault           Boolean             @default(false)
+  id                  Int                  @id @default(autoincrement())
+  code                String               @unique
+  name                String
+  isDefault           Boolean              @default(false)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
   batikTranslations   BatikTranslation[]
-  temaTranslations    TemaTranslation[]    // Add this line
-  subTemaTranslations SubTemaTranslation[] // Add this line
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
+  subTemaTranslations SubTemaTranslation[]
+  temaTranslations    TemaTranslation[]
+}
+
+// Tambahkan ini di prisma/schema.prisma (jangan hapus yang lama)
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?
+  avatar        String?
+  role          UserRole  @default(USER)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
 }

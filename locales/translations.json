@@ -1,55 +1,123 @@
 {
-    "id": {
-      "gallery": {
-        "title": "Galeri Batik",
-        "subtitle": "Koleksi batik tradisional Indonesia yang menampilkan keindahan dan keragaman budaya nusantara",
-        "search": "Cari batik berdasarkan nama...",
-        "filters": {
-          "title": "Filter",
-          "tema": "Tema Batik",
-          "subTema": "Sub-tema Batik",
-          "tahun": "Tahun Pembuatan",
-          "teknik": "Teknik Pembuatan",
-          "pewarna": "Pewarna",
-          "bentuk": "Bentuk",
-          "jenisKain": "Jenis Kain",
-          "select": "Pilih",
-          "reset": "Reset semua filter"
+  "id": {
+    "gallery": {
+      "title": "Database Batik",
+      "subtitle": "Koleksi batik tradisional Indonesia yang menampilkan keindahan dan keragaman budaya nusantara",
+      "search": "Cari batik berdasarkan nama...",
+      "filters": {
+        "title": "Filter",
+        "tema": "Tema Batik",
+        "subTema": "Sub-tema Batik",
+        "tahun": "Tahun Pembuatan",
+        "teknik": "Teknik Pembuatan",
+        "pewarna": "Pewarna",
+        "bentuk": "Bentuk",
+        "jenisKain": "Jenis Kain",
+        "select": "Pilih",
+        "reset": "Reset semua filter",
+        "teknikOptions": {
+          "cap": "Cap",
+          "tulis": "Tulis",
+          "kombinasi": "Kombinasi",
+          "printing": "Printing"
         },
-        "results": "Menampilkan {start}-{end} dari {total} batik",
-        "empty": {
-          "title": "Koleksi Kosong",
-          "message": "Belum ada data batik yang tersedia. Mulai tambahkan koleksi batik pertama Anda."
-        }
-      }
-    },
-    "en": {
-      "gallery": {
-        "title": "Batik Gallery",
-        "subtitle": "Collection of traditional Indonesian batik showcasing the beauty and diversity of archipelago culture",
-        "search": "Search batik by name...",
-        "filters": {
-          "title": "Filter",
-          "tema": "Batik Theme",
-          "subTema": "Batik Sub-theme",
-          "tahun": "Year Created",
-          "teknik": "Production Technique",
-          "pewarna": "Dye",
-          "bentuk": "Shape",
-          "jenisKain": "Fabric Type",
-          "select": "Select",
-          "reset": "Reset all filters"
+        "pewarnaOptions": {
+          "sintetis": "Sintetis",
+          "alam": "Alami",
+          "kombinasi": "Kombinasi"
         },
-        "results": "Showing {start}-{end} of {total} batiks",
-        "empty": {
-          "title": "Empty Collection",
-          "message": "No batik data available yet. Start adding your first batik collection."
+        "bentukOptions": {
+          "geometris": "Geometris",
+          "nonGeometris": "Non-Geometris",
+          "kombinasi": "Kombinasi"
+        },
+        "jenisKainOptions": {
+          "katun": "Katun",
+          "sutra": "Sutra",
+          "rayon": "Rayon",
+          "linen": "Linen"
         }
+      },
+      "results": "Menampilkan {start}-{end} dari {total} batik",
+      "empty": {
+        "title": "Koleksi Kosong",
+        "message": "Belum ada data batik yang tersedia. Mulai tambahkan koleksi batik pertama Anda."
       }
-    },
-    "ja": {
-      "gallery": {
-        "comingSoon": "近日公開"
+    }
+  },
+  "en": {
+    "gallery": {
+      "title": "Batik Database",
+      "subtitle": "Collection of traditional Indonesian batik showcasing the beauty and diversity of archipelago culture",
+      "search": "Search batik by name...",
+      "filters": {
+        "title": "Filter",
+        "tema": "Batik Theme",
+        "subTema": "Batik Sub-theme",
+        "tahun": "Year Created",
+        "teknik": "Production Technique",
+        "pewarna": "Dye",
+        "bentuk": "Shape",
+        "jenisKain": "Fabric Type",
+        "select": "Select",
+        "reset": "Reset all filters",
+        "teknikOptions": {
+          "cap": "Stamp",
+          "tulis": "Hand Drawn",
+          "kombinasi": "Combination",
+          "printing": "Printing"
+        },
+        "pewarnaOptions": {
+          "sintetis": "Synthetic",
+          "alam": "Natural",
+          "kombinasi": "Combination"
+        },
+        "bentukOptions": {
+          "geometris": "Geometric",
+          "nonGeometris": "Non-Geometric",
+          "kombinasi": "Combination"
+        },
+        "jenisKainOptions": {
+          "katun": "Cotton",
+          "sutra": "Silk",
+          "rayon": "Rayon",
+          "linen": "Linen"
+        }
+      },
+      "results": "Showing {start}-{end} of {total} batiks",
+      "empty": {
+        "title": "Empty Collection",
+        "message": "No batik data available yet. Start adding your first batik collection."
+      }
+    }
+  },
+  "jp": {
+    "gallery": {
+      "comingSoon": "近日公開",
+      "filters": {
+        "teknikOptions": {
+          "cap": "キャップ",
+          "tulis": "手描き",
+          "kombinasi": "組み合わせ",
+          "printing": "印刷"
+        },
+        "pewarnaOptions": {
+          "sintetis": "合成",
+          "alam": "自然",
+          "kombinasi": "組み合わせ"
+        },
+        "bentukOptions": {
+          "geometris": "幾何学的",
+          "nonGeometris": "非幾何学的",
+          "kombinasi": "組み合わせ"
+        },
+        "jenisKainOptions": {
+          "katun": "綿",
+          "sutra": "絹",
+          "rayon": "レーヨン",
+          "linen": "リネン"
+        }
       }
     }
   }
+}

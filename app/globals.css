@@ -1,4 +1,576 @@
+/* app/globals.css - Update */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+body,
+html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+/* Ensure full height layout */
+#__next {
+    height: 100%;
+}
+
+.min-h-screen {
+    min-height: 100vh;
+}
+
+/* Hero section full height */
+.hero-section {
+  height: 100vh;
+  min-height: 100vh;
+  padding-top: 0;
+}
+.hero-content {
+  padding-top: 4rem; /* 64px - navbar height */
+  min-height: calc(100vh - 4rem);
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .hero-content {
+    padding-top: 5rem; /* 80px - larger navbar on desktop */
+    min-height: calc(100vh - 5rem);
+  }
+}
+/* Utility classes */
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+/* Mobile First Approach */
+.clip-diagonal {
+    clip-path: polygon(0 0, 35% 0, 110% 0%, 0 35%);
+    z-index: 1;
+    transition: clip-path 0.3s ease-in-out;
+}
+
+/* Tablet (portrait) - 768px */
+@media screen and (min-width: 768px) {
+    .clip-diagonal {
+        clip-path: polygon(0 0, 40% 0, 95% 0%, 0 51%);
+    }
+}
+
+/* Desktop - 1024px */
+@media screen and (min-width: 1024px) {
+    .clip-diagonal {
+        clip-path: polygon(0 0, 50% 0, 66% 0%, 0 100%);
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Background pattern fixes */
+.bg-pattern-overlay {
+    position: relative;
+}
+
+.bg-pattern-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.bg-pattern-overlay > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Responsive text sizing */
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.875rem;
+    line-height: 1.1;
+  }
+  
+  .hero-description {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .hero-title {
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 769px) {
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-subtitle {
+    font-size: 3.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-description {
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+}
+/* Pastikan semua container gallery lurus */
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gallery-grid {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Reset untuk mencegah transform yang tidak diinginkan */
+.gallery-card {
+  transform: none !important;
+  transform-origin: center center;
+}
+
+/* Pastikan loading spinner centered */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 200px;
+}
+
+/* Fix untuk motion components */
+.motion-container {
+  width: 100%;
+  display: block;
+}
+/* Loading animations dengan tema warna */
+@keyframes spin-amber {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-amber {
+  animation: spin-amber 1s linear infinite;
+}
+
+/* Skeleton loading dengan warna tema */
+@keyframes pulse-amber {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.animate-pulse-amber {
+  animation: pulse-amber 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading overlay dengan tema */
+.loading-overlay-amber {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+  backdrop-filter: blur(4px);
+}
+/* Dropdown z-index fixes */
+.dropdown-container {
+  position: relative;
+  z-index: 50;
+}
+
+/* Ensure dropdowns are always on top */
+[data-dropdown-menu] {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+/* Fix for filter container overflow */
+.filter-container {
+  overflow: visible !important;
+}
+
+/* Prevent dropdown cutoff in containers */
+.gallery-filter-container {
+  overflow: visible;
+  position: relative;
+  z-index: 10;
+}
+
+.gallery-filter-container .relative {
+  overflow: visible;
+}
+
+/* Mobile dropdown improvements */
+@media (max-width: 768px) {
+  .dropdown-menu-mobile {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    max-width: 400px !important;
+    max-height: 70vh !important;
+    z-index: 9999 !important;
+  }
+}
+
+/* Scrollbar styling for dropdown */
+.dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+/* Navbar height compensation */
+.hero-with-navbar {
+  padding-top: 4rem; /* 64px - default navbar height */
+}
+
+@media (min-width: 768px) {
+  .hero-with-navbar {
+    padding-top: 4.5rem; /* 72px - larger navbar on desktop */
+  }
+    html {
+    scroll-padding-top: 5rem;
+  }
+}
+/* Button responsive improvements */
+.hero-buttons {
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .hero-buttons {
+    gap: 1.5rem;
+  }
+}
+/* Ensure proper z-index stacking */
+.hero-background {
+  z-index: 1;
+}
+
+.hero-content {
+  z-index: 10;
+}
+
+.hero-indicators {
+  z-index: 20;
+}
+
+
+/* Mobile landscape adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .hero-section {
+    min-height: 100vh;
+  }
+  
+  .hero-content {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+  }
+  
+  .hero-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-description {
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+}
+/* Ensure proper spacing for fixed navbar */
+.page-content {
+  margin-top: 0;
+}
+
+/* Mobile navbar adjustments */
+@media (max-width: 767px) {
+  .hero-with-navbar {
+    padding-top: 4rem; /* 64px */
+  }
+  
+  .hero-title-mobile {
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle-mobile {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.4;
+  }
+}
+
+/* Search component responsive improvements */
+.search-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.search-input {
+  min-width: 0;
+  flex: 1;
+}
+
+/* Filter container spacing */
+.gallery-filter-container {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .gallery-filter-container {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Results header responsive */
+.results-header {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .results-header {
+    padding: 1.5rem;
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 4.5rem;
+  }
+}
+
+/* app/globals.css (Museum-specific additions) */
+
+/* Museum-specific styles */
+.museum-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #92400e 0%, #ea580c 100%);
+}
+
+/* Performance optimizations */
+.museum-canvas {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Custom scrollbar for museum panels */
+.museum-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.museum-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.museum-scroll::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.6);
+  border-radius: 3px;
+}
+
+.museum-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.8);
+}
+
+/* Volume slider styling */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-track {
+  background: #374151;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #f59e0b;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider::-moz-range-track {
+  background: #374151;
+  height: 4px;
+  border-radius: 2px;
+  border: none;
+}
+
+.slider::-moz-range-thumb {
+  background: #f59e0b;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* Keyboard key styling */
+kbd {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  color: #f3f4f6;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+}
+
+/* Loading animations */
+@keyframes pulse-amber {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-amber {
+  animation: pulse-amber 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions for quality changes */
+.quality-transition {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .museum-ui-mobile {
+    font-size: 0.875rem;
+  }
+  
+  .museum-ui-mobile .museum-button {
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .museum-ui {
+    border-width: 2px;
+    background-color: rgba(0, 0, 0, 0.95);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .museum-transition {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* Focus indicators for accessibility */
+.museum-button:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+/* Print styles (hide museum UI when printing) */
+@media print {
+  .museum-ui,
+  .museum-controls {
+    display: none !important;
+  }
+}

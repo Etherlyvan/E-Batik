@@ -1,23 +1,24 @@
-import './globals.css';
-import { AuthProvider } from '@/context/AuthContext';
-import Navbar from '@/app/components/Navbar';
-import { LanguageProvider } from '@/context/LanguageContext';
+// app/layout.tsx
+import './globals.css'; 
+import { Providers } from '@/lib/contexts/providers';
+
+export const metadata = {
+  title: 'Batik Sphere - Digital Batik Database',
+  description: 'Preserving Indonesian batik heritage through digital innovation',
+};
 
 export default function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return (
-        <html lang='en'>
-            <LanguageProvider>
-                <AuthProvider>
-                    <body className='min-h-screen flex flex-col bg-gray-50'>
-                        <Navbar />
-                        <main className='flex-1 w-full mt-16'>{children}</main>
-                    </body>
-                </AuthProvider>
-            </LanguageProvider>
-        </html>
-    );
+  return (
+    <html lang="en">
+      <body className="min-h-screen bg-gray-50">
+        <Providers>
+          {children}
+        </Providers>
+      </body>
+    </html>
+  );
 }
