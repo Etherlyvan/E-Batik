@@ -65,7 +65,7 @@ export function ImageUpload({
       }
 
       const newPreviews = validFiles.map((file) => URL.createObjectURL(file));
-      
+
       setFiles(prev => [...prev, ...validFiles]);
       setPreviews(prev => [...prev, ...newPreviews]);
       onUpload([...files, ...validFiles]);
@@ -97,10 +97,10 @@ export function ImageUpload({
   const removeFile = useCallback((index: number) => {
     const newFiles = files.filter((_, i) => i !== index);
     const newPreviews = previews.filter((_, i) => i !== index);
-    
+
     // Revoke URL to prevent memory leaks
     URL.revokeObjectURL(previews[index]);
-    
+
     setFiles(newFiles);
     setPreviews(newPreviews);
     onUpload(newFiles);
@@ -174,7 +174,7 @@ export function ImageUpload({
                   className="w-full h-full object-cover"
                 />
               </div>
-              
+
               <Button
                 variant="danger"
                 size="sm"
@@ -183,7 +183,7 @@ export function ImageUpload({
               >
                 <X className="w-4 h-4" />
               </Button>
-              
+
               <div className="mt-1 text-xs text-gray-500 truncate">
                 {files[index].name}
               </div>

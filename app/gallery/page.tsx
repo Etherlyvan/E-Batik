@@ -51,7 +51,7 @@ function GalleryLoading() {
           </div>
         </div>
       </div>
-      
+
       {/* Content Loading */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-center items-center py-20">

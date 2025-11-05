@@ -5,7 +5,6 @@ import { useRef, useEffect, useCallback } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3, Euler, MathUtils } from 'three';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-
 interface FirstPersonControlsProps {
   speed?: number;
   sensitivity?: number;

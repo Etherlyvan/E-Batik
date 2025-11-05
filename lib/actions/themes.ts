@@ -32,10 +32,11 @@ export async function getThemes(): Promise<Theme[]> {
       },
     });
 
-    return themes as Theme[];
+    return (themes as Theme[]) || [];
   } catch (error) {
     console.error('Error fetching themes:', error);
-    throw new Error('Failed to fetch themes');
+    // Return empty array instead of throwing error to prevent 500
+    return [];
   }
 }
 

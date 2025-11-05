@@ -1,0 +1,38 @@
+// API route for server-side Cloudinary operations
+import { NextRequest, NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    const publicId = formData.get('public_id') as string;
+
+    if (!publicId) {
+      return NextResponse.json(
+        { error: 'Public ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Delete from Cloudinary
+    const result = await cloudinary.uploader.destroy(publicId);
+
+    return NextResponse.json({
+      success: true,
+      result: result,
+    });
+  } catch (error) {
+    console.error('Error deleting from Cloudinary:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete image' },
+      { status: 500 }
+    );
+  }
+}

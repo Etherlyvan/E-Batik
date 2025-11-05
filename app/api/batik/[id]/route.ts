@@ -28,9 +28,16 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(batik);
+    return NextResponse.json(batik, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    });
   } catch (error) {
-    console.error('Error fetching batik:', error);
+    // Handle the case where error might be null or not an object
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error fetching batik:', errorMessage);
     return NextResponse.json(
       { error: 'Failed to fetch batik' },
       { status: 500 }

@@ -1,57 +1,17 @@
 // app/batik/[id]/page.tsx
-import { Suspense } from 'react';
+'use client';
+
+import { useParams } from 'next/navigation';
 import { PageLayout } from '@/components/layout/PageLayout';
-import { getBatikById } from '@/lib/actions/batik';
-import { BatikDetailClient } from '@/components/batik/BatikDetailClient';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
+import { BatikDetailWithLoading } from '@/components/batik/BatikDetailWithLoading';
 
-interface Props {
-  params: Promise<{ id: string }>;
-}
+export default function BatikDetailPage() {
+  const params = useParams();
+  const id = parseInt(params.id as string);
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const batik = await getBatikById(parseInt(id));
-  
-  if (!batik) {
-    return {
-      title: 'Batik Not Found - Batik Sphere',
-    };
-  }
-
-  return {
-    title: `${batik.nama} - Batik Sphere`,
-    description: batik.translations[0]?.histori || 'Traditional Indonesian batik',
-  };
-}
-
-async function BatikDetailContent({ params }: Props) {
-  const { id } = await params;
-  const batik = await getBatikById(parseInt(id));
-
-  if (!batik) {
-    notFound();
-  }
-
-  return <BatikDetailClient batik={batik} />;
-}
-
-function BatikDetailLoading() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#E5D387]">
-      <LoadingSpinner size="lg" />
-    </div>
-  );
-}
-
-export default async function BatikDetailPage({ params }: Props) {
   return (
     <PageLayout>
-      <Suspense fallback={<BatikDetailLoading />}>
-        <BatikDetailContent params={params} />
-      </Suspense>
+      <BatikDetailWithLoading batikId={id} />
     </PageLayout>
   );
 }

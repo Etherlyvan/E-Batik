@@ -20,6 +20,7 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
   const {
     formData,
     loading,
+    uploadProgress,
     errors,
     handleInputChange,
     handleTranslationChange,
@@ -34,7 +35,7 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       await submitForm();
       router.push('/gallery');
@@ -46,10 +47,16 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Error Message */}
+      {errors.general && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-600">{errors.general}</p>
+        </div>
+      )}
       {/* Basic Information */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Batik Name"
@@ -118,7 +125,7 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
       {/* Language Translations */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4">Translations</h2>
-        
+
         {/* Language Tabs */}
         <div className="flex space-x-2 border-b pb-2 mb-4">
           {languages.map((lang) => (
@@ -143,6 +150,7 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
             label="Color"
             value={formData.translations[activeLanguage]?.warna || ''}
             onChange={(e) => handleTranslationChange(activeLanguage, 'warna', e.target.value)}
+            error={errors[`translation_${activeLanguage}_warna`]}
             required
           />
 
@@ -150,6 +158,7 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
             label="Technique"
             value={formData.translations[activeLanguage]?.teknik || ''}
             onChange={(e) => handleTranslationChange(activeLanguage, 'teknik', e.target.value)}
+            error={errors[`translation_${activeLanguage}_teknik`]}
             required
           />
 
@@ -157,6 +166,7 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
             label="Fabric Type"
             value={formData.translations[activeLanguage]?.jenisKain || ''}
             onChange={(e) => handleTranslationChange(activeLanguage, 'jenisKain', e.target.value)}
+            error={errors[`translation_${activeLanguage}_jenisKain`]}
             required
           />
 
@@ -164,8 +174,36 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
             label="Dye"
             value={formData.translations[activeLanguage]?.pewarna || ''}
             onChange={(e) => handleTranslationChange(activeLanguage, 'pewarna', e.target.value)}
+            error={errors[`translation_${activeLanguage}_pewarna`]}
             required
           />
+
+          <div className="md:col-span-2">
+            <Input
+              label="Shape"
+              value={formData.translations[activeLanguage]?.bentuk || ''}
+              onChange={(e) => handleTranslationChange(activeLanguage, 'bentuk', e.target.value)}
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              History
+            </label>
+            <textarea
+              value={formData.translations[activeLanguage]?.histori || ''}
+              onChange={(e) => handleTranslationChange(activeLanguage, 'histori', e.target.value)}
+              rows={4}
+              className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                errors[`translation_${activeLanguage}_histori`] ? 'border-red-500' : ''
+              }`}
+              placeholder="Enter history description..."
+              required
+            />
+            {errors[`translation_${activeLanguage}_histori`] && (
+              <p className="text-red-500 text-sm mt-1">{errors[`translation_${activeLanguage}_histori`]}</p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -174,9 +212,23 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
         <ThemeSelector
           themes={themes}
           selectedThemes={formData.themes}
+          selectedSubThemes={formData.subThemes}
           onThemeChange={handleThemeChange}
         />
+        {errors.themes && (
+          <p className="text-red-500 text-sm mt-2">{errors.themes}</p>
+        )}
       </div>
+
+      {/* Upload Progress */}
+      {loading && uploadProgress && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+            <p className="text-blue-700 font-medium">{uploadProgress}</p>
+          </div>
+        </div>
+      )}
 
       {/* Form Actions */}
       <div className="flex justify-end space-x-4">
@@ -184,11 +236,12 @@ export function BatikForm({ themes, languages }: BatikFormProps) {
           type="button"
           variant="secondary"
           onClick={() => router.back()}
+          disabled={loading}
         >
           Cancel
         </Button>
         <Button type="submit" loading={loading}>
-          Save Batik
+          {loading ? (uploadProgress || 'Processing...') : 'Add Batik'}
         </Button>
       </div>
     </form>

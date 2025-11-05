@@ -93,17 +93,29 @@
   },
   "jp": {
     "gallery": {
-      "comingSoon": "近日公開",
+      "title": "バティックデータベース",
+      "subtitle": "インドネシア群島の文化の美しさと多様性を表現する伝統的なインドネシアバティックのコレクション",
+      "search": "名前でバティックを検索...",
       "filters": {
+        "title": "フィルター",
+        "tema": "バティックテーマ",
+        "subTema": "バティックサブテーマ",
+        "tahun": "制作年",
+        "teknik": "制作技法",
+        "pewarna": "染料",
+        "bentuk": "形状",
+        "jenisKain": "生地の種類",
+        "select": "選択",
+        "reset": "すべてのフィルターをリセット",
         "teknikOptions": {
-          "cap": "キャップ",
+          "cap": "スタンプ",
           "tulis": "手描き",
           "kombinasi": "組み合わせ",
           "printing": "印刷"
         },
         "pewarnaOptions": {
           "sintetis": "合成",
-          "alam": "自然",
+          "alam": "天然",
           "kombinasi": "組み合わせ"
         },
         "bentukOptions": {
@@ -117,6 +129,11 @@
           "rayon": "レーヨン",
           "linen": "リネン"
         }
+      },
+      "results": "{total}個のバティックのうち{start}-{end}を表示",
+      "empty": {
+        "title": "空のコレクション",
+        "message": "まだバティックデータがありません。最初のバティックコレクションを追加してください。"
       }
     }
   }
