@@ -18,7 +18,12 @@ interface CloudinaryUploadResult {
   public_id: string;
 }
 
-<<<<<<< HEAD
+export async function uploadToCloudinary(file: File): Promise<CloudinaryUploadResult> {
+  try {
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
     // Dynamic import for server-side only
     const { v2: cloudinary } = await import('cloudinary');
     
