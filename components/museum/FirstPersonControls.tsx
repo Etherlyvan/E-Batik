@@ -5,18 +5,15 @@ import { useRef, useEffect, useCallback } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3, Euler, MathUtils } from 'three';
 import { useMuseumStore } from '@/lib/stores/museumStore';
-<<<<<<< HEAD
 
-=======
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 interface FirstPersonControlsProps {
   speed?: number;
   sensitivity?: number;
 }
 
 export function FirstPersonControls({ 
-  speed = 2.5, // Dikurangi dari 5 ke 2.5
-  sensitivity = 0.0015, // Dikurangi dari 0.002 ke 0.0015
+  speed = 2.5,
+  sensitivity = 0.0015,
 }: FirstPersonControlsProps) {
   const { camera, gl } = useThree();
   const { 
@@ -50,7 +47,7 @@ export function FirstPersonControls({
     euler.current.setFromQuaternion(camera.quaternion);
   }, [camera]);
 
-  // Mouse movement handler dengan sensitivity yang lebih rendah
+  // Mouse movement handler
   const onMouseMove = useCallback((event: MouseEvent) => {
     if (!isLocked.current) return;
 
@@ -59,10 +56,7 @@ export function FirstPersonControls({
 
     euler.current.setFromQuaternion(camera.quaternion);
     
-    // Apply horizontal rotation (yaw) - sensitivity dikurangi
     euler.current.y -= movementX * sensitivity;
-    
-    // Apply vertical rotation (pitch) with limits - sensitivity dikurangi
     euler.current.x -= movementY * sensitivity;
     euler.current.x = MathUtils.clamp(
       euler.current.x, 
@@ -70,7 +64,6 @@ export function FirstPersonControls({
       Math.PI / 2 - 0.1
     );
     
-    // Reset roll to prevent tilting
     euler.current.z = 0;
     
     camera.quaternion.setFromEuler(euler.current);
@@ -79,7 +72,6 @@ export function FirstPersonControls({
   // Keyboard handlers
   const onKeyDown = useCallback((event: KeyboardEvent) => {
     switch (event.code) {
-      // Movement
       case 'ArrowUp':
       case 'KeyW':
         moveForward.current = true;
@@ -99,12 +91,11 @@ export function FirstPersonControls({
       case 'Space':
         event.preventDefault();
         if (canJump.current) {
-          velocity.current.y += 200; // Dikurangi dari 350 ke 200
+          velocity.current.y += 200;
           canJump.current = false;
         }
         break;
 
-      // Floor navigation
       case 'Digit1':
         event.preventDefault();
         if (totalFloors >= 1 && currentFloor !== 1) {
@@ -136,7 +127,6 @@ export function FirstPersonControls({
         }
         break;
 
-      // Reset camera orientation
       case 'KeyR':
         euler.current.set(0, 0, 0);
         camera.quaternion.setFromEuler(euler.current);
@@ -195,7 +185,7 @@ export function FirstPersonControls({
     };
   }, [gl.domElement, onMouseMove, onKeyDown, onKeyUp, onPointerLockChange, isTransitioning]);
 
-  // Animation loop dengan kecepatan yang dikurangi
+  // Animation loop
   useFrame((state, delta) => {
     const clampedDelta = Math.min(delta, 0.1);
     
@@ -203,48 +193,41 @@ export function FirstPersonControls({
     if (!isLocked.current) return;
 
     try {
-      // Apply physics dengan damping yang lebih tinggi
-      const dampingFactor = quality === 'low' ? 12.0 : 15.0; // Ditingkatkan untuk movement yang lebih terkontrol
+      const dampingFactor = quality === 'low' ? 12.0 : 15.0;
       velocity.current.x -= velocity.current.x * dampingFactor * clampedDelta;
       velocity.current.z -= velocity.current.z * dampingFactor * clampedDelta;
-      velocity.current.y -= 9.8 * 100.0 * clampedDelta; // Gravity tetap
+      velocity.current.y -= 9.8 * 100.0 * clampedDelta;
 
-      // Calculate movement direction
       direction.current.z = Number(moveForward.current) - Number(moveBackward.current);
       direction.current.x = Number(moveRight.current) - Number(moveLeft.current);
       direction.current.normalize();
 
-      // Apply movement forces dengan kecepatan yang dikurangi
-      const currentSpeedValue = speed * (quality === 'low' ? 0.6 : 0.8); // Dikurangi lebih banyak
+      const currentSpeedValue = speed * (quality === 'low' ? 0.6 : 0.8);
       
       if (moveForward.current || moveBackward.current) {
-        velocity.current.z -= direction.current.z * 250.0 * clampedDelta * currentSpeedValue; // Dikurangi dari 400 ke 250
+        velocity.current.z -= direction.current.z * 250.0 * clampedDelta * currentSpeedValue;
       }
       if (moveLeft.current || moveRight.current) {
-        velocity.current.x -= direction.current.x * 250.0 * clampedDelta * currentSpeedValue; // Dikurangi dari 400 ke 250
+        velocity.current.x -= direction.current.x * 250.0 * clampedDelta * currentSpeedValue;
       }
 
-      // Apply movement to camera dengan smoothing yang lebih halus
       const moveVector = new Vector3();
       moveVector.setFromMatrixColumn(camera.matrix, 0);
       moveVector.crossVectors(camera.up, moveVector);
-      moveVector.multiplyScalar(-velocity.current.z * clampedDelta * 0.8); // Ditambah multiplier 0.8
+      moveVector.multiplyScalar(-velocity.current.z * clampedDelta * 0.8);
       camera.position.add(moveVector);
 
       const strafeVector = new Vector3();
       strafeVector.setFromMatrixColumn(camera.matrix, 0);
-      strafeVector.multiplyScalar(-velocity.current.x * clampedDelta * 0.8); // Ditambah multiplier 0.8
+      strafeVector.multiplyScalar(-velocity.current.x * clampedDelta * 0.8);
       camera.position.add(strafeVector);
 
-      // Apply vertical movement
       camera.position.y += velocity.current.y * clampedDelta;
 
-      // Boundary constraints
       const boundary = 23;
       camera.position.x = MathUtils.clamp(camera.position.x, -boundary, boundary);
       camera.position.z = MathUtils.clamp(camera.position.z, -boundary, boundary);
 
-      // Floor constraints
       const floorHeight = (currentFloor - 1) * 6 + 2;
       const ceilingHeight = (currentFloor - 1) * 6 + 4.5;
       
@@ -259,12 +242,10 @@ export function FirstPersonControls({
         velocity.current.y = 0;
       }
 
-      // Ensure camera stays level (no roll)
       euler.current.setFromQuaternion(camera.quaternion);
       euler.current.z = 0;
       camera.quaternion.setFromEuler(euler.current);
 
-      // Update store with current position
       setCameraPosition([camera.position.x, camera.position.y, camera.position.z]);
 
     } catch (error) {

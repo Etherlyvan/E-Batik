@@ -1,4 +1,4 @@
-// 🌐 LANGUAGE FEATURE - Language context provider
+// lib/contexts/LanguageContext.tsx
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -20,19 +20,18 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  // Use fallback languages to prevent hydration mismatch
-  const fallbackLanguages: Language[] = [
-    { id: 1, code: 'id', name: 'Indonesian', isDefault: true },
-    { id: 2, code: 'en', name: 'English', isDefault: false },
-    { id: 3, code: 'jp', name: 'Japanese', isDefault: false },
-  ];
+// Fallback languages - must be consistent between server and client
+const FALLBACK_LANGUAGES: Language[] = [
+  { id: 1, code: 'id', name: 'Indonesian', isDefault: true },
+  { id: 2, code: 'en', name: 'English', isDefault: false },
+  { id: 3, code: 'jp', name: 'Japanese', isDefault: false },
+];
 
-  const [availableLanguages, setAvailableLanguages] = useState<Language[]>(fallbackLanguages);
-  const [loading, setLoading] = useState(false);
+export function LanguageProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
-  
-  const [currentLanguage, setCurrentLanguage] = useState<Language>(fallbackLanguages[0]);
+  const [availableLanguages, setAvailableLanguages] = useState<Language[]>(FALLBACK_LANGUAGES);
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(FALLBACK_LANGUAGES[0]);
+  const [loading, setLoading] = useState(false);
 
   // Only run after component mounts to prevent hydration issues
   useEffect(() => {
@@ -47,11 +46,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       try {
         setLoading(true);
         const languages = await getLanguages();
-        setAvailableLanguages(languages);
         
-        // Set default language
-        const defaultLang = languages.find(lang => lang.isDefault) || languages[0];
-        setCurrentLanguage(defaultLang);
+        if (languages && languages.length > 0) {
+          setAvailableLanguages(languages);
+          const defaultLang = languages.find(lang => lang.isDefault) || languages[0];
+          setCurrentLanguage(defaultLang);
+        }
       } catch (error) {
         console.error('Error loading languages:', error);
         // Keep fallback languages
@@ -62,6 +62,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     loadLanguages();
   }, [mounted]);
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <LanguageContext.Provider value={{
+        currentLanguage: FALLBACK_LANGUAGES[0],
+        availableLanguages: FALLBACK_LANGUAGES,
+        setLanguage: () => {},
+        loading: false,
+      }}>
+        {children}
+      </LanguageContext.Provider>
+    );
+  }
 
   return (
     <LanguageContext.Provider value={{

@@ -1,5 +1,7 @@
-// lib/utils/PerformanceMonitor.ts (Fixed)
+// lib/utils/PerformanceMonitor.ts
 'use client';
+
+import * as THREE from 'three';
 
 interface PerformanceMetrics {
   fps: number;
@@ -9,18 +11,6 @@ interface PerformanceMetrics {
   textures: number;
 }
 
-interface RendererInfo {
-  render: {
-    calls: number;
-    triangles: number;
-  };
-}
-
-interface WebGLRenderer {
-  info: RendererInfo;
-}
-
-// Extend Performance interface for Chrome's memory API
 interface ExtendedPerformance extends Performance {
   memory?: {
     usedJSHeapSize: number;
@@ -49,39 +39,26 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
-<<<<<<< HEAD
-  updateMetrics(renderer: WebGLRenderer, scene?: unknown) {
-=======
   updateMetrics(renderer: THREE.WebGLRenderer) {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     const now = performance.now();
     this.frameCount++;
 
-    // Update FPS every second
     if (now - this.lastTime >= 1000) {
       this.metrics.fps = Math.round((this.frameCount * 1000) / (now - this.lastTime));
       this.frameCount = 0;
       this.lastTime = now;
     }
 
-    // Update renderer info
     if (renderer && renderer.info) {
       this.metrics.drawCalls = renderer.info.render.calls;
       this.metrics.triangles = renderer.info.render.triangles;
     }
 
-    // Memory usage (approximate)
     const extendedPerf = performance as ExtendedPerformance;
     if (extendedPerf.memory) {
       this.metrics.memory = Math.round(extendedPerf.memory.usedJSHeapSize / 1024 / 1024);
     }
 
-    // Use scene parameter to avoid unused warning (even if we don't need it right now)
-    if (scene) {
-      // Scene is available for future use if needed
-    }
-
-    // Notify callbacks
     this.callbacks.forEach(callback => callback(this.metrics));
   }
 

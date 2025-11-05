@@ -19,11 +19,8 @@ export function StatsCounter() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
-<<<<<<< HEAD
   const isIndonesian = currentLanguage.code === 'id';
 
-=======
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   const stats: Stat[] = useMemo(() => [
     { 
       value: 500, 

@@ -20,11 +20,7 @@ interface FilterState {
 interface GalleryFilterProps {
   themes: Theme[];
   filters: FilterState;
-<<<<<<< HEAD
   onFilterChange: (key: keyof FilterState, value: string | string[] | number[]) => void;
-=======
-  onFilterChange: (key: keyof FilterState, value: string | string[] | number | number[]) => void;
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   onClearFilters: () => void;
 }
 
@@ -78,9 +74,8 @@ function Dropdown({
     if (isOpen && buttonRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const dropdownHeight = Math.min(240, options.length * 48); // Estimate dropdown height
+      const dropdownHeight = Math.min(240, options.length * 48);
       
-      // Check if there's enough space below
       const spaceBelow = viewportHeight - buttonRect.bottom;
       const spaceAbove = buttonRect.top;
       
@@ -141,24 +136,21 @@ function Dropdown({
           {getDisplayValue()}
         </span>
         <ChevronDown className={cn(
-          "w-4 h-4 transition-transform text-gray-400 flex-shrink-0 ml-2",
+          "w-4 h-4 text-gray-500 transition-transform duration-200",
           isOpen && "rotate-180"
         )} />
       </button>
 
       {isOpen && (
         <>
-          {/* Backdrop untuk mobile */}
           <div className="fixed inset-0 z-40 md:hidden" onClick={() => setIsOpen(false)} />
           
-          {/* Dropdown menu */}
           <div 
             className={cn(
               "absolute w-full bg-white border border-gray-300 rounded-lg shadow-2xl max-h-60 overflow-auto z-50",
               dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'
             )}
             style={{
-              // Ensure dropdown is always visible
               minWidth: '100%',
               maxWidth: '400px'
             }}
@@ -247,7 +239,6 @@ export function GalleryFilter({
 
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 relative overflow-visible">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
           <FilterIcon className="w-5 h-5 text-amber-600" />
@@ -268,7 +259,6 @@ export function GalleryFilter({
         )}
       </div>
 
-      {/* Filter Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <Dropdown
           label={isIndonesian ? 'Tema Batik' : 'Batik Theme'}
@@ -320,7 +310,6 @@ export function GalleryFilter({
         />
       </div>
 
-      {/* Active Filters Summary */}
       {hasActiveFilters && (
         <div className="mt-6 pt-4 border-t border-gray-200">
           <div className="flex items-center mb-3">
@@ -416,7 +405,6 @@ export function GalleryFilter({
         </div>
       )}
 
-      {/* Filter Statistics */}
       {hasActiveFilters && (
         <div className="mt-4 p-3 bg-gray-50 rounded-lg">
           <div className="text-sm text-gray-600 text-center">

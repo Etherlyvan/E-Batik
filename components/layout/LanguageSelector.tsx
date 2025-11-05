@@ -1,4 +1,4 @@
-// 🌐 LANGUAGE FEATURE - Language selector dropdown
+// components/layout/LanguageSelector.tsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -30,23 +30,12 @@ export function LanguageSelector() {
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    if (!mounted) {
-        // Return simple version during SSR
-        return (
-            <div className="relative">
-                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors">
-                    <Globe className="h-4 w-4 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">Language</span>
-                    <ChevronDown className="h-4 w-4 text-gray-400" />
-                </button>
-            </div>
-        );
-    }
+        if (mounted) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () =>
+                document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [mounted]);
 
     const handleLanguageSelect = (language: typeof currentLanguage) => {
         setLanguage(language);
@@ -56,14 +45,27 @@ export function LanguageSelector() {
     const getFlagSrc = (code: string) => {
         const flagMap: Record<string, string> = {
             id: '/flags/id.png',
-            en: '/flags/en.png', // Using US flag for English
+            en: '/flags/en.png',
             jp: '/flags/jp.png',
         };
         return flagMap[code] || '/flags/default.png';
     };
 
+    // Don't render until mounted to prevent hydration mismatch
+    if (!mounted) {
+        return (
+            <div className="relative">
+                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-gray-300 bg-white">
+                    <Globe className="h-4 w-4 text-gray-600" />
+                    <span className="text-sm font-medium text-gray-700">ID</span>
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                </button>
+            </div>
+        );
+    }
+
     return (
-        <div className='relative' ref={dropdownRef}>
+        <div className='relative' ref={dropdownRef} suppressHydrationWarning>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
@@ -72,6 +74,7 @@ export function LanguageSelector() {
                     'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
                     isOpen && 'ring-2 ring-blue-500 ring-offset-2'
                 )}
+                suppressHydrationWarning
             >
                 <div className='flex items-center space-x-2'>
                     <div className='relative w-5 h-5'>
@@ -103,7 +106,7 @@ export function LanguageSelector() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden'
+                        className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 overflow-hidden'
                     >
                         <div className='py-2'>
                             {availableLanguages.map((language) => (
@@ -118,7 +121,6 @@ export function LanguageSelector() {
                                         currentLanguage.code ===
                                             language.code &&
                                             'bg-blue-50 text-blue-700',
-
                                     )}
                                 >
                                     <div className='relative w-5 h-5 flex-shrink-0'>
@@ -136,7 +138,6 @@ export function LanguageSelector() {
                                             <span className='text-sm font-medium'>
                                                 {language.name}
                                             </span>
-
                                         </div>
                                         <div className='text-xs text-gray-500'>
                                             {language.code.toUpperCase()}
@@ -150,7 +151,6 @@ export function LanguageSelector() {
                             ))}
                         </div>
 
-                        {/* Footer */}
                         <div className='border-t border-gray-100 px-4 py-2 bg-gray-50'>
                             <div className='flex items-center space-x-2 text-xs text-gray-500'>
                                 <Globe className='w-3 h-3' />

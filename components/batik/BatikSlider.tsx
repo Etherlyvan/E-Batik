@@ -15,6 +15,7 @@ interface BatikSliderProps {
 
 export function BatikSlider({ batiks }: BatikSliderProps) {
   const { currentLanguage } = useLanguage();
+  const isIndonesian = currentLanguage.code === 'id';
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -85,14 +86,9 @@ export function BatikSlider({ batiks }: BatikSliderProps) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-<<<<<<< HEAD
             className="text-4xl font-bold mb-8"
             style={{
               color: '#F5E6D3',
-=======
-            className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg"
-            style={{ 
->>>>>>> e987fda (feat:/Docker Build v2)
               fontFamily: 'Georgia, serif',
               letterSpacing: '0.5px',
               textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
