@@ -2,12 +2,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-<<<<<<< HEAD
 import { Upload, X } from 'lucide-react';
-=======
-import Image from 'next/image';
-import { Upload, X  } from 'lucide-react';
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { cn } from '@/lib/utils/cn';
@@ -31,11 +26,7 @@ export function ImageUpload({
 }: ImageUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
-<<<<<<< HEAD
   const [uploading] = useState(false);
-=======
-  const [uploading] = useState(false); // Remove setUploading as it's not used
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   const [dragOver, setDragOver] = useState(false);
 
   const validateFile = useCallback((file: File): string | null => {
@@ -79,11 +70,7 @@ export function ImageUpload({
       setPreviews(prev => [...prev, ...newPreviews]);
       onUpload([...files, ...validFiles]);
     }
-<<<<<<< HEAD
   }, [files, maxFiles, onUpload, validateFile]);
-=======
-  }, [files, maxFiles, validateFile, onUpload]);
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();

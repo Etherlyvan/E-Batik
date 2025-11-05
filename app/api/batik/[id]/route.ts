@@ -1,34 +1,19 @@
 // app/api/batik/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-<<<<<<< HEAD
 import { getBatikById, deleteBatik } from '@/lib/actions/batik';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 
-=======
-import { getBatikById } from '@/lib/actions/batik';
-
-interface Props {
-  params: Promise<{ id: string }>;
-}
-
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 // GET /api/batik/[id] - Fetch specific batik
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-<<<<<<< HEAD
     const { id } = await params;
     const batikId = parseInt(id);
     
     if (isNaN(batikId)) {
-=======
-    const { id: idParam } = await params;
-    const id = parseInt(idParam);
-    if (isNaN(id)) {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
       return NextResponse.json(
         { error: 'Invalid batik ID' },
         { status: 400 }
@@ -66,7 +51,6 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-<<<<<<< HEAD
     // Check authentication
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -80,56 +64,13 @@ export async function DELETE(
     const batikId = parseInt(id);
     
     if (isNaN(batikId)) {
-=======
-    const { id: idParam } = await params;
-    const id = parseInt(idParam);
-    if (isNaN(id)) {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
       return NextResponse.json(
         { error: 'Invalid batik ID' },
         { status: 400 }
       );
     }
 
-<<<<<<< HEAD
     await deleteBatik(batikId);
-=======
-    // Use deleteBatik action without authentication check for demo purposes
-    const { prisma } = await import('@/lib/db/prisma');
-    const { revalidatePath } = await import('next/cache');
-
-    // Delete batik and all related data in transaction
-    await prisma.$transaction(async (tx) => {
-      // Delete related photos first
-      await tx.foto.deleteMany({
-        where: { batikId: id },
-      });
-
-      // Delete related translations
-      await tx.batikTranslation.deleteMany({
-        where: { batikId: id },
-      });
-
-      // Disconnect themes and subthemes
-      await tx.batik.update({
-        where: { id },
-        data: {
-          tema: { set: [] },
-          subTema: { set: [] },
-        },
-      });
-
-      // Finally delete the batik
-      await tx.batik.delete({
-        where: { id },
-      });
-    });
-
-    // Revalidate related pages
-    revalidatePath('/gallery');
-    revalidatePath('/');
-
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting batik:', error);

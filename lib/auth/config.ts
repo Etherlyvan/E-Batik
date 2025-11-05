@@ -5,7 +5,6 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import { prisma } from '@/lib/db/prisma';
 
-<<<<<<< HEAD
 type UserRole = 'USER' | 'ADMIN' | 'MODERATOR';
 
 interface UserWithRole {
@@ -16,9 +15,6 @@ interface UserWithRole {
 }
 
 export const authOptions: NextAuthOptions = {
-=======
-export const authOptions = {
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -73,7 +69,6 @@ export const authOptions = {
   pages: {
     signIn: '/login',
   },
-<<<<<<< HEAD
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -90,6 +85,4 @@ export const authOptions = {
       return session;
     },
   },
-=======
->>>>>>> f4dc652 (feat: japanese translation, virtual gallery, and enhance on pagination)
 };

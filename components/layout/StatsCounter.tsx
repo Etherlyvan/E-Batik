@@ -19,8 +19,6 @@ export function StatsCounter() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
-  const isIndonesian = currentLanguage.code === 'id';
-
   const stats: Stat[] = useMemo(() => [
     { 
       value: 500, 
@@ -54,7 +52,7 @@ export function StatsCounter() {
       icon: '👥',
       suffix: '+'
     },
-  ], []);
+  ], [currentLanguage.code]);
 
   // Animate counters when in view
   useEffect(() => {
