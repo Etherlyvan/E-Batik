@@ -1,7 +1,7 @@
 // components/layout/StatsCounter.tsx
 'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
 
@@ -53,7 +53,7 @@ export function StatsCounter() {
       icon: '👥',
       suffix: '+'
     },
-  ], [currentLanguage.code]); // ✅ Fixed: Added currentLanguage.code as dependency
+  ], [currentLanguage.code]);
 
   // Animate counters when in view
   useEffect(() => {
@@ -80,23 +80,6 @@ export function StatsCounter() {
       requestAnimationFrame(animate);
     }
   }, [isInView, hasAnimated, stats]);
-
-  const getFloorName = useCallback((floor: number): string => {
-    const floorNames = {
-      1: currentLanguage.code === 'id' ? 'Lantai Dasar' : 
-         currentLanguage.code === 'en' ? 'Ground Floor' : 
-         '1階',
-      2: currentLanguage.code === 'id' ? 'Lantai Dua' : 
-         currentLanguage.code === 'en' ? 'Second Floor' : 
-         '2階', 
-      3: currentLanguage.code === 'id' ? 'Lantai Tiga' : 
-         currentLanguage.code === 'en' ? 'Third Floor' : 
-         '3階',
-    };
-    return floorNames[floor as keyof typeof floorNames] || 
-           `${currentLanguage.code === 'id' ? 'Lantai' : 
-              currentLanguage.code === 'en' ? 'Floor' : '階'} ${floor}`;
-  }, [currentLanguage.code]);
 
   return (
     <section ref={ref} className="py-20 bg-gradient-to-br from-amber-50 to-orange-50">
