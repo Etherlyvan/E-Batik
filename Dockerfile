@@ -6,15 +6,12 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy package files and prisma
+# Copy package files
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma
 
-# Install ALL dependencies (including dev dependencies for build)
-RUN \
-  if [ -f package-lock.json ]; then npm ci; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Install dependencies
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -25,11 +22,11 @@ COPY . .
 # Generate Prisma Client
 RUN npx prisma generate
 
-# Build the application
+# Build application
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
-# Production image, copy all the files and run next
+# Production image
 FROM base AS runner
 WORKDIR /app
 
@@ -39,22 +36,14 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy public folder with correct permissions
+# Copy necessary files
 COPY --chown=nextjs:nodejs --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Copy built application
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Copy prisma files
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-# Fix permissions for public directory
+# Fix permissions
 RUN chown -R nextjs:nodejs /app/public
 RUN chmod -R 755 /app/public
 
