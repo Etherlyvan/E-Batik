@@ -6,7 +6,7 @@ echo "🚀 Starting deployment to VPS..."
 # Variables
 VPS_IP="31.97.66.47"
 VPS_USER="root"
-APP_DIR="/var/www/batiksphere"
+APP_DIR="/var/www/E-Batik"
 
 # Create deployment package
 echo "📦 Creating deployment package..."
@@ -25,8 +25,8 @@ scp deploy.tar.gz $VPS_USER@$VPS_IP:/tmp/
 echo "🔧 Executing deployment on VPS..."
 ssh $VPS_USER@$VPS_IP << 'EOF'
   # Create app directory
-  mkdir -p /var/www/batiksphere
-  cd /var/www/batiksphere
+  mkdir -p /var/www/E-Batik
+  cd /var/www/E-Batik
   
   # Extract files
   tar -xzf /tmp/deploy.tar.gz
