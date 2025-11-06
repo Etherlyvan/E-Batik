@@ -14,22 +14,19 @@ class DatabaseConnection {
             url: process.env.DATABASE_URL,
           },
         },
-        // Optimize connection pool
-        datasourceUrl: process.env.DATABASE_URL + '?connection_limit=10&pool_timeout=20&pool_max=20',
       });
 
-      // Enable query optimization
-      DatabaseConnection.instance.$use(async (params, next) => {
-        const before = Date.now();
-        const result = await next(params);
-        const after = Date.now();
-
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`Query ${params.model}.${params.action} took ${after - before}ms`);
-        }
-
-        return result;
-      });
+      // Connection lifecycle management
+      DatabaseConnection.instance.$connect()
+        .then(() => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('✅ Database connected successfully');
+          }
+        })
+        .catch((error) => {
+          console.error('❌ Database connection failed:', error);
+          throw error;
+        });
     }
 
     return DatabaseConnection.instance;
@@ -39,8 +36,36 @@ class DatabaseConnection {
     if (DatabaseConnection.instance) {
       await DatabaseConnection.instance.$disconnect();
       DatabaseConnection.instance = null;
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔌 Database disconnected');
+      }
+    }
+  }
+
+  // Optional: Add query timing for development
+  public static logQuery(model: string, action: string, duration: number): void {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`⚡ Query ${model}.${action} took ${duration}ms`);
     }
   }
 }
 
 export const prismaOptimized = DatabaseConnection.getInstance();
+
+// Cleanup on process termination
+if (typeof window === 'undefined') {
+  process.on('beforeExit', async () => {
+    await DatabaseConnection.disconnect();
+  });
+
+  process.on('SIGINT', async () => {
+    await DatabaseConnection.disconnect();
+    process.exit(0);
+  });
+
+  process.on('SIGTERM', async () => {
+    await DatabaseConnection.disconnect();
+    process.exit(0);
+  });
+}
