@@ -10,8 +10,12 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma
 
-# Install dependencies
-RUN npm ci
+# Install dependencies - with fallback
+RUN if [ -f package-lock.json ]; then \
+      npm ci; \
+    else \
+      npm install; \
+    fi
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -38,6 +42,9 @@ RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files
 COPY --chown=nextjs:nodejs --from=builder /app/public ./public
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
