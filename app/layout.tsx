@@ -1,9 +1,27 @@
-// app/layout.tsx (Final SEO Version)
+// app/layout.tsx - FIXED VERSION
 import './globals.css';
 import { Providers } from '@/lib/contexts/providers';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { Metadata } from 'next';
+import { Inter, Poppins } from 'next/font/google';
 
+// ✅ Font optimization
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+  preload: true,
+});
+
+const poppins = Poppins({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-poppins',
+  preload: true,
+});
+
+// ✅ FIXED: Remove 'use client' - metadata must be in Server Component
 export const metadata: Metadata = {
   title: {
     default: 'BatikPedia - Indonesian Batik Digital Database',
@@ -81,14 +99,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html lang="id" className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        {/* Preconnect untuk performance */}
-        <link rel="preconnect" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://mvqwffdptqgzynfpxbco.supabase.co" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        {/* Preconnect to critical origins */}
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://mvqwffdptqgzynfpxbco.supabase.co" />
         
-        {/* Structured Data untuk Website */}
+        {/* Resource hints */}
+        <link rel="prefetch" href="/api/batik" as="fetch" crossOrigin="anonymous" />
+        
+        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -123,7 +144,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-gray-50">
+      <body className={`min-h-screen bg-gray-50 font-sans`}>
         <Providers>
           {children}
         </Providers>

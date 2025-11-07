@@ -10,43 +10,135 @@ import type { CreateBatikData, UpdateBatikData } from '@/lib/types/batik';
 /**
  * Fetch all batiks with related data
  */
+
 export async function getBatiks(): Promise<Batik[]> {
   try {
     const batiks = await prisma.batik.findMany({
-      include: {
+      select: {
+        id: true,
+        nama: true,
+        kode: true,
+        seniman: true,
+        alamat: true,
+        tahun: true,
+        dimensi: true,
+        createdAt: true,
+        updatedAt: true,
+        // ✅ CRITICAL: Only select needed translation fields
         translations: {
-          include: {
-            language: true,
+          select: {
+            id: true,
+            languageId: true,
+            warna: true,
+            teknik: true,
+            jenisKain: true,
+            histori: true,
+            pewarna: true,
+            bentuk: true,
           },
+          where: {
+            languageId: {
+              in: [1, 2, 3] // Only load active languages
+            }
+          }
         },
-        foto: true,
+        // ✅ CRITICAL: Limit photos
+        foto: {
+          select: {
+            id: true,
+            link: true,
+          },
+          take: 5, // Only first 5 photos for list view
+        },
+        // ✅ CRITICAL: Optimize theme loading
         tema: {
-          include: {
+          select: {
+            id: true,
+            nama: true,
             translations: {
-              include: {
-                language: true,
+              select: {
+                id: true,
+                languageId: true,
+                nama: true,
               },
+              where: {
+                languageId: {
+                  in: [1, 2, 3]
+                }
+              }
             },
           },
+          take: 5, // Limit themes in list view
         },
         subTema: {
-          include: {
-            translations: {
-              include: {
-                language: true,
-              },
-            },
+          select: {
+            id: true,
+            nama: true,
           },
+          take: 5,
         },
       },
       orderBy: {
         createdAt: 'desc',
       },
+      // ✅ NEW: Add pagination to initial load
+      take: 100, // Limit initial load
     });
 
     return batiks as Batik[];
   } catch (error) {
     console.error('Error fetching batiks:', error);
+    throw new Error('Failed to fetch batiks');
+  }
+}
+
+
+
+// ✅ NEW: Paginated version
+export async function getBatiksPaginated(page: number = 1, limit: number = 12): Promise<{
+  batiks: Batik[];
+  total: number;
+  hasMore: boolean;
+}> {
+  try {
+    const skip = (page - 1) * limit;
+    
+    const [batiks, total] = await Promise.all([
+      prisma.batik.findMany({
+        select: {
+          id: true,
+          nama: true,
+          kode: true,
+          seniman: true,
+          alamat: true,
+          tahun: true,
+          dimensi: true,
+          foto: {
+            select: { link: true },
+            take: 1, // Only first photo for list
+          },
+          tema: {
+            select: {
+              id: true,
+              nama: true,
+            },
+            take: 3,
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.batik.count(),
+    ]);
+
+    return {
+      batiks: batiks as Batik[],
+      total,
+      hasMore: skip + limit < total,
+    };
+  } catch (error) {
+    console.error('Error fetching paginated batiks:', error);
     throw new Error('Failed to fetch batiks');
   }
 }

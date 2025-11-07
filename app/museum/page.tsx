@@ -1,6 +1,5 @@
-// app/museum/page.tsx
-import { Suspense } from 'react';
-import { Museum } from '@/components/museum/Museum';
+// app/museum/page.tsx - OPTIMIZED VERSION
+import { Suspense, lazy } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { getBatiks } from '@/lib/actions/batik';
 import { LoadingScreen } from '@/components/museum/LoadingScreen';
@@ -10,6 +9,9 @@ export const metadata: Metadata = {
   title: 'Virtual Batik Museum - BatikPedia',
   description: 'Explore Indonesian batik collection in our 3D virtual museum',
 };
+
+// ✅ CRITICAL: Lazy load museum component
+const Museum = lazy(() => import('@/components/museum/Museum').then(mod => ({ default: mod.Museum })));
 
 async function MuseumContent() {
   const batiks = await getBatiks();
@@ -31,15 +33,17 @@ async function MuseumContent() {
     );
   }
 
-  return <Museum batiks={batiks} />;
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <Museum batiks={batiks} />
+    </Suspense>
+  );
 }
 
 export default function MuseumPage() {
   return (
     <PageLayout showNavbar={false} showFooter={false}>
-      <Suspense fallback={<LoadingScreen />}>
-        <MuseumContent />
-      </Suspense>
+      <MuseumContent />
     </PageLayout>
   );
 }

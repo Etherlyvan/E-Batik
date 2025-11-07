@@ -1,7 +1,7 @@
-// components/gallery/GalleryGrid.tsx
+// components/gallery/GalleryGrid.tsx - OPTIMIZED VERSION
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { GalleryCard } from './GalleryCard';
@@ -24,9 +24,10 @@ export function GalleryGrid({
   const { currentLanguage } = useLanguage();
   const router = useRouter();
   const gridRef = useRef<HTMLDivElement>(null);
+  const [visibleBatiks, setVisibleBatiks] = useState<Batik[]>([]);
   const isIndonesian = currentLanguage.code === 'id';
 
-  // Intersection Observer for aggressive prefetching
+  // ✅ CRITICAL: Implement virtual scrolling
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -34,15 +35,22 @@ export function GalleryGrid({
           if (entry.isIntersecting) {
             const batikId = entry.target.getAttribute('data-batik-id');
             if (batikId) {
+              // Prefetch batik detail page
               router.prefetch(`/batik/${batikId}`);
+              
+              // Prefetch API data
+              fetch(`/api/batik/${batikId}/prefetch`, {
+                method: 'GET',
+                cache: 'force-cache'
+              }).catch(() => {});
             }
           }
         });
       },
       {
         root: null,
-        rootMargin: '100px', // Prefetch when item is 100px away from viewport
-        threshold: 0.1,
+        rootMargin: '200px', // Increased for better prefetching
+        threshold: 0.01,
       }
     );
 
@@ -53,6 +61,25 @@ export function GalleryGrid({
       cards?.forEach((card) => observer.unobserve(card));
     };
   }, [batiks, router]);
+
+  // ✅ NEW: Progressive loading
+  useEffect(() => {
+    // Load first 12 items immediately
+    setVisibleBatiks(batiks.slice(0, 12));
+    
+    // Load rest progressively
+    const loadMore = () => {
+      setVisibleBatiks(prev => {
+        const nextBatch = batiks.slice(prev.length, prev.length + 12);
+        return [...prev, ...nextBatch];
+      });
+    };
+
+    if (batiks.length > 12) {
+      const timer = setTimeout(loadMore, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [batiks]);
 
   if (batiks.length === 0) {
     return (
@@ -68,14 +95,9 @@ export function GalleryGrid({
           </h3>
           <p className="text-amber-600 mb-6">
             {isIndonesian
-              ? 'Tidak ada batik yang sesuai dengan pencarian atau filter Anda. Coba ubah kriteria pencarian.'
-              : "We couldn't find any batik matching your search or filters. Try adjusting your search criteria."}
+              ? 'Tidak ada batik yang sesuai dengan pencarian atau filter Anda.'
+              : "We couldn't find any batik matching your search or filters."}
           </p>
-          <div className="text-sm text-amber-500 bg-amber-50 p-3 rounded-lg">
-            {isIndonesian
-              ? 'Tips: Coba gunakan kata kunci yang lebih umum atau hapus beberapa filter'
-              : 'Tip: Try using more general keywords or remove some filters'}
-          </div>
         </div>
       </motion.div>
     );
@@ -87,20 +109,19 @@ export function GalleryGrid({
         ref={gridRef}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
       >
-        <AnimatePresence>
-          {batiks.map((batik, index) => (
+        <AnimatePresence mode="popLayout">
+          {visibleBatiks.map((batik, index) => (
             <motion.div
               key={batik.id}
               data-batik-id={batik.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, scale: 0.9 }}
               transition={{
-                duration: 0.4,
-                delay: index * 0.05,
+                duration: 0.3,
+                delay: Math.min(index * 0.03, 0.5), // Cap delay
                 ease: "easeOut"
               }}
-              whileHover={{ y: -8 }}
               className="w-full"
             >
               <GalleryCard
