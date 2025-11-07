@@ -1,0 +1,25 @@
+{
+  "name": "BatikPedia - Indonesian Batik Database",
+  "short_name": "BatikPedia",
+  "description": "Explore Indonesia's largest digital batik database",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f59e0b",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education", "culture", "art"],
+  "lang": "id",
+  "scope": "/"
+}

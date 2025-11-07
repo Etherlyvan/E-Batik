@@ -28,8 +28,54 @@ export function BatikDetailClient({ batik }: BatikDetailClientProps) {
     router.push('/gallery');
   };
 
+  // Structured Data untuk batik detail
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": batik.nama,
+    "description": translation?.histori || '',
+    "image": batik.foto.map(foto => foto.link),
+    "creator": {
+      "@type": "Person",
+      "name": batik.seniman || 'Unknown Artist'
+    },
+    "dateCreated": batik.tahun,
+    "locationCreated": {
+      "@type": "Place",
+      "name": batik.alamat || 'Indonesia'
+    },
+    "material": translation?.jenisKain || '',
+    "technique": translation?.teknik || '',
+    "artMedium": "Textile Art",
+    "artform": "Batik",
+    "genre": "Traditional Indonesian Art",
+    "inLanguage": ["id-ID", "en-US"],
+    "keywords": [
+      batik.nama,
+      batik.seniman,
+      translation?.teknik,
+      translation?.warna,
+      ...batik.tema.map(tema => tema.nama)
+    ].filter(Boolean).join(', '),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://batikpedia.cloud/batik/${batik.id}`
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "BatikPedia",
+      "url": "https://batikpedia.cloud"
+    }
+  };
   return (
     <div className="relative flex h-screen w-screen bg-[#E5D387]">
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData)
+        }}
+      />
       {/* Back Button */}
       <button
         className="absolute top-4 left-4 z-20 flex items-center bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700 shadow-md transition-colors"

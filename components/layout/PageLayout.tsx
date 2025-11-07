@@ -1,12 +1,14 @@
-// components/layout/PageLayout.tsx
+// components/layout/PageLayout.tsx (dengan SEO)
 import React from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 
 interface PageLayoutProps {
   children: React.ReactNode;
   showNavbar?: boolean;
   showFooter?: boolean;
+  showBreadcrumbs?: boolean;
   className?: string;
 }
 
@@ -14,11 +16,13 @@ export function PageLayout({
   children,
   showNavbar = true,
   showFooter = true,
+  showBreadcrumbs = true,
   className = '',
 }: PageLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       {showNavbar && <Navbar />}
+      {showBreadcrumbs && showNavbar && <Breadcrumbs />}
       <main className={`flex-1 ${className}`}>
         {children}
       </main>
