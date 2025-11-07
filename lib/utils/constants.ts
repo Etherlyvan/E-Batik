@@ -1,6 +1,6 @@
 // 🛠️ SHARED UTILITY - Application constants
 export const APP_CONFIG = {
-  NAME: 'Batik Sphere',
+  NAME: 'BatikPedia',
   DESCRIPTION: 'Digital Batik Database',
   ITEMS_PER_PAGE: 12,
   MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB

@@ -86,7 +86,7 @@ export function InfoSection() {
           <div className="relative w-20 h-20">
             <Image
               src="/images/LogoApp.png"
-              alt="Batik Sphere Logo"
+              alt="BatikPedia Logo"
               fill
               className="object-contain"
               sizes="80px"
@@ -102,8 +102,8 @@ export function InfoSection() {
           viewport={{ once: true }}
           className="text-3xl sm:text-4xl font-bold mb-12 text-amber-100 text-center"
         >
-          {currentLanguage.code === 'id' ? 'Filosofi Batik Sphere' :
-           currentLanguage.code === 'en' ? 'Batik Sphere Philosophy' :
+          {currentLanguage.code === 'id' ? 'Filosofi BatikPedia' :
+           currentLanguage.code === 'en' ? 'BatikPedia Philosophy' :
            'バティックスフィア哲学'}
         </motion.h2>
 

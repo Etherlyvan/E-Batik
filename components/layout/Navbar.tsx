@@ -68,7 +68,7 @@ export function Navbar() {
               <div className="relative w-12 h-12">
                 <Image
                   src="/images/LogoApp.png"
-                  alt="Batik Sphere"
+                  alt="BatikPedia"
                   fill
                   className="object-contain"
                   sizes="48px"
@@ -76,7 +76,7 @@ export function Navbar() {
                 />
               </div>
               <span className="text-xl font-bold text-[#5a2b2b] hidden sm:block">
-                Batik Sphere
+                BatikPedia
               </span>
             </Link>
           </motion.div>

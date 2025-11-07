@@ -3,7 +3,7 @@ import './globals.css';
 import { Providers } from '@/lib/contexts/providers';
 
 export const metadata = {
-  title: 'Batik Sphere - Digital Batik Database',
+  title: 'BatikPedia - Digital Batik Database',
   description: 'Preserving Indonesian batik heritage through digital innovation',
 };
 

@@ -6,7 +6,7 @@ import { getLanguages } from '@/lib/actions/languages';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Add New Batik - Batik Sphere',
+  title: 'Add New Batik - BatikPedia',
   description: 'Add a new batik to the digital collection',
 };
 

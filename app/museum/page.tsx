@@ -7,7 +7,7 @@ import { LoadingScreen } from '@/components/museum/LoadingScreen';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Virtual Batik Museum - Batik Sphere',
+  title: 'Virtual Batik Museum - BatikPedia',
   description: 'Explore Indonesian batik collection in our 3D virtual museum',
 };
 

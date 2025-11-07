@@ -3,8 +3,8 @@ import { LoginForm } from '@/components/forms/LoginForm';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Login - Batik Sphere',
-  description: 'Sign in to your Batik Sphere account',
+  title: 'Login - BatikPedia',
+  description: 'Sign in to your BatikPedia account',
 };
 
 export default function LoginPage() {
@@ -12,7 +12,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-center mb-6">
-          Sign In to Batik Sphere
+          Sign In to BatikPedia
         </h1>
         <LoginForm />
       </div>

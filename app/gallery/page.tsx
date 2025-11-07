@@ -8,7 +8,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Gallery - Batik Sphere',
+  title: 'Gallery - BatikPedia',
   description: 'Explore our collection of traditional Indonesian batik',
 };
 

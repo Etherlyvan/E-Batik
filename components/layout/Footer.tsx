@@ -12,7 +12,7 @@ export function Footer() {
   const partnerLogos = [
     {
       src: '/images/LogoApp.png',
-      alt: 'Batik Sphere',
+      alt: 'BatikPedia',
       width: 90,
       height: 90,
       className: 'w-[90px] sm:w-[90px] md:w-[80px]'
@@ -54,7 +54,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-start mb-8">
           {/* Left Section */}
           <div className="flex flex-col items-start mb-6 md:mb-0">
-            <h2 className="text-lg font-bold mb-4">Batik Sphere</h2>
+            <h2 className="text-lg font-bold mb-4">BatikPedia</h2>
             <p className="text-sm max-w-md leading-relaxed">
               {currentLanguage.code === 'id'
                 ? "Melestarikan dan merayakan warisan budaya batik Indonesia melalui inovasi digital dan eksplorasi budaya."
@@ -96,7 +96,7 @@ export function Footer() {
         <div className="border-t border-[#E1AD01] pt-4">
           <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm mb-4 md:mb-0 text-[#3A3A3A] font-medium">
-              Copyright &copy; 2025 Batik Sphere. All Rights Reserved.
+              Copyright &copy; 2025 BatikPedia. All Rights Reserved.
             </p>
             <ul className="flex space-x-6 font-medium">
               <li>
