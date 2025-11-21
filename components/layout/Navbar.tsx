@@ -1,12 +1,12 @@
 // components/layout/Navbar.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Menu, X, Plus, LogOut } from 'lucide-react';
+import { Menu, X, Plus, LogOut, Download } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { LanguageSelector } from './LanguageSelector';
 import { useAuth } from '@/lib/hooks/auth/useAuth';
@@ -18,8 +18,17 @@ export function Navbar() {
   const { user, signOut } = useAuth();
   const { currentLanguage } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  const isActive = (path: string) => pathname === path;
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const isActive = (path: string) => {
+    // Don't mark external links as active
+    if (path.startsWith('http')) return false;
+    return pathname === path;
+  };
 
   const handleSignOut = async () => {
     try {
@@ -30,23 +39,28 @@ export function Navbar() {
   };
 
   const navLinks = [
-    { 
-      href: '/', 
-      label: currentLanguage.code === 'id' ? 'Beranda' : 
-             currentLanguage.code === 'en' ? 'Home' : 
+    {
+      href: '/',
+      label: currentLanguage.code === 'id' ? 'Beranda' :
+             currentLanguage.code === 'en' ? 'Home' :
              'ホーム'
     },
-    { 
-      href: '/gallery', 
-      label: currentLanguage.code === 'id' ? 'Galeri' : 
-             currentLanguage.code === 'en' ? 'Gallery' : 
+    {
+      href: '/gallery',
+      label: currentLanguage.code === 'id' ? 'Galeri' :
+             currentLanguage.code === 'en' ? 'Gallery' :
              'ギャラリー'
     },
-    { 
-      href: '/museum', 
-      label: currentLanguage.code === 'id' ? 'Museum 3D' : 
-             currentLanguage.code === 'en' ? '3D Museum' : 
+    {
+      href: '/museum',
+      label: currentLanguage.code === 'id' ? 'Museum 3D' :
+             currentLanguage.code === 'en' ? '3D Museum' :
              '3Dミュージアム'
+    },
+    {
+      href: 'https://genbatik.ub.ac.id/',
+      label: 'GenBatik',
+      isExternal: true
     },
   ];
 
@@ -85,28 +99,51 @@ export function Navbar() {
           <div className="hidden md:flex md:items-center md:space-x-8">
             {/* Nav Links */}
             <div className="flex items-center space-x-6">
-              {navLinks.map(({ href, label }) => (
-                <Link key={href} href={href} className="relative group">
-                  <span
-                    className={cn(
-                      "text-sm font-medium transition-colors duration-300",
-                      isActive(href) 
-                        ? "text-[#5a2b2b]" 
-                        : "text-[#5a2b2b] hover:text-[#c4a484]"
-                    )}
-                  >
-                    {label}
-                  </span>
-                  <span
-                    className={cn(
-                      "absolute -bottom-1 left-0 w-full h-0.5 bg-[#c4a484] transform origin-left transition-transform duration-300",
-                      isActive(href) 
-                        ? "scale-x-100" 
-                        : "scale-x-0 group-hover:scale-x-100"
-                    )}
-                  />
-                </Link>
-              ))}
+              {navLinks.map(({ href, label, isExternal }) => {
+                if (isExternal) {
+                  return (
+                    <a
+                      key={href}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="relative group"
+                    >
+                      <span
+                        className="text-sm font-medium transition-colors duration-300 text-[#5a2b2b] hover:text-[#c4a484]"
+                      >
+                        {label}
+                      </span>
+                      <span
+                        className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#c4a484] transform origin-left transition-transform duration-300 scale-x-0 group-hover:scale-x-100"
+                      />
+                    </a>
+                  );
+                }
+                
+                return (
+                  <Link key={href} href={href} className="relative group">
+                    <span
+                      className={cn(
+                        "text-sm font-medium transition-colors duration-300",
+                        isActive(href)
+                          ? "text-[#5a2b2b]"
+                          : "text-[#5a2b2b] hover:text-[#c4a484]"
+                      )}
+                    >
+                      {label}
+                    </span>
+                    <span
+                      className={cn(
+                        "absolute -bottom-1 left-0 w-full h-0.5 bg-[#c4a484] transform origin-left transition-transform duration-300",
+                        isActive(href)
+                          ? "scale-x-100"
+                          : "scale-x-0 group-hover:scale-x-100"
+                      )}
+                    />
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Language Selector */}
@@ -142,17 +179,22 @@ export function Navbar() {
                   </Button>
                 </>
               ) : (
-                <Link href="/login">
+                <a
+                  href="https://github.com/ivanrafli14/batikpedia/releases/download/v1.0/BatikPedia.apk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button
                     variant="primary"
                     size="sm"
                     className="bg-[#5a2b2b] hover:bg-[#c4a484] text-[#e5d0b5] hover:text-[#5a2b2b]"
                   >
-                    {currentLanguage.code === 'id' ? 'Masuk' : 
-                     currentLanguage.code === 'en' ? 'Sign In' : 
-                     'ログイン'}
+                    <Download className="w-4 h-4 mr-2" />
+                    {currentLanguage.code === 'id' ? 'Unduh Aplikasi Android' :
+                     currentLanguage.code === 'en' ? 'Download Android App' :
+                     'Androidアプリをダウンロード'}
                   </Button>
-                </Link>
+                </a>
               )}
             </div>
           </div>
@@ -196,21 +238,38 @@ export function Navbar() {
           className="md:hidden bg-[#e5d0b5] shadow-lg border-t border-[#5a2b2b]"
         >
           <div className="px-4 pt-2 pb-3 space-y-1">
-            {navLinks.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                  isActive(href)
-                    ? "text-[#5a2b2b] bg-[#c4a484]"
-                    : "text-[#5a2b2b] hover:text-[#c4a484] hover:bg-[#e5d0b5]"
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {label}
-              </Link>
-            ))}
+            {isMounted && navLinks.map(({ href, label, isExternal }) => {
+              if (isExternal) {
+                return (
+                  <a
+                    key={href}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-[#5a2b2b] hover:text-[#c4a484] hover:bg-[#e5d0b5]"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {label}
+                  </a>
+                );
+              }
+              
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    "block px-3 py-2 rounded-md text-base font-medium transition-colors",
+                    isActive(href)
+                      ? "text-[#5a2b2b] bg-[#c4a484]"
+                      : "text-[#5a2b2b] hover:text-[#c4a484] hover:bg-[#e5d0b5]"
+                  )}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              );
+            })}
             
             {/* Mobile Auth */}
             <div className="pt-4 border-t border-[#5a2b2b]">
@@ -226,15 +285,18 @@ export function Navbar() {
                    'バティック追加'}
                 </Link>
               ) : (
-                <Link
-                  href="/login"
+                <a
+                  href="https://github.com/ivanrafli14/batikpedia/releases/download/v1.0/BatikPedia.apk"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block px-3 py-2 text-base font-medium text-[#5a2b2b] hover:text-[#c4a484] hover:bg-[#e5d0b5] rounded-md"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {currentLanguage.code === 'id' ? 'Masuk' : 
-                   currentLanguage.code === 'en' ? 'Sign In' : 
-                   'ログイン'}
-                </Link>
+                  <Download className="w-4 h-4 mr-2 inline" />
+                  {currentLanguage.code === 'id' ? 'Unduh Aplikasi Android' :
+                   currentLanguage.code === 'en' ? 'Download Android App' :
+                   'Androidアプリをダウンロード'}
+                </a>
               )}
             </div>
           </div>

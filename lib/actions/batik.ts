@@ -81,8 +81,6 @@ export async function getBatiks(): Promise<Batik[]> {
       orderBy: {
         createdAt: 'desc',
       },
-      // ✅ NEW: Add pagination to initial load
-      take: 100, // Limit initial load
     });
 
     return batiks as Batik[];
