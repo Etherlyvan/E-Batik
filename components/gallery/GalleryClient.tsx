@@ -135,9 +135,9 @@ export function GalleryClient({ initialBatiks, themes }: GalleryClientProps) {
                         transition={{ duration: 0.8 }}
                     >
                         <h1 className='text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 md:mb-6 text-white drop-shadow-lg'>
-                            {currentLanguage.code === 'id' ? 'Database Batik' : 
-                             currentLanguage.code === 'en' ? 'Batik Database' : 
-                             'バティックデータベース'}
+                            {currentLanguage.code === 'id' ? 'BatikSphere' : 
+                             currentLanguage.code === 'en' ? 'BatikSphere' : 
+                             'BatikSphere'}
                         </h1>
                         <p className='text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-4xl mx-auto leading-relaxed text-white/95 drop-shadow-md px-4'>
                             {currentLanguage.code === 'id'
