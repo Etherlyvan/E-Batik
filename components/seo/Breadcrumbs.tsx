@@ -38,6 +38,9 @@ export function Breadcrumbs() {
         case 'museum':
           label = isIndonesian ? 'Museum 3D' : '3D Museum';
           break;
+        case 'glosarium':
+          label = isIndonesian ? 'Glosarium' : 'Glossary';
+          break;
         case 'batik':
           label = isIndonesian ? 'Detail Batik' : 'Batik Detail';
           break;

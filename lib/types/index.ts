@@ -6,6 +6,7 @@ export type { User as SupabaseUser, Session as SupabaseSession } from '@supabase
 // Auth types
 export type * from './auth';
 export type * from './batik';
+export type * from './glosarium';
 
 // Base types
 export interface BaseEntity {

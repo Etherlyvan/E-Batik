@@ -58,6 +58,12 @@ export function Navbar() {
              '3Dミュージアム'
     },
     {
+      href: '/glosarium',
+      label: currentLanguage.code === 'id' ? 'Glosarium' :
+             currentLanguage.code === 'en' ? 'Glossary' :
+             '用語集'
+    },
+    {
       href: 'https://genbatik.ub.ac.id/',
       label: 'GenBatik',
       isExternal: true
