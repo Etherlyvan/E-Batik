@@ -99,7 +99,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="id" className={`${inter.variable} ${poppins.variable}`} suppressHydrationWarning>
       <head>
         {/* Preconnect to critical origins */}
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
@@ -144,7 +144,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`min-h-screen bg-gray-50 font-sans`}>
+      <body className={`min-h-screen bg-gray-50 font-sans`} suppressHydrationWarning>
         <Providers>
           {children}
         </Providers>

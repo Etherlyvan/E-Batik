@@ -288,7 +288,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
                     <div className="mt-4 pt-3 border-t border-stone-100">
                       <span className="text-[11px] text-stone-400 font-medium block">Contoh:</span>
                       <p className="text-xs text-stone-500 italic mt-0.5">
-                        "{item.contohPenggunaan}"
+                        &ldquo;{item.contohPenggunaan}&rdquo;
                       </p>
                     </div>
                   )}
