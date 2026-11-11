@@ -5,6 +5,12 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
 import type { Language } from '@/lib/types';
 
+const FALLBACK_LANGUAGES: Language[] = [
+  { id: 1, code: 'id', name: 'Indonesian', isDefault: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: 2, code: 'en', name: 'English', isDefault: false, createdAt: new Date(), updatedAt: new Date() },
+  { id: 3, code: 'jp', name: 'Japanese', isDefault: false, createdAt: new Date(), updatedAt: new Date() },
+];
+
 /**
  * Fetch all languages
  */
@@ -19,8 +25,8 @@ export async function getLanguages(): Promise<Language[]> {
 
     return languages as Language[];
   } catch (error) {
-    console.error('Error fetching languages:', error);
-    throw new Error('Failed to fetch languages');
+    console.warn('⚠️ Database language query failed, using fallback languages:', error instanceof Error ? error.message : error);
+    return FALLBACK_LANGUAGES;
   }
 }
 
@@ -35,8 +41,8 @@ export async function getDefaultLanguage(): Promise<Language | null> {
 
     return defaultLanguage as Language | null;
   } catch (error) {
-    console.error('Error fetching default language:', error);
-    throw new Error('Failed to fetch default language');
+    console.warn('⚠️ Database default language query failed, using fallback language:', error instanceof Error ? error.message : error);
+    return FALLBACK_LANGUAGES[0];
   }
 }
 
