@@ -14,5 +14,8 @@ export interface GlosariumItem {
   abjad: string;
   kategori: string;
   definisi: string;
+  definisi_en?: string;
+  definisi_jp?: string;
   contohPenggunaan?: string;
 }
+

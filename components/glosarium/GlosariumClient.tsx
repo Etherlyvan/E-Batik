@@ -22,11 +22,101 @@ const KATEGORI_OPTIONS: KategoriGlosarium[] = [
   'Istilah Terkait',
 ];
 
+const KATEGORI_LABELS: Record<'id' | 'en' | 'jp', Record<KategoriGlosarium, string>> = {
+  id: {
+    'Semua': 'Semua',
+    'Motif': 'Motif',
+    'Teknik': 'Teknik',
+    'Alat': 'Alat',
+    'Bahan': 'Bahan',
+    'Filosofi & Budaya': 'Filosofi & Budaya',
+    'Flora & Fauna': 'Flora & Fauna',
+    'Istilah Terkait': 'Istilah Terkait',
+  },
+  en: {
+    'Semua': 'All',
+    'Motif': 'Motif',
+    'Teknik': 'Techniques',
+    'Alat': 'Tools',
+    'Bahan': 'Materials',
+    'Filosofi & Budaya': 'Philosophy & Culture',
+    'Flora & Fauna': 'Flora & Fauna',
+    'Istilah Terkait': 'Related Terms',
+  },
+  jp: {
+    'Semua': 'すべて',
+    'Motif': '文様・モチーフ',
+    'Teknik': '技法',
+    'Alat': '道具',
+    'Bahan': '材料',
+    'Filosofi & Budaya': '哲学・文化',
+    'Flora & Fauna': '動植物',
+    'Istilah Terkait': '関連用語',
+  },
+};
+
+const TRANSLATIONS = {
+  id: {
+    badge: 'Khazanah Istilah & Budaya',
+    title: 'Glosarium Batik',
+    description: 'Koleksi lengkap istilah, filosofi motif, teknik pembatikan, alat & bahan, serta khazanah warisan budaya batik nusantara.',
+    searchPlaceholder: 'Cari istilah, alat, teknik, atau motif batik (misal: canting, kawung, soga)...',
+    categoryTitle: 'Kategori',
+    alphabetTitle: 'Indeks Abjad (A–Z)',
+    allAlphabet: 'Semua',
+    showing: (count: number, total: number) => `Menampilkan ${count} istilah dari total ${total} kosa kata`,
+    resetFilter: 'Reset Filter',
+    exampleLabel: 'Contoh:',
+    notFoundTitle: 'Istilah tidak ditemukan',
+    notFoundDesc: (query: string) => `Tidak ada istilah yang cocok dengan kata kunci "${query}". Coba gunakan kata kunci lain atau reset filter.`,
+    showAllButton: 'Kembalikan Semua Istilah',
+    letterTitle: (char: string) => `Huruf ${char}`,
+    noLetterTitle: (char: string) => `Belum ada istilah huruf ${char}`,
+  },
+  en: {
+    badge: 'Batik Terms & Culture',
+    title: 'Batik Glossary',
+    description: 'Complete repository of batik terminology, motifs philosophy, crafting techniques, and cultural heritage.',
+    searchPlaceholder: 'Search terms, tools, techniques, or motifs (e.g. canting, kawung, soga)...',
+    categoryTitle: 'Category',
+    alphabetTitle: 'Alphabetical Index (A–Z)',
+    allAlphabet: 'All',
+    showing: (count: number, total: number) => `Showing ${count} of ${total} terms`,
+    resetFilter: 'Reset Filters',
+    exampleLabel: 'Example:',
+    notFoundTitle: 'No terms found',
+    notFoundDesc: (query: string) => `No terms matched "${query}". Try different keywords or reset your filters.`,
+    showAllButton: 'Show All Terms',
+    letterTitle: (char: string) => `Letter ${char}`,
+    noLetterTitle: (char: string) => `No terms available for letter ${char}`,
+  },
+  jp: {
+    badge: '用語と文化の宝庫',
+    title: 'バティック用語集',
+    description: 'バティックの用語、文様の哲学、染色・制作技法、道具と素材、そしてインドネシアの豊かな文化遺産の完全なアーカイブ。',
+    searchPlaceholder: '用語、道具、技法、文様を検索（例：canting, kawung, soga）...',
+    categoryTitle: 'カテゴリー',
+    alphabetTitle: 'アルファベット索引 (A–Z)',
+    allAlphabet: 'すべて',
+    showing: (count: number, total: number) => `${total} 項目中 ${count} 件の用語を表示中`,
+    resetFilter: 'フィルターをリセット',
+    exampleLabel: '例：',
+    notFoundTitle: '用語が見つかりません',
+    notFoundDesc: (query: string) => `「${query}」に一致する用語は見つかりませんでした。別のキーワードを試すか、フィルターをリセットしてください。`,
+    showAllButton: 'すべての用語を表示',
+    letterTitle: (char: string) => `文字 ${char}`,
+    noLetterTitle: (char: string) => `文字 ${char} の用語はまだありません`,
+  },
+};
+
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export function GlosariumClient({ initialItems }: GlosariumClientProps) {
   const { currentLanguage } = useLanguage();
-  const isIndo = currentLanguage?.code === 'id';
+  const langCode = (currentLanguage?.code === 'en' || currentLanguage?.code === 'jp')
+    ? (currentLanguage.code as 'en' | 'jp')
+    : 'id';
+  const t = TRANSLATIONS[langCode];
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKategori, setSelectedKategori] = useState<KategoriGlosarium>('Semua');
@@ -39,7 +129,9 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
       const matchQuery =
         !q ||
         item.istilah.toLowerCase().includes(q) ||
-        item.definisi.toLowerCase().includes(q);
+        item.definisi.toLowerCase().includes(q) ||
+        (item.definisi_en && item.definisi_en.toLowerCase().includes(q)) ||
+        (item.definisi_jp && item.definisi_jp.toLowerCase().includes(q));
 
       const matchKategori =
         selectedKategori === 'Semua' || item.kategori === selectedKategori;
@@ -101,15 +193,13 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
         >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#5a2b2b]/10 text-[#5a2b2b] text-xs sm:text-sm font-semibold tracking-wide uppercase mb-3">
             <Sparkles className="w-4 h-4 text-[#5a2b2b]" />
-            {isIndo ? 'Khazanah Istilah & Budaya' : 'Batik Terms & Culture'}
+            {t.badge}
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-[#3a2020] tracking-tight">
-            {isIndo ? 'Glosarium Batik' : 'Batik Glossary'}
+            {t.title}
           </h1>
           <p className="mt-3 text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed">
-            {isIndo
-              ? 'Koleksi lengkap istilah, filosofi motif, teknik pembatikan, alat & bahan, serta khazanah warisan budaya batik nusantara.'
-              : 'Complete repository of batik terminology, motifs philosophy, crafting techniques, and cultural heritage.'}
+            {t.description}
           </p>
         </motion.div>
 
@@ -127,11 +217,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                isIndo
-                  ? 'Cari istilah, alat, teknik, atau motif batik (misal: canting, kawung, soga)...'
-                  : 'Search terms, tools, techniques, or motifs...'
-              }
+              placeholder={t.searchPlaceholder}
               className="w-full pl-11 pr-10 py-3 text-stone-900 bg-stone-50/80 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5a2b2b]/30 focus:border-[#5a2b2b] transition placeholder:text-stone-400 text-sm sm:text-base"
             />
             {searchQuery && (
@@ -149,11 +235,12 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
           <div>
             <div className="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-wider text-stone-500">
               <Filter className="w-3.5 h-3.5" />
-              <span>{isIndo ? 'Kategori' : 'Category'}</span>
+              <span>{t.categoryTitle}</span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {KATEGORI_OPTIONS.map((kat) => {
                 const isActive = selectedKategori === kat;
+                const categoryLabel = KATEGORI_LABELS[langCode][kat] || kat;
                 return (
                   <button
                     key={kat}
@@ -164,7 +251,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
                         : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
                     }`}
                   >
-                    {kat}
+                    {categoryLabel}
                   </button>
                 );
               })}
@@ -175,7 +262,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
           <div className="border-t border-stone-100 pt-3">
             <div className="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-wider text-stone-500">
               <BookOpen className="w-3.5 h-3.5" />
-              <span>{isIndo ? 'Indeks Abjad (A–Z)' : 'Alphabetical Index'}</span>
+              <span>{t.alphabetTitle}</span>
             </div>
             <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
               <button
@@ -186,7 +273,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
                     : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
                 }`}
               >
-                {isIndo ? 'Semua' : 'All'}
+                {t.allAlphabet}
               </button>
 
               {ALPHABET.map((char) => {
@@ -197,7 +284,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
                     key={char}
                     disabled={!hasItem}
                     onClick={() => setSelectedAbjad(char)}
-                    title={hasItem ? `Huruf ${char}` : `Belum ada istilah huruf ${char}`}
+                    title={hasItem ? t.letterTitle(char) : t.noLetterTitle(char)}
                     className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-xs sm:text-sm rounded-md font-semibold transition ${
                       isSelected
                         ? 'bg-[#5a2b2b] text-white shadow-sm ring-2 ring-[#5a2b2b]/30'
@@ -217,17 +304,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
         {/* Info & Counter Bar */}
         <div className="flex justify-between items-center mb-6 px-1 text-xs sm:text-sm text-stone-600">
           <div>
-            {isIndo ? (
-              <span>
-                Menampilkan <strong>{filteredItems.length}</strong> istilah dari total{' '}
-                <strong>{initialItems.length}</strong> kosa kata
-              </span>
-            ) : (
-              <span>
-                Showing <strong>{filteredItems.length}</strong> of{' '}
-                <strong>{initialItems.length}</strong> terms
-              </span>
-            )}
+            <span>{t.showing(filteredItems.length, initialItems.length)}</span>
           </div>
           {(searchQuery || selectedKategori !== 'Semua' || selectedAbjad !== 'Semua') && (
             <button
@@ -235,7 +312,7 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
               className="inline-flex items-center gap-1.5 text-[#5a2b2b] hover:text-[#3a1b1b] font-medium transition"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>{isIndo ? 'Reset Filter' : 'Reset'}</span>
+              <span>{t.resetFilter}</span>
             </button>
           )}
         </div>
@@ -247,53 +324,61 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
               layout
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
             >
-              {filteredItems.map((item, index) => (
-                <motion.div
-                  layout
-                  key={item.id}
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.25, delay: Math.min(index * 0.02, 0.3) }}
-                  className="bg-white rounded-2xl p-5 border border-stone-200/90 hover:border-[#5a2b2b]/40 hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
-                >
-                  <div>
-                    {/* Card Top: Term + Category Badge */}
-                    <div className="flex items-start justify-between gap-3 mb-2.5">
-                      <div className="flex items-center gap-2">
-                        <span className="w-7 h-7 rounded-lg bg-stone-100 text-stone-700 font-bold text-xs flex items-center justify-center border border-stone-200 group-hover:bg-[#5a2b2b] group-hover:text-white transition-colors duration-200">
-                          {item.abjad || item.istilah.charAt(0).toUpperCase()}
+              {filteredItems.map((item, index) => {
+                const categoryBadge = KATEGORI_LABELS[langCode][item.kategori as KategoriGlosarium] || item.kategori;
+                const definitionText =
+                  (langCode === 'en' && item.definisi_en) ? item.definisi_en :
+                  (langCode === 'jp' && item.definisi_jp) ? item.definisi_jp :
+                  item.definisi;
+
+                return (
+                  <motion.div
+                    layout
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25, delay: Math.min(index * 0.02, 0.3) }}
+                    className="bg-white rounded-2xl p-5 border border-stone-200/90 hover:border-[#5a2b2b]/40 hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
+                  >
+                    <div>
+                      {/* Card Top: Term + Category Badge */}
+                      <div className="flex items-start justify-between gap-3 mb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="w-7 h-7 rounded-lg bg-stone-100 text-stone-700 font-bold text-xs flex items-center justify-center border border-stone-200 group-hover:bg-[#5a2b2b] group-hover:text-white transition-colors duration-200">
+                            {item.abjad || item.istilah.charAt(0).toUpperCase()}
+                          </span>
+                          <h2 className="text-lg font-bold text-stone-900 group-hover:text-[#5a2b2b] transition-colors duration-200 tracking-tight">
+                            {item.istilah}
+                          </h2>
+                        </div>
+                        <span
+                          className={`text-[11px] px-2.5 py-0.5 rounded-full border whitespace-nowrap ${getBadgeStyle(
+                            item.kategori
+                          )}`}
+                        >
+                          {categoryBadge}
                         </span>
-                        <h2 className="text-lg font-bold text-stone-900 group-hover:text-[#5a2b2b] transition-colors duration-200 tracking-tight">
-                          {item.istilah}
-                        </h2>
                       </div>
-                      <span
-                        className={`text-[11px] px-2.5 py-0.5 rounded-full border whitespace-nowrap ${getBadgeStyle(
-                          item.kategori
-                        )}`}
-                      >
-                        {item.kategori}
-                      </span>
-                    </div>
 
-                    {/* Definition */}
-                    <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mt-2.5 text-justify">
-                      {item.definisi}
-                    </p>
-                  </div>
-
-                  {/* Contoh / Catatan Tambahan (jika ada) */}
-                  {item.contohPenggunaan && (
-                    <div className="mt-4 pt-3 border-t border-stone-100">
-                      <span className="text-[11px] text-stone-400 font-medium block">Contoh:</span>
-                      <p className="text-xs text-stone-500 italic mt-0.5">
-                        &ldquo;{item.contohPenggunaan}&rdquo;
+                      {/* Definition */}
+                      <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mt-2.5 text-justify">
+                        {definitionText}
                       </p>
                     </div>
-                  )}
-                </motion.div>
-              ))}
+
+                    {/* Contoh / Catatan Tambahan (jika ada) */}
+                    {item.contohPenggunaan && (
+                      <div className="mt-4 pt-3 border-t border-stone-100">
+                        <span className="text-[11px] text-stone-400 font-medium block">{t.exampleLabel}</span>
+                        <p className="text-xs text-stone-500 italic mt-0.5">
+                          &ldquo;{item.contohPenggunaan}&rdquo;
+                        </p>
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           ) : (
             /* Empty State */
@@ -307,19 +392,17 @@ export function GlosariumClient({ initialItems }: GlosariumClientProps) {
                 <Search className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-stone-800">
-                {isIndo ? 'Istilah tidak ditemukan' : 'No terms found'}
+                {t.notFoundTitle}
               </h3>
               <p className="text-stone-500 text-sm mt-1 max-w-md mx-auto">
-                {isIndo
-                  ? `Tidak ada istilah yang cocok dengan kata kunci "${searchQuery}". Coba gunakan kata kunci lain atau reset filter.`
-                  : `No terms matched "${searchQuery}". Try different keywords or reset your filters.`}
+                {t.notFoundDesc(searchQuery)}
               </p>
               <button
                 onClick={handleReset}
                 className="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-[#5a2b2b] text-white rounded-xl text-sm font-medium hover:bg-[#472222] transition shadow-sm"
               >
                 <RotateCcw className="w-4 h-4" />
-                {isIndo ? 'Kembalikan Semua Istilah' : 'Show All Terms'}
+                {t.showAllButton}
               </button>
             </motion.div>
           )}
