@@ -86,7 +86,8 @@ export async function getBatiks(): Promise<Batik[]> {
     return batiks as Batik[];
   } catch (error) {
     console.error('Error fetching batiks:', error);
-    throw new Error('Failed to fetch batiks');
+    // Return empty array instead of throwing error to prevent build crash
+    return [];
   }
 }
 
