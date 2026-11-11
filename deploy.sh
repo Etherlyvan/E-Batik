@@ -24,6 +24,8 @@ tar -czf deploy.tar.gz \
   --exclude=.git \
   --exclude=deploy.tar.gz \
   --exclude=certbot \
+  --exclude=.env \
+  --exclude=.env.* \
   .
 
 # Check if tar was successful
