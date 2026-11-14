@@ -4,734 +4,944 @@
     "istilah": "Adi Luhung",
     "abjad": "A",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Gagasan estetika di Keraton Yogyakarta yang menekankan keindahan dan kemegahan."
+    "definisi": "Gagasan estetika di Keraton Yogyakarta yang menekankan keindahan dan kemegahan.",
+    "definisi_en": "An ideal of beauty at the Yogyakarta Palace that values elegance and grandeur.",
+    "definisi_jp": "ジョグジャカルタ王宮に伝わる美の理念で、美しさと壮麗さを大切にします。"
   },
   {
     "id": "alas-alasan",
     "istilah": "Alas-alasan",
     "abjad": "A",
     "kategori": "Motif",
-    "definisi": "Motif bergambar tumbuhan dan hewan rimba yang menjadi simbol semesta menurut pandangan Jawa. Namanya diambil dari kata alas (hutan), yakni lukisan suasana di tengah hutan"
+    "definisi": "Motif bergambar tumbuhan dan hewan rimba yang menjadi simbol semesta menurut pandangan Jawa. Namanya diambil dari kata alas (hutan), yakni lukisan suasana di tengah hutan",
+    "definisi_en": "A motif of forest plants and animals that stands for the universe in Javanese thought. The name comes from alas, meaning forest, because the motif pictures a scene deep in the woods.",
+    "definisi_jp": "森の草木や動物を描いた文様で、ジャワの考え方では宇宙を表します。名前は「森」を意味するalasに由来し、森の中の風景を描いたものです。"
   },
   {
     "id": "arca",
     "istilah": "Arca",
     "abjad": "A",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Arca adalah patung yang dibuat khusus sebagai media keagamaan, yaitu sebagai sarana untuk memuja Tuhan, dewa, dewi, atau makhluk suci, bukan sekadar karya seni untuk keindahan."
+    "definisi": "Arca adalah patung yang dibuat khusus sebagai media keagamaan, yaitu sebagai sarana untuk memuja Tuhan, dewa, dewi, atau makhluk suci, bukan sekadar karya seni untuk keindahan.",
+    "definisi_en": "A statue made for worship rather than for decoration. People use it to honor God, gods, goddesses, or other holy beings.",
+    "definisi_jp": "神や神々、聖なる存在に祈りをささげるために作られた像です。美しさを楽しむための美術品ではありません。"
   },
   {
     "id": "asn",
     "istilah": "ASN",
     "abjad": "A",
     "kategori": "Istilah Terkait",
-    "definisi": "ASN adalah singkatan dari Aparatur Sipil Negara, yaitu istilah payung untuk kelompok profesi bagi pegawai yang bekerja pada instansi pemerintah, baik di tingkat pusat maupun daerah."
+    "definisi": "ASN adalah singkatan dari Aparatur Sipil Negara, yaitu istilah payung untuk kelompok profesi bagi pegawai yang bekerja pada instansi pemerintah, baik di tingkat pusat maupun daerah.",
+    "definisi_en": "Short for Aparatur Sipil Negara. It is a general term for people who work for government agencies, whether national or regional.",
+    "definisi_jp": "Aparatur Sipil Negara、つまり公務員の総称です。中央・地方を問わず、政府機関で働く人たちを指します。"
   },
   {
     "id": "arema",
     "istilah": "Arema",
     "abjad": "A",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Arema adalah akronim dari Arek Malang, sebuah istilah yang merujuk pada anak-anak atau orang-orang yang berasal dari Malang Raya, Jawa Timur."
+    "definisi": "Arema adalah akronim dari Arek Malang, sebuah istilah yang merujuk pada anak-anak atau orang-orang yang berasal dari Malang Raya, Jawa Timur.",
+    "definisi_en": "Short for Arek Malang, meaning young people from Malang. It refers to people from the Greater Malang area in East Java.",
+    "definisi_jp": "Arek Malang（マランの若者）を縮めた言葉で、東ジャワ州のマラン周辺の出身者を指します。"
   },
   {
     "id": "arboretum",
     "istilah": "Arboretum",
     "abjad": "A",
     "kategori": "Flora & Fauna",
-    "definisi": "Arboretum adalah suatu kawasan atau taman khusus yang sengaja ditanami dan dikoleksi berbagai jenis pohon serta tanaman berkayu untuk tujuan penelitian, pendidikan, konservasi, dan rekreasi."
+    "definisi": "Arboretum adalah suatu kawasan atau taman khusus yang sengaja ditanami dan dikoleksi berbagai jenis pohon serta tanaman berkayu untuk tujuan penelitian, pendidikan, konservasi, dan rekreasi.",
+    "definisi_en": "A park or area where many kinds of trees and woody plants are grown and collected for research, education, conservation, and recreation.",
+    "definisi_jp": "研究や教育、自然保護、レクリエーションのために、さまざまな樹木を集めて育てている公園や区域です。研究や教育、自然保護、レクリエーションのために、さまざまな樹木を集めて育てている公園や区域です。"
   },
   {
     "id": "arca-mahakala",
     "istilah": "Arca Mahakala",
     "abjad": "A",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Arca Mahakala adalah patung yang menggambarkan dewa penjaga pintu masuk (dwapala) dalam tradisi Hindu dan Buddha."
+    "definisi": "Arca Mahakala adalah patung yang menggambarkan dewa penjaga pintu masuk (dwapala) dalam tradisi Hindu dan Buddha.",
+    "definisi_en": "A statue of the guardian deity who watches over entrances (dvarapala) in the Hindu and Buddhist traditions.",
+    "definisi_jp": "ヒンドゥー教や仏教で、入口を守る守護神（ドヴァーラパーラ）を表した像です。"
   },
   {
     "id": "bang-bangan",
     "istilah": "Bang-bangan",
     "abjad": "B",
     "kategori": "Teknik",
-    "definisi": "Batik bernuansa merah dan putih. Warna merahnya didapat dari celupan akar mengkudu (Morinda citrifolia). Abang artinya merah"
+    "definisi": "Batik bernuansa merah dan putih. Warna merahnya didapat dari celupan akar mengkudu (Morinda citrifolia). Abang artinya merah",
+    "definisi_en": "Batik in red and white. The red comes from the root of the mengkudu (noni) tree. Abang means red.",
+    "definisi_jp": "赤と白で染めたバティックです。赤はメンクドゥ（ノニ）の根から取った染料で出します。abangは「赤」という意味です。"
   },
   {
     "id": "bang-biru",
     "istilah": "Bang-biru",
     "abjad": "B",
     "kategori": "Teknik",
-    "definisi": "Batik dari pesisir utara Jawa Tengah yang memadukan merah (abang) dengan biru. Merah berasal dari mengkudu, biru dari tarum atau nila."
+    "definisi": "Batik dari pesisir utara Jawa Tengah yang memadukan merah (abang) dengan biru. Merah berasal dari mengkudu, biru dari tarum atau nila.",
+    "definisi_en": "A batik from the north coast of Central Java that combines red (abang) and blue. The red comes from mengkudu and the blue from tarum, or indigo.",
+    "definisi_jp": "中部ジャワの北海岸で作られる、赤（abang）と青を合わせたバティックです。赤はメンクドゥ、青はタルム（藍）から取ります。"
   },
   {
     "id": "bang-biru-ijo",
     "istilah": "Bang-biru-ijo",
     "abjad": "B",
     "kategori": "Teknik",
-    "definisi": "Batik pesisir bernuansa merah dan biru dengan tambahan hijau (ijo)."
+    "definisi": "Batik pesisir bernuansa merah dan biru dengan tambahan hijau (ijo).",
+    "definisi_en": "A coastal batik in red and blue with green (ijo) added.",
+    "definisi_jp": "赤と青に緑（ijo）を加えた、海岸部のバティックです。"
   },
   {
     "id": "bangun-tulak",
     "istilah": "Bangun tulak",
     "abjad": "B",
     "kategori": "Motif",
-    "definisi": "Burung bangau berbulu tulak, yaitu abu-abu dengan dada putih. Kata tulak berarti menolak atau mengembalikan kepada si pengirim. Dalam pemakaian sehari-hari, istilah ini dipakai untuk dodot alas-alasan yang bagian tengahnya berlatar jajaran genjang. Kain bermotif ini diyakini mampu menolak marabahaya dari pemakainya."
+    "definisi": "Burung bangau berbulu tulak, yaitu abu-abu dengan dada putih. Kata tulak berarti menolak atau mengembalikan kepada si pengirim. Dalam pemakaian sehari-hari, istilah ini dipakai untuk dodot alas-alasan yang bagian tengahnya berlatar jajaran genjang. Kain bermotif ini diyakini mampu menolak marabahaya dari pemakainya.",
+    "definisi_en": "Named after the tulak heron, which has grey feathers and a white chest. Tulak means to push away, or to send back to the sender. Today the name is mostly used for an alas-alasan dodot with a parallelogram pattern in the center. People believe this cloth protects the wearer from harm.",
+    "definisi_jp": "灰色の羽と白い胸をもつ、トゥラ（tulak）と呼ばれるサギにちなんだ名前です。tulakは「はね返す」「送り主に返す」という意味です。ふだんは、中央に平行四辺形の模様が並ぶ、アラス・アラサン柄のドドットを指します。この柄の布は、身につけた人を災いから守ると信じられています。"
   },
   {
     "id": "banji",
     "istilah": "Banji",
     "abjad": "B",
     "kategori": "Motif",
-    "definisi": "Dari bahasa Tionghoa, gabungan wan (sepuluh ribu) dan zi (benda). Lambangnya mirip swastika dan sering terlihat di kain batik. Maknanya \"sepuluh ribu hal\", simbol keabadian dan kelanggengan"
+    "definisi": "Dari bahasa Tionghoa, gabungan wan (sepuluh ribu) dan zi (benda). Lambangnya mirip swastika dan sering terlihat di kain batik. Maknanya \"sepuluh ribu hal\", simbol keabadian dan kelanggengan",
+    "definisi_en": "From Chinese, combining wan (ten thousand) and zi (character). It is an ancient auspicious symbol in Chinese and Buddhist tradition that resembles the swastika, and it often appears on batik cloth. It means “ten thousand things” and stands for eternity and permanence.",
+    "definisi_jp": "中国語の「万（wan）」と「字（zi）」を合わせた言葉で、仏教や中国で古くから縁起のよい印とされる卍のことです。バティックの布によく見られ、「万物」を意味して、永遠や不変を表します。"
   },
   {
     "id": "bedaya-ketawang",
     "istilah": "Bedaya (Bedhaya) Ketawang",
     "abjad": "B",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Tarian sakral putri Keraton Surakarta, lazimnya dibawakan sembilan penari untuk memperingati naik tahtanya Susuhunan."
+    "definisi": "Tarian sakral putri Keraton Surakarta, lazimnya dibawakan sembilan penari untuk memperingati naik tahtanya Susuhunan.",
+    "definisi_en": "A sacred court dance performed by women at the Surakarta Palace. It usually features nine dancers and commemorates the Susuhunan’s accession to the throne.",
+    "definisi_jp": "スラカルタ王宮に伝わる、女性による神聖な舞踊です。ふつう9人の踊り手で演じられ、ススフナン（王）の即位を記念して行われます。"
   },
   {
     "id": "biron",
     "istilah": "Biron",
     "abjad": "B",
     "kategori": "Teknik",
-    "definisi": "Dari kata biru + an. Istilah untuk hasil tahap pembatikan ketika kain baru sekali dicelup biru."
+    "definisi": "Dari kata biru + an. Istilah untuk hasil tahap pembatikan ketika kain baru sekali dicelup biru.",
+    "definisi_en": "From biru (blue) + an. It describes the stage in batik-making when the cloth has been dipped in blue dye just once.",
+    "definisi_jp": "biru（青）にanがついた言葉です。バティックづくりの工程で、布を青い染料に一度だけ浸した状態を指します。"
   },
   {
     "id": "buketan",
     "istilah": "Buketan",
     "abjad": "B",
     "kategori": "Motif",
-    "definisi": "Desain batik pesisir yang memperlihatkan pengaruh luar. Berasal dari kata Prancis dan Belanda bouquet, yakni rangkaian bunga."
+    "definisi": "Desain batik pesisir yang memperlihatkan pengaruh luar. Berasal dari kata Prancis dan Belanda bouquet, yakni rangkaian bunga.",
+    "definisi_en": "A coastal batik design that shows outside influence. The word comes from French and Dutch bouquet, meaning a bunch of flowers.",
+    "definisi_jp": "外国の影響を受けた海岸部バティックの柄です。フランス語やオランダ語のbouquet（花束）に由来し、花を束ねた図柄を指します。"
   },
   {
     "id": "burung-penenun",
     "istilah": "Burung Penenun",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Burung penenun (famili Ploceidae) yang di Indonesia lebih dikenal dengan nama burung manyar adalah kelompok burung pengicau yang terkenal karena kemampuan luar biasa dalam merajut dan menenun rumput, serat tanaman, atau daun untuk membuat sarang yang sangat rumit."
+    "definisi": "Burung penenun (famili Ploceidae) yang di Indonesia lebih dikenal dengan nama burung manyar adalah kelompok burung pengicau yang terkenal karena kemampuan luar biasa dalam merajut dan menenun rumput, serat tanaman, atau daun untuk membuat sarang yang sangat rumit.",
+    "definisi_en": "Weaverbirds (family Ploceidae), called burung manyar in Indonesia, are songbirds known for weaving grass, plant fibers, and leaves into very elaborate nests.",
+    "definisi_jp": "インドネシアではマニャール（manyar）と呼ばれる、ハタオリドリ科の小鳥です。草や植物の繊維、葉を編み上げて、とても精巧な巣を作ることで知られています。"
   },
   {
     "id": "bantengan",
     "istilah": "Bantengan",
     "abjad": "B",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Bantengan atau biasa juga dikenal sebagai “Mberot” adalah kesenian pertunjukan tradisional khas Jawa Timur terutama berkembang di daerah seperti Malang, Batu, Mojokerto, dan sekitarnya yang menampilkan tarian menirukan gerak-gerik hewan banteng."
+    "definisi": "Bantengan atau biasa juga dikenal sebagai “Mberot” adalah kesenian pertunjukan tradisional khas Jawa Timur terutama berkembang di daerah seperti Malang, Batu, Mojokerto, dan sekitarnya yang menampilkan tarian menirukan gerak-gerik hewan banteng.",
+    "definisi_en": "A traditional performing art from East Java, also known as “Mberot.” It developed mainly in Malang, Batu, Mojokerto, and nearby areas, and features a dance that imitates the movements of a banteng, a wild bull.",
+    "definisi_jp": "「ンブロット（Mberot）」とも呼ばれる、東ジャワの伝統芸能です。マランやバトゥ、モジョクルトなどを中心に栄え、バンテン（野生の牛）の動きをまねて踊ります。"
   },
   {
     "id": "bunga-sepatu",
     "istilah": "Bunga Sepatu",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Bunga sepatu atau disebut juga Bunga Nirbaya (nama ilmiah: Hibiscus rosa-sinensis L.) adalah tumbuhan semak dari famili Malvaceae yang berasal dari wilayah Asia Timur dan banyak ditanam sebagai tanaman hias di daerah tropis serta subtropis."
+    "definisi": "Bunga sepatu atau disebut juga Bunga Nirbaya (nama ilmiah: Hibiscus rosa-sinensis L.) adalah tumbuhan semak dari famili Malvaceae yang berasal dari wilayah Asia Timur dan banyak ditanam sebagai tanaman hias di daerah tropis serta subtropis.",
+    "definisi_en": "A shrub of the mallow family (Hibiscus rosa-sinensis L.), also called Bunga Nirbaya. It comes from East Asia and is widely grown as an ornamental plant in tropical and subtropical regions.",
+    "definisi_jp": "アオイ科の低木で、学名はHibiscus rosa-sinensis L.です。ブンガ・ニルバヤとも呼ばれます。東アジアの原産で、熱帯や亜熱帯で観賞用に広く植えられています。"
   },
   {
     "id": "bunga-krisan",
     "istilah": "Bunga Krisan",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Bunga krisan (nama ilmiah: Chrysanthemum), yang juga dikenal dengan nama bunga seruni atau krisantemum, adalah salah satu tanaman hias berbunga menahun dari famili Asteraceae (suku kenikir-kenikiran) yang berasal dari Asia Timur seperti Tiongkok dan Jepang."
+    "definisi": "Bunga krisan (nama ilmiah: Chrysanthemum), yang juga dikenal dengan nama bunga seruni atau krisantemum, adalah salah satu tanaman hias berbunga menahun dari famili Asteraceae (suku kenikir-kenikiran) yang berasal dari Asia Timur seperti Tiongkok dan Jepang.",
+    "definisi_en": "A perennial flowering plant of the daisy family (Asteraceae), also called seruni. It is native to East Asia, including China and Japan, and is grown as an ornamental plant.",
+    "definisi_jp": "キク科の多年草で、インドネシアではクリサンやセルニとも呼ばれます。中国や日本など東アジアの原産で、観賞用に育てられます。"
   },
   {
     "id": "burung-hong",
     "istilah": "Burung Hong",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Burung Hong adalah makhluk mitologi asal Tiongkok kuno yang dikenal dalam bahasa Mandarin sebagai Fenghuang (sering disetarakan dengan burung phoenix Barat)."
+    "definisi": "Burung Hong adalah makhluk mitologi asal Tiongkok kuno yang dikenal dalam bahasa Mandarin sebagai Fenghuang (sering disetarakan dengan burung phoenix Barat).",
+    "definisi_en": "A mythical bird from ancient China, called Fenghuang in Mandarin. It is often compared to the Western phoenix.",
+    "definisi_jp": "古代中国の神話に登場する霊鳥です。中国語ではフォンホワンと呼ばれ、日本でいう鳳凰（ほうおう）のことです。西洋のフェニックスにたとえられることもあります。"
   },
   {
     "id": "batik-pesisir",
     "istilah": "Batik Pesisir",
     "abjad": "B",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Batik pesisir adalah gaya atau jenis batik yang berkembang di luar wilayah keraton (Solo dan Yogyakarta), khususnya di sepanjang daerah pesisir utara Pulau Jawa seperti Cirebon, Pekalongan, Indramayu, Lasem, Madura, dan Jambi."
+    "definisi": "Batik pesisir adalah gaya atau jenis batik yang berkembang di luar wilayah keraton (Solo dan Yogyakarta), khususnya di sepanjang daerah pesisir utara Pulau Jawa seperti Cirebon, Pekalongan, Indramayu, Lasem, Madura, dan Jambi.",
+    "definisi_en": "A style of batik that developed outside the palace cities of Solo and Yogyakarta, mainly along Java’s north coast in places such as Cirebon, Pekalongan, Indramayu, Lasem, Madura, and Jambi.",
+    "definisi_jp": "王宮のあるソロやジョグジャカルタの外で発展したバティックです。とくに、ジャワ島北海岸のチルボン、プカロンガン、インドラマユ、ラスム、マドゥラ、ジャンビなどのものを指します。"
   },
   {
     "id": "burung-phoenix",
     "istilah": "Burung Phoenix",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Burung Phoenix (dalam Tema Fauna batik Junjung Drajat tertulis Burung Foniks) merupakan nama lain dari burung Hong yakni makhluk mitologi asal Tiongkok kuno yang dikenal dalam bahasa Mandarin sebagai Fenghuang"
+    "definisi": "Burung Phoenix (dalam Tema Fauna batik Junjung Drajat tertulis Burung Foniks) merupakan nama lain dari burung Hong yakni makhluk mitologi asal Tiongkok kuno yang dikenal dalam bahasa Mandarin sebagai Fenghuang",
+    "definisi_en": "Another name for the Hong bird, the mythical creature from ancient China known as Fenghuang in Mandarin. (In the Junjung Drajat batik fauna theme, it is spelled “Foniks.”)",
+    "definisi_jp": "鳳凰の別の呼び方です。古代中国の神話に登場する霊鳥で、中国語ではフォンホワンといいます。（ジュンジュン・ドラジャットの動物の柄の項では「フォニクス」と書かれています。）"
   },
   {
     "id": "bunga-terompet",
     "istilah": "Bunga Terompet",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Bunga terompet adalah istilah umum yang merujuk pada berbagai jenis tanaman hias yang memiliki bentuk mahkota bunga memanjang, melebar, dan menyerupai alat musik terompet."
+    "definisi": "Bunga terompet adalah istilah umum yang merujuk pada berbagai jenis tanaman hias yang memiliki bentuk mahkota bunga memanjang, melebar, dan menyerupai alat musik terompet.",
+    "definisi_en": "A general name for ornamental plants whose long flowers flare outward like a trumpet.",
+    "definisi_jp": "ラッパのように、細長く先が開いた形の花をつける観賞植物の総称です。"
   },
   {
     "id": "bunga-wijaya-kusuma",
     "istilah": "Bunga Wijaya Kusuma",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Bunga Wijayakusuma atau disebut juga Bunga Wiku atau Brahma kamal yang termasuk jenis tanaman kaktus yang berasal dari Sri Lanka, India, Amerika Selatan, dan Madagaskar. Tanaman ini dibudidayakan sebagai tanaman hias karena bunganya yang harum."
+    "definisi": "Bunga Wijayakusuma atau disebut juga Bunga Wiku atau Brahma kamal yang termasuk jenis tanaman kaktus yang berasal dari Sri Lanka, India, Amerika Selatan, dan Madagaskar. Tanaman ini dibudidayakan sebagai tanaman hias karena bunganya yang harum.",
+    "definisi_en": "A cactus (Epiphyllum oxypetalum) also called Bunga Wiku or Queen of the Night, and known in India as Brahma Kamal. It is native to southern Mexico and parts of Central and South America, and is grown as an ornamental plant for its fragrant white flowers that bloom at night.",
+    "definisi_jp": "サボテンの仲間（学名Epiphyllum oxypetalum）で、インドネシアではウィジャヤクスマ、ウィクとも呼ばれます。メキシコ南部から中南米にかけてが原産で、夜に咲く香りのよい白い花を楽しむために、観賞用に育てられます。"
   },
   {
     "id": "bunga-kantil",
     "istilah": "Bunga Kantil",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Bunga kantil (atau cempaka putih) adalah jenis tanaman pohon berbunga dari suku Magnoliaceae (nama ilmiah Magnolia × alba atau Michelia alba) yang dikenal memiliki kelopak bunga berwarna putih, aroma yang sangat kuat dan khas, serta nilai filosofis yang tinggi dalam budaya Nusantara, khususnya Suku Jawa."
+    "definisi": "Bunga kantil (atau cempaka putih) adalah jenis tanaman pohon berbunga dari suku Magnoliaceae (nama ilmiah Magnolia × alba atau Michelia alba) yang dikenal memiliki kelopak bunga berwarna putih, aroma yang sangat kuat dan khas, serta nilai filosofis yang tinggi dalam budaya Nusantara, khususnya Suku Jawa.",
+    "definisi_en": "A tree of the magnolia family (Magnolia × alba, or Michelia alba) with white petals and a strong, distinctive scent. It carries deep meaning in the cultures of the archipelago, especially Javanese culture.",
+    "definisi_jp": "モクレン科の木（学名Magnolia × alba、別名Michelia alba）で、白い花びらと強く独特な香りが特徴です。ジャワをはじめ、インドネシア各地の文化で深い意味をもつ花とされています。"
   },
   {
     "id": "bunga-ploso",
     "istilah": "Bunga Ploso",
     "abjad": "B",
     "kategori": "Bahan",
-    "definisi": "Bunga ploso adalah bunga dari pohon ploso (dikenal juga dengan nama palasa atau plasa, dengan nama ilmiah Butea monosperma), yaitu tumbuhan berbentuk pohon dari suku polong-polongan (Fabaceae)."
+    "definisi": "Bunga ploso adalah bunga dari pohon ploso (dikenal juga dengan nama palasa atau plasa, dengan nama ilmiah Butea monosperma), yaitu tumbuhan berbentuk pohon dari suku polong-polongan (Fabaceae).",
+    "definisi_en": "The flower of the ploso tree (also called palasa or plasa, Butea monosperma), a tree of the legume family.",
+    "definisi_jp": "プロソ（パラサ、プラサとも呼ばれる。学名Butea monosperma）の花です。プロソはマメ科の木です。"
   },
   {
     "id": "budha-tantrayana",
     "istilah": "Budha Tantrayana",
     "abjad": "B",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Buddha Tantrayana (atau sering disebut Vajrayana, Mantrayana, maupun Ajaran Buddha Esoterik) adalah salah satu cabang utama dalam agama Buddha yang berkembang dari tradisi Mahayana (cabang Buddhisme terbesar dunia)."
+    "definisi": "Buddha Tantrayana (atau sering disebut Vajrayana, Mantrayana, maupun Ajaran Buddha Esoterik) adalah salah satu cabang utama dalam agama Buddha yang berkembang dari tradisi Mahayana (cabang Buddhisme terbesar dunia).",
+    "definisi_en": "Also called Vajrayana, Mantrayana, or Esoteric Buddhism. It is one of the main branches of Buddhism and grew out of Mahayana, the largest branch.",
+    "definisi_jp": "金剛乗（ヴァジュラヤーナ）、真言乗、密教などとも呼ばれる、仏教の主な流れの一つです。仏教で最大の流派である大乗仏教から発展しました。"
   },
   {
     "id": "bunga-padma",
     "istilah": "Bunga Padma",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Bunga padma adalah sebutan untuk bunga teratai dalam bahasa sansekerta. Disebut pula sebagai bunga keramat bagi penganut agama Hindu, Buddha, Sik, dan Jain."
+    "definisi": "Bunga padma adalah sebutan untuk bunga teratai dalam bahasa sansekerta. Disebut pula sebagai bunga keramat bagi penganut agama Hindu, Buddha, Sik, dan Jain.",
+    "definisi_en": "Padma is the Sanskrit word for lotus. It is also considered a sacred flower by followers of Hinduism, Buddhism, Sikhism, and Jainism.",
+    "definisi_jp": "パドマは、サンスクリット語で蓮の花のことです。ヒンドゥー教、仏教、シク教、ジャイナ教で神聖な花とされています。"
   },
   {
     "id": "burung-perkutut",
     "istilah": "Burung Perkutut",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Burung perkutut adalah jenis burung berukuran kecil hingga sedang dari suku Columbidae (keluarga merpati-merpatian), khususnya dari genus Geopelia, dengan spesies yang paling dikenal yaitu perkutut jawa (Geopelia striata)."
+    "definisi": "Burung perkutut adalah jenis burung berukuran kecil hingga sedang dari suku Columbidae (keluarga merpati-merpatian), khususnya dari genus Geopelia, dengan spesies yang paling dikenal yaitu perkutut jawa (Geopelia striata).",
+    "definisi_en": "A small to medium-sized bird of the pigeon and dove family (Columbidae), in the genus Geopelia. The best known is the Javanese perkutut (Geopelia striata).",
+    "definisi_jp": "ハト科の小型から中型の鳥で、Geopelia属の仲間です。最もよく知られているのは、ジャワのプルクトゥト（Geopelia striata）です。"
   },
   {
     "id": "burung-lovebird",
     "istilah": "Burung Lovebird",
     "abjad": "B",
     "kategori": "Flora & Fauna",
-    "definisi": "Burung lovebird (atau burung cinta) adalah kelompok burung paruh bengkok berukuran kecil dari genus Agapornis yang terkenal karena sifatnya yang monogami dan sangat setia kepada pasangannya."
+    "definisi": "Burung lovebird (atau burung cinta) adalah kelompok burung paruh bengkok berukuran kecil dari genus Agapornis yang terkenal karena sifatnya yang monogami dan sangat setia kepada pasangannya.",
+    "definisi_en": "A small parrot of the genus Agapornis, known for staying with one mate and being very loyal to it.",
+    "definisi_jp": "ボタンインコ属（Agapornis）の小型のインコです。一羽の相手とつがいになり、とても忠実なことで知られています。"
   },
   {
     "id": "canting",
     "istilah": "Canting (canthing)",
     "abjad": "C",
     "kategori": "Alat",
-    "definisi": "Perkakas tembaga untuk meneteskan malam (lilin) panas ke kain. Yang berparuh dan berwadah dinamakan canting tulis, digunakan layaknya pena untuk menggambar. Yang berbentuk stempel dinamakan canting cap atau cap."
+    "definisi": "Perkakas tembaga untuk meneteskan malam (lilin) panas ke kain. Yang berparuh dan berwadah dinamakan canting tulis, digunakan layaknya pena untuk menggambar. Yang berbentuk stempel dinamakan canting cap atau cap.",
+    "definisi_en": "A copper tool for dripping hot wax (malam) onto cloth. The kind with a spout and a small reservoir is called a canting tulis and is used like a pen. The stamp kind is called a canting cap, or just cap.",
+    "definisi_jp": "熱した蝋（マラム）を布に垂らすための銅の道具です。注ぎ口と蝋だめがあるものはチャンティン・トゥリスと呼ばれ、ペンのように使って絵を描きます。スタンプ型のものはチャンティン・チャップ、または単にチャップといいます。"
   },
   {
     "id": "cap",
     "istilah": "Cap",
     "abjad": "C",
     "kategori": "Alat",
-    "definisi": "Stempel tembaga bergambar motif untuk menorehkan malam pada kain. Terbagi dua: canting cap klowongan untuk membuat garis kerangka pola, dan canting cap tembokan untuk menutup bidang latar dengan malam penahan."
+    "definisi": "Stempel tembaga bergambar motif untuk menorehkan malam pada kain. Terbagi dua: canting cap klowongan untuk membuat garis kerangka pola, dan canting cap tembokan untuk menutup bidang latar dengan malam penahan.",
+    "definisi_en": "A copper stamp with a motif, used to press wax onto cloth. There are two kinds: the canting cap klowongan, which makes the outline of a pattern, and the canting cap tembokan, which covers the background in resist wax.",
+    "definisi_jp": "模様を彫った銅のスタンプで、布に蝋を押しつけるときに使います。​二​種類あり、模様の輪郭を作るチャンティン・チャップ・クロウォンガンと、背景を防染用の蝋でおおうチャンティン・チャップ・テンボカンがあります。"
   },
   {
     "id": "cemukiran",
     "istilah": "Cemukiran",
     "abjad": "C",
     "kategori": "Motif",
-    "definisi": "Hiasan berbentuk pancaran sinar atau nyala api, biasanya untuk bagian pinggir kain."
+    "definisi": "Hiasan berbentuk pancaran sinar atau nyala api, biasanya untuk bagian pinggir kain.",
+    "definisi_en": "A decoration shaped like rays of light or flames, usually placed along the edge of a cloth.",
+    "definisi_jp": "光が放射状に広がる様子や、炎の形をした飾り模様です。おもに布の縁に使われます。"
   },
   {
     "id": "ceplok",
     "istilah": "Ceplok",
     "abjad": "C",
     "kategori": "Motif",
-    "definisi": "Golongan motif yang dibangun dari pengulangan bentuk geometris, misalnya segi empat, persegi panjang, lonjong, atau bintang."
+    "definisi": "Golongan motif yang dibangun dari pengulangan bentuk geometris, misalnya segi empat, persegi panjang, lonjong, atau bintang.",
+    "definisi_en": "A group of motifs made by repeating geometric shapes such as squares, rectangles, ovals, or stars.",
+    "definisi_jp": "四角形や長方形、楕円、星形などの幾何学的な形をくり返して作る模様の総称です。"
   },
   {
     "id": "cindai",
     "istilah": "Cindai (cindhé)",
     "abjad": "C",
     "kategori": "Bahan",
-    "definisi": "Tenunan sutra dengan teknik ikat ganda berhias bunga geometris, umumnya didatangkan dari Gujarat, India. Disebut pula patola."
+    "definisi": "Tenunan sutra dengan teknik ikat ganda berhias bunga geometris, umumnya didatangkan dari Gujarat, India. Disebut pula patola.",
+    "definisi_en": "A silk cloth woven with double ikat, a technique in which both the lengthwise and crosswise threads are dyed in patterns before weaving. It is decorated with geometric flowers, was usually imported from Gujarat in India, and is also called patola.",
+    "definisi_jp": "経緯絣（ダブルイカット）で織った絹の布です。経緯絣とは、縦糸と横糸の両方をあらかじめ模様どおりに染め分けてから織る技法で、この布には幾何学的な花模様があります。多くはインドのグジャラートから運ばれてきました。パトラとも呼ばれます。"
   },
   {
     "id": "colet",
     "istilah": "Colét",
     "abjad": "C",
     "kategori": "Teknik",
-    "definisi": "Cara mewarnai dengan menyapukan pewarna memakai alat semacam kuas langsung ke kain, tanpa direndam."
+    "definisi": "Cara mewarnai dengan menyapukan pewarna memakai alat semacam kuas langsung ke kain, tanpa direndam.",
+    "definisi_en": "A way of coloring by brushing dye straight onto the cloth with a brush-like tool, without dipping the cloth.",
+    "definisi_jp": "布を染め液に浸さず、筆のような道具で染料を直接塗って色をつける方法です。"
   },
   {
     "id": "candi-jago",
     "istilah": "Candi Jago",
     "abjad": "C",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Candi Jago (atau Candi Jajaghu) adalah bangunan candi peninggalan Kerajaan Singhasari yang terletak di Dusun Jago, Desa Tumpang, Kecamatan Tumpang, Kabupaten Malang, Jawa Timur."
+    "definisi": "Candi Jago (atau Candi Jajaghu) adalah bangunan candi peninggalan Kerajaan Singhasari yang terletak di Dusun Jago, Desa Tumpang, Kecamatan Tumpang, Kabupaten Malang, Jawa Timur.",
+    "definisi_en": "A temple left by the Singhasari Kingdom, in Jago Hamlet, Tumpang Village, Tumpang District, Malang Regency, East Java. Also called Candi Jajaghu.",
+    "definisi_jp": "ンガシサリ王国が残した寺院で、東ジャワ州マラン県トゥンパン郡トゥンパン村のジャゴ集落にあります。チャンディ・ジャジャグとも呼ばれます。"
   },
   {
     "id": "dodot",
     "istilah": "Dodot",
     "abjad": "D",
     "kategori": "Bahan",
-    "definisi": "Dikenal juga sebagai kampuh, yaitu kain upacara untuk busana di keraton Jawa Tengah. Besarnya sama dengan empat lembar kain panjang. Hiasannya umumnya tumbuhan dan hewan sebagai tanda kemakmuran bumi Jawa."
+    "definisi": "Dikenal juga sebagai kampuh, yaitu kain upacara untuk busana di keraton Jawa Tengah. Besarnya sama dengan empat lembar kain panjang. Hiasannya umumnya tumbuhan dan hewan sebagai tanda kemakmuran bumi Jawa.",
+    "definisi_en": "Also called kampuh, a ceremonial cloth worn at the royal courts of Central Java. It is as large as four kain panjang. Its decoration is usually plants and animals, signs of the abundance of the land of Java.",
+    "definisi_jp": "カンプとも呼ばれる、中部ジャワの王宮で儀式のときに身につける布です。長布（カイン・パンジャン）4枚分の大きさがあります。柄は植物や動物が中心で、ジャワの大地の豊かさを表しています。"
   },
   {
     "id": "dua-negeri",
     "istilah": "Dua Negeri",
     "abjad": "D",
     "kategori": "Teknik",
-    "definisi": "Batik yang proses pembuatannya dibagi di dua kota atau wilayah Jawa dengan gaya batik yang berlainan."
+    "definisi": "Batik yang proses pembuatannya dibagi di dua kota atau wilayah Jawa dengan gaya batik yang berlainan.",
+    "definisi_en": "A batik made in two stages in two different cities or regions of Java, each with its own batik style.",
+    "definisi_jp": "異なるバティックの様式をもつジャワの2つの町（地域）で、工程を分けて作るバティックです。"
   },
   {
     "id": "daun-waru",
     "istilah": "Daun Waru",
     "abjad": "D",
     "kategori": "Flora & Fauna",
-    "definisi": "Daun waru adalah bagian daun dari pohon waru (Hibiscus tiliaceus), yaitu tumbuhan tropis berkayu yang sering ditanam sebagai pohon peneduh di tepi jalan, pantai, atau pekarangan rumah."
+    "definisi": "Daun waru adalah bagian daun dari pohon waru (Hibiscus tiliaceus), yaitu tumbuhan tropis berkayu yang sering ditanam sebagai pohon peneduh di tepi jalan, pantai, atau pekarangan rumah.",
+    "definisi_en": "The leaf of the waru tree (Hibiscus tiliaceus), a tropical tree often planted for shade along roads, on beaches, and in yards.",
+    "definisi_jp": "オオハマボウ（インドネシア語でwaru）の葉です。熱帯の木で、道ばたや海辺、庭に日かげを作る木としてよく植えられます。"
   },
   {
     "id": "dekranasda",
     "istilah": "Dekranasda",
     "abjad": "D",
     "kategori": "Istilah Terkait",
-    "definisi": "Dekranasda (Dewan Kerajinan Nasional Daerah) adalah organisasi nirlaba yang menjadi mitra pemerintah daerah dalam membina, mengembangkan, dan mempromosikan produk kerajinan serta Usaha Mikro, Kecil, dan Menengah (UMKM) lokal."
+    "definisi": "Dekranasda (Dewan Kerajinan Nasional Daerah) adalah organisasi nirlaba yang menjadi mitra pemerintah daerah dalam membina, mengembangkan, dan mempromosikan produk kerajinan serta Usaha Mikro, Kecil, dan Menengah (UMKM) lokal.",
+    "definisi_en": "Short for Dewan Kerajinan Nasional Daerah, the Regional National Crafts Council. This non-profit organization works with local governments to support, develop, and promote crafts and local small businesses (UMKM).",
+    "definisi_jp": "Dewan Kerajinan Nasional Daerah（地方工芸評議会）の略です。地方自治体と協力して、工芸品や地元の中小零細企業（UMKM）を育て、広める非営利団体です。"
   },
   {
     "id": "daun-indigo",
     "istilah": "Daun Indigo",
     "abjad": "D",
     "kategori": "Bahan",
-    "definisi": "Daun indigo (dikenal juga sebagai tanaman tarum atau tom) adalah sumber pewarna biru alami yang sangat penting dalam pembuatan batik tradisional di Indonesia."
+    "definisi": "Daun indigo (dikenal juga sebagai tanaman tarum atau tom) adalah sumber pewarna biru alami yang sangat penting dalam pembuatan batik tradisional di Indonesia.",
+    "definisi_en": "The leaf of the tarum (tom) plant, an important source of natural blue dye in traditional Indonesian batik.",
+    "definisi_jp": "タルム（トム）とも呼ばれる植物の葉で、インドネシアの伝統的なバティックで、青い天然染料の大切な原料です。"
   },
   {
     "id": "edi-peni",
     "istilah": "Édi Pêni",
     "abjad": "E",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Prinsip keindahan di Keraton Surakarta, berarti indah dan jarang ditemukan."
+    "definisi": "Prinsip keindahan di Keraton Surakarta, berarti indah dan jarang ditemukan.",
+    "definisi_en": "A principle of beauty at the Surakarta Palace. It means beautiful and rare.",
+    "definisi_jp": "スラカルタ王宮で大切にされる美の考え方で、「美しく、めったにないもの」という意味です。"
   },
   {
     "id": "gawangan",
     "istilah": "Gawangan",
     "abjad": "G",
     "kategori": "Alat",
-    "definisi": "Gawangan: Rak dari bambu atau kayu (gawang) tempat menyampirkan kain selama dibatik."
+    "definisi": "Gawangan: Rak dari bambu atau kayu (gawang) tempat menyampirkan kain selama dibatik.",
+    "definisi_en": "A bamboo or wooden rack (gawang) for hanging cloth while the batik is being made.",
+    "definisi_jp": "バティックを描いている間、布を掛けておく竹や木の枠（gawang）です。"
   },
   {
     "id": "gringsing",
     "istilah": "Gringsing",
     "abjad": "G",
     "kategori": "Motif",
-    "definisi": "Motif menyerupai sisik ikan pada batik, sekaligus nama kain ikat ganda dari Bali. Sejumlah desain gringsing dipercaya bisa menangkal bencana dan penyakit."
+    "definisi": "Motif menyerupai sisik ikan pada batik, sekaligus nama kain ikat ganda dari Bali. Sejumlah desain gringsing dipercaya bisa menangkal bencana dan penyakit.",
+    "definisi_en": "A batik motif that looks like fish scales. It is also the name of a double ikat cloth from Bali, woven from threads that were dyed in patterns beforehand. Some gringsing designs are believed to protect against disaster and illness.",
+    "definisi_jp": "魚のうろこのように見えるバティックの柄で、バリの経緯絣（糸を先に模様どおりに染めてから織る布）の名前でもあります。グリンシンの柄の中には、災いや病気を防ぐと信じられているものがあります。"
   },
   {
     "id": "gunungan",
     "istilah": "Gunungan",
     "abjad": "G",
     "kategori": "Motif",
-    "definisi": "Wayang kulit berwujud gunung atau pohon besar, juga dinamai kekayon atau kayon. Selalu tampil di awal dan akhir pertunjukan wayang purwa, dan sering melambangkan hutan atau kobaran api."
+    "definisi": "Wayang kulit berwujud gunung atau pohon besar, juga dinamai kekayon atau kayon. Selalu tampil di awal dan akhir pertunjukan wayang purwa, dan sering melambangkan hutan atau kobaran api.",
+    "definisi_en": "A wayang kulit puppet shaped like a mountain or a big tree, also called kekayon or kayon. It always appears at the start and end of a wayang purwa show and often stands for a forest or flames.",
+    "definisi_jp": "山や大きな木の形をしたワヤン・クリ（影絵人形）で、クカヨンやカヨンとも呼ばれます。ワヤン・プルワの上演では、始まりと終わりに必ず登場します。森や燃える炎を表すことも多くあります。"
   },
   {
     "id": "gradasi",
     "istilah": "Gradasi",
     "abjad": "G",
     "kategori": "Teknik",
-    "definisi": "Gradasi atau Teknik Gradasi teknik pewarnaan yang menghasilkan perpindahan atau perubahan warna secara bertahap dan halus baik dari warna terang ke gelap, atau dari satu warna ke warna lain tanpa garis batas yang kaku. Teknik ini memberi efek visual tiga dimensi yang hidup, dinamis, dan modern pada motif batik (seperti pada motif Mega Mendung)."
+    "definisi": "Gradasi atau Teknik Gradasi teknik pewarnaan yang menghasilkan perpindahan atau perubahan warna secara bertahap dan halus baik dari warna terang ke gelap, atau dari satu warna ke warna lain tanpa garis batas yang kaku. Teknik ini memberi efek visual tiga dimensi yang hidup, dinamis, dan modern pada motif batik (seperti pada motif Mega Mendung).",
+    "definisi_en": "A dyeing technique in which color changes smoothly and gradually, from light to dark or from one color to another, with no hard edges. It gives batik motifs, such as Mega Mendung, a lively, modern look with depth.",
+    "definisi_jp": "明るい色から暗い色へ、あるいはある色から別の色へと、境目をつくらずになめらかに色が変わる染め方です。メガ・ムンドゥンなどのバティック柄に、奥行きと動きのある、現代的な印象を与えます。"
   },
   {
     "id": "gedeg",
     "istilah": "Gedeg",
     "abjad": "G",
     "kategori": "Alat",
-    "definisi": "Gedeg bambu (atau sering ditulis gedek) adalah lembaran anyaman yang dibuat dari bilah-bilah bambu yang diiris tipis."
+    "definisi": "Gedeg bambu (atau sering ditulis gedek) adalah lembaran anyaman yang dibuat dari bilah-bilah bambu yang diiris tipis.",
+    "definisi_en": "A woven sheet made from thin strips of bamboo. Also spelled gedek.",
+    "definisi_jp": "薄く割った竹ひごを編んで作る、板状の編み物です。gedekと書くこともあります。"
   },
   {
     "id": "garudeya",
     "istilah": "Garudeya",
     "abjad": "G",
     "kategori": "Motif",
-    "definisi": "Dalam konteks batik Garudeya adalah ragam hias atau motif batik yang terinspirasi dari kisah mitologi Hindu tentang Garudeya (manusia-burung Garuda) yang digambarkan pada relief Candi Kidal di Kecamatan Tumpang, Kabupaten Malang, Jawa Timur."
+    "definisi": "Dalam konteks batik Garudeya adalah ragam hias atau motif batik yang terinspirasi dari kisah mitologi Hindu tentang Garudeya (manusia-burung Garuda) yang digambarkan pada relief Candi Kidal di Kecamatan Tumpang, Kabupaten Malang, Jawa Timur.",
+    "definisi_en": "In batik, a motif inspired by the Hindu myth of Garudeya (Garuda, the bird-man), which is shown in the reliefs of Kidal Temple in Tumpang District, Malang Regency, East Java.",
+    "definisi_jp": "バティックでは、ヒンドゥー神話のガルデヤ（鳥と人が合わさった姿のガルダ）の物語から生まれた柄を指します。この物語は、東ジャワ州マラン県トゥンパン郡のチャンディ・キダルのレリーフに描かれています。"
   },
   {
     "id": "gunung-bromo",
     "istilah": "Gunung Bromo",
     "abjad": "G",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Gunung Bromo adalah sebuah gunung berapi aktif yang terletak di Provinsi Jawa Timur, Indonesia. Gunung ini berada di dalam kawasan Taman Nasional Bromo Tengger Semeru"
+    "definisi": "Gunung Bromo adalah sebuah gunung berapi aktif yang terletak di Provinsi Jawa Timur, Indonesia. Gunung ini berada di dalam kawasan Taman Nasional Bromo Tengger Semeru",
+    "definisi_en": "An active volcano in East Java, Indonesia, inside Bromo Tengger Semeru National Park.",
+    "definisi_jp": "インドネシア・東ジャワ州にある活火山で、ブロモ・テンゲル・スメル国立公園の中にあります。"
   },
   {
     "id": "gunung-arjuno",
     "istilah": "Gunung Arjuno",
     "abjad": "G",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Gunung Arjuno (kadang dieja Gunung Arjuna) adalah gunung berapi kerucut (tipe strato) yang sedang tidak aktif atau berstatus istirahat di Jawa Timur, Indonesia."
+    "definisi": "Gunung Arjuno (kadang dieja Gunung Arjuna) adalah gunung berapi kerucut (tipe strato) yang sedang tidak aktif atau berstatus istirahat di Jawa Timur, Indonesia.",
+    "definisi_en": "A cone-shaped stratovolcano in East Java, Indonesia, part of the Arjuno-Welirang volcanic complex. Sometimes spelled Arjuna.",
+    "definisi_jp": "インドネシア・東ジャワ州にある円すい形の火山（成層火山）で、アルジュノ・ウェリラン火山群の一つです。アルジュナ山と書くこともあります。"
   },
   {
     "id": "hokokai",
     "istilah": "Hokokai",
     "abjad": "H",
     "kategori": "Motif",
-    "definisi": "Desain batik era Perang Dunia II, saat Jepang menduduki Indonesia. Nama ini juga dipakai oleh organisasi politik bentukan Jepang."
+    "definisi": "Desain batik era Perang Dunia II, saat Jepang menduduki Indonesia. Nama ini juga dipakai oleh organisasi politik bentukan Jepang.",
+    "definisi_en": "A batik design from World War II, when Japan occupied Indonesia. The name was also used by a political organization set up by the Japanese.",
+    "definisi_jp": "第二次世界大戦中、日本がインドネシアを占領していた時代に生まれたバティックの柄です。日本が作った政治組織（ジャワ奉公会）の名前としても使われました。"
   },
   {
     "id": "indigo",
     "istilah": "Indigo",
     "abjad": "I",
     "kategori": "Bahan",
-    "definisi": "Tanaman Indigofera tinctoria serta beberapa jenis sekerabat, dikenal di daerah sebagai tarum atau nila. Pada masa lampau banyak ditanam di Nusantara sebagai sumber pewarna biru yang umum dipakai pada batik."
+    "definisi": "Tanaman Indigofera tinctoria serta beberapa jenis sekerabat, dikenal di daerah sebagai tarum atau nila. Pada masa lampau banyak ditanam di Nusantara sebagai sumber pewarna biru yang umum dipakai pada batik.",
+    "definisi_en": "The plant Indigofera tinctoria and related species, known locally as tarum or nila. It was once widely grown across the archipelago for the blue dye commonly used in batik.",
+    "definisi_jp": "Indigofera tinctoria（インド藍）とその仲間で、現地ではタルムやニラと呼ばれます。かつてインドネシア各地で広く栽培され、バティックによく使われる青い染料の原料でした。"
   },
   {
     "id": "isen-isen",
     "istilah": "Isèn-isèn",
     "abjad": "I",
     "kategori": "Motif",
-    "definisi": "Hiasan pengisi bidang kosong pada motif batik, dari kata Jawa isi + an. Kadang disebut juga lataran."
+    "definisi": "Hiasan pengisi bidang kosong pada motif batik, dari kata Jawa isi + an. Kadang disebut juga lataran.",
+    "definisi_en": "Small decorative patterns that fill the empty spaces in a batik motif. The word comes from the Javanese isi (contents) + an. Sometimes called lataran.",
+    "definisi_jp": "バティックの柄の空いた部分を埋める、小さな飾り模様です。ジャワ語のisi（中身）にanがついた言葉で、ラタランと呼ばれることもあります。"
   },
   {
     "id": "ikan-maskoki",
     "istilah": "Ikan Maskoki",
     "abjad": "I",
     "kategori": "Flora & Fauna",
-    "definisi": "Ikan maskoki (Carassius auratus) adalah salah satu jenis ikan hias air tawar yang populer dan banyak dipelihara di akuarium maupun kolam."
+    "definisi": "Ikan maskoki (Carassius auratus) adalah salah satu jenis ikan hias air tawar yang populer dan banyak dipelihara di akuarium maupun kolam.",
+    "definisi_en": "A popular freshwater ornamental fish (Carassius auratus), kept in aquariums and ponds.",
+    "definisi_jp": "淡水の観賞魚として人気があり、水槽や池で広く飼われています（学名Carassius auratus）"
   },
   {
     "id": "indigo-blue",
     "istilah": "Indigo Blue",
     "abjad": "I",
     "kategori": "Bahan",
-    "definisi": "Indigo blue (atau warna nila) adalah warna biru tua yang kaya dan pekat, terletak di antara warna biru dan ungu pada spektrum cahaya tampak. Secara ilmiah, indigo berada pada panjang gelombang sekitar 420 hingga 450 nanometer."
+    "definisi": "Indigo blue (atau warna nila) adalah warna biru tua yang kaya dan pekat, terletak di antara warna biru dan ungu pada spektrum cahaya tampak. Secara ilmiah, indigo berada pada panjang gelombang sekitar 420 hingga 450 nanometer.",
+    "definisi_en": "A deep, rich blue between blue and violet in the visible spectrum, with a wavelength of about 420 to 450 nanometers.",
+    "definisi_jp": "青と紫の間にある、深くて濃い青です。可視光線のうち、波長はおよそ420〜450ナノメートルです。"
   },
   {
     "id": "jlamprang",
     "istilah": "Jlamprang",
     "abjad": "J",
     "kategori": "Motif",
-    "definisi": "Pola geometris berbasis lingkaran yang digemari di pantai utara Jawa, khususnya Pekalongan. Bermula dari kain patola ikat ganda Gujarat. Konon bentuknya terinspirasi cakra, roda kehidupan yang menjadi lambang Dewa Wisnu."
+    "definisi": "Pola geometris berbasis lingkaran yang digemari di pantai utara Jawa, khususnya Pekalongan. Bermula dari kain patola ikat ganda Gujarat. Konon bentuknya terinspirasi cakra, roda kehidupan yang menjadi lambang Dewa Wisnu.",
+    "definisi_en": "A geometric pattern based on circles, popular on Java’s north coast, especially in Pekalongan. It began with patola, a double ikat cloth from Gujarat made from pre-dyed patterned threads. Its shape is said to be inspired by the chakra, the wheel of life that symbolizes the god Vishnu.",
+    "definisi_jp": "円を組み合わせた幾何学模様で、ジャワ北海岸、とくにプカロンガンで人気があります。もとはグジャラートの経緯絣の布、パトラ（糸を先に染めてから織る布）の柄から生まれました。ヴィシュヌ神の象徴であるチャクラ（生命の輪）がモチーフだといわれています。"
   },
   {
     "id": "jambu-klutuk",
     "istilah": "Jambu Klutuk",
     "abjad": "J",
     "kategori": "Flora & Fauna",
-    "definisi": "Jambu biji atau sering juga disebut jambu batu, jambu siki, dan jambu klutuk adalah tanaman tropis yang berasal dari Brasil, disebarkan ke Indonesia melalui Thailand. Jambu batu memiliki buah yang berwarna hijau dengan daging buah berwarna hijau atau merah dan berasa asam-manis."
+    "definisi": "Jambu biji atau sering juga disebut jambu batu, jambu siki, dan jambu klutuk adalah tanaman tropis yang berasal dari Brasil, disebarkan ke Indonesia melalui Thailand. Jambu batu memiliki buah yang berwarna hijau dengan daging buah berwarna hijau atau merah dan berasa asam-manis.",
+    "definisi_en": "A tropical fruit tree also called jambu batu and jambu siki. It is originally from tropical America and reached Indonesia by way of Thailand. The fruit is green outside, with green or red flesh and a sweet-sour taste.",
+    "definisi_jp": "ジャンブ・バトゥ、ジャンブ・シキ、ジャンブ・クルトゥクとも呼ばれる熱帯の果樹です。もとは熱帯アメリカの植物で、タイを経由してインドネシアに伝わりました。実は緑色で、果肉は緑か赤、甘酸っぱい味です。"
   },
   {
     "id": "jolawe",
     "istilah": "Jolawe",
     "abjad": "J",
     "kategori": "Bahan",
-    "definisi": "Jolawe (atau jalawe/jelawe) adalah buah dari pohon Terminalia bellirica yang sering dimanfaatkan sebagai sumber bahan pewarna alami dalam pembuatan kain batik tradisional dan ramah lingkungan. Ekstrak kulit atau buah jolawe digunakan untuk memberikan nuansa warna kuning kecokelatan, kuning hangat, atau cokelat muda pada kain batik."
+    "definisi": "Jolawe (atau jalawe/jelawe) adalah buah dari pohon Terminalia bellirica yang sering dimanfaatkan sebagai sumber bahan pewarna alami dalam pembuatan kain batik tradisional dan ramah lingkungan. Ekstrak kulit atau buah jolawe digunakan untuk memberikan nuansa warna kuning kecokelatan, kuning hangat, atau cokelat muda pada kain batik.",
+    "definisi_en": "The fruit of the Terminalia bellirica tree, also spelled jalawe or jelawe. It is a natural dye source in traditional, eco-friendly batik. Extract from the rind or fruit gives cloth a yellowish brown, warm yellow, or light brown color.",
+    "definisi_jp": "Terminalia bellirica（ベレリカミロバラン）の果実で、ジャラウェ、ジュラウェとも書きます。環境にやさしい伝統的なバティックで、天然染料として使われます。果皮や果実のエキスで、布が黄褐色や温かみのある黄色、薄茶色に染まります。"
   },
   {
     "id": "kain-panjang",
     "istilah": "Kain Panjang",
     "abjad": "K",
     "kategori": "Bahan",
-    "definisi": "Batik sepanjang kira-kira 2,5–2,7 meter dan selebar 1,10 meter, dengan pola tanpa bagian kepala."
+    "definisi": "Batik sepanjang kira-kira 2,5–2,7 meter dan selebar 1,10 meter, dengan pola tanpa bagian kepala.",
+    "definisi_en": "A batik about 2.5 to 2.7 meters long and 1.10 meters wide. Its pattern has no head panel (kepala).",
+    "definisi_jp": "長さ約2.5〜2.7メートル、幅1.10メートルのバティックで、柄に「頭」（kepala）の部分がありません。"
   },
   {
     "id": "kampuh",
     "istilah": "Kampuh",
     "abjad": "K",
     "kategori": "Bahan",
-    "definisi": "Kain batik untuk busana upacara di keraton."
+    "definisi": "Kain batik untuk busana upacara di keraton.",
+    "definisi_en": "A batik cloth worn for ceremonial dress at the palace.",
+    "definisi_jp": "王宮で儀式のときの衣装に使うバティックの布です。"
   },
   {
     "id": "kawung",
     "istilah": "Kawung",
     "abjad": "K",
     "kategori": "Motif",
-    "definisi": "Pola geometris yang meniru buah aren (kawung) yang dibelah. Empat belahan dan intinya melambangkan lima arah utama dalam ajaran Buddha."
+    "definisi": "Pola geometris yang meniru buah aren (kawung) yang dibelah. Empat belahan dan intinya melambangkan lima arah utama dalam ajaran Buddha.",
+    "definisi_en": "A geometric pattern that imitates a sliced aren (sugar palm) fruit, called kawung. The four sections and the center stand for the five main directions in Buddhist teaching.",
+    "definisi_jp": "割ったアレン（サトウヤシ）の実（kawung）をかたどった幾何学模様です。4つの割れ目と中心が、仏教の教えにおける五つの方角を表します。"
   },
   {
     "id": "kekayon",
     "istilah": "Kekayon",
     "abjad": "K",
     "kategori": "Motif",
-    "definisi": "Nama lain kayon, wayang kulit berbentuk gunung atau pohon besar. Bandingkan dengan gunungan."
+    "definisi": "Nama lain kayon, wayang kulit berbentuk gunung atau pohon besar. Bandingkan dengan gunungan.",
+    "definisi_en": "Another name for kayon, the wayang kulit puppet shaped like a mountain or big tree. See also “gunungan”.",
+    "definisi_jp": "カヨンの別名で、山や大きな木の形をしたワヤン・クリの人形です。グヌンガンも参照してください。"
   },
   {
     "id": "kemplong",
     "istilah": "Kemplong",
     "abjad": "K",
     "kategori": "Alat",
-    "definisi": "Pemukul kayu, biasanya dari kayu yang lunak, untuk menepuk-nepuk kain mori pada tahap persiapan sebelum membatik. Landasan kayu tempat kain ditepuk disebut kemplongan."
+    "definisi": "Pemukul kayu, biasanya dari kayu yang lunak, untuk menepuk-nepuk kain mori pada tahap persiapan sebelum membatik. Landasan kayu tempat kain ditepuk disebut kemplongan.",
+    "definisi_en": "A wooden mallet, usually made of soft wood, used to pat mori cloth flat while it is being prepared for batik. The wooden block underneath is called a kemplongan.",
+    "definisi_jp": "バティックを描く前に、モリ（白い木綿の生地）を叩いて整えるときに使う木槌です。たいてい柔らかい木で作られます。布の下に敷く木の台は、クンプロンガンと呼ばれます。"
   },
   {
     "id": "keraton",
     "istilah": "Keraton",
     "abjad": "K",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Kata Jawa yang secara harfiah bermakna kediaman raja."
+    "definisi": "Kata Jawa yang secara harfiah bermakna kediaman raja.",
+    "definisi_en": "A Javanese word that literally means the home of a king.",
+    "definisi_jp": "ジャワ語で、そのまま訳すと「王の住まい」という意味です。"
   },
   {
     "id": "klowongan",
     "istilah": "Klowongan",
     "abjad": "K",
     "kategori": "Teknik",
-    "definisi": "Goresan malam yang menandai kerangka luar suatu desain batik. Di sejumlah tempat disebut rèng-rèngan."
+    "definisi": "Goresan malam yang menandai kerangka luar suatu desain batik. Di sejumlah tempat disebut rèng-rèngan.",
+    "definisi_en": "The wax lines that draw the outer outline of a batik design. In some places they are called rèng-rèngan.",
+    "definisi_jp": "バティックの柄の外側の輪郭を描く蝋の線です。地域によっては、レンレンガンとも呼ばれます。"
   },
   {
     "id": "kodi",
     "istilah": "Kodi",
     "abjad": "K",
     "kategori": "Istilah Terkait",
-    "definisi": "Satuan hitungan untuk dua puluh buah."
+    "definisi": "Satuan hitungan untuk dua puluh buah.",
+    "definisi_en": "A unit for counting twenty items.",
+    "definisi_jp": "20個をひとまとまりとして数える単位です。"
   },
   {
     "id": "ken-dedes",
     "istilah": "Ken Dedes",
     "abjad": "K",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Ken Dedes (Dyah Ayu Sri Maharatu Mahadewi) adalah tokoh perempuan legendaris dan permaisuri pertama dari Kerajaan Singhasari (Tumapel) di Jawa Timur. Ia dikenal dalam naskah sejarah kuno Pararaton sebagai leluhur dari raja-raja yang berkuasa di Singhasari hingga Majapahit."
+    "definisi": "Ken Dedes (Dyah Ayu Sri Maharatu Mahadewi) adalah tokoh perempuan legendaris dan permaisuri pertama dari Kerajaan Singhasari (Tumapel) di Jawa Timur. Ia dikenal dalam naskah sejarah kuno Pararaton sebagai leluhur dari raja-raja yang berkuasa di Singhasari hingga Majapahit.",
+    "definisi_en": "Ken Dedes (Dyah Ayu Sri Maharatu Mahadewi) was a legendary woman and the first queen of the Singhasari (Tumapel) Kingdom in East Java. The ancient chronicle Pararaton names her as the ancestor of the kings who ruled from Singhasari to Majapahit.",
+    "definisi_jp": "ケン・デデス（ディア・アユ・スリ・マハラトゥ・マハデウィ）は、東ジャワのシンガサリ（トゥマペル）王国の初代王妃で、伝説的な女性です。古代の史書『パララトン』には、シンガサリからマジャパヒトまでの歴代の王の祖先として登場します。"
   },
   {
     "id": "kulit-kayu-tinggi",
     "istilah": "Kulit Kayu Tinggi",
     "abjad": "K",
     "kategori": "Bahan",
-    "definisi": "Kulit kayu tingi (Ceriops tagal atau Ceriops candolleana arn) adalah bahan baku alami yang populer dalam industri batik tradisional untuk menghasilkan warna cokelat, cokelat kemerahan, atau merah kecoklatan."
+    "definisi": "Kulit kayu tingi (Ceriops tagal atau Ceriops candolleana arn) adalah bahan baku alami yang populer dalam industri batik tradisional untuk menghasilkan warna cokelat, cokelat kemerahan, atau merah kecoklatan.",
+    "definisi_en": "The bark of Ceriops tagal (or Ceriops candolleana Arn), a popular natural material in traditional batik for brown, reddish-brown, and reddish-tan colors.",
+    "definisi_jp": "Ceriops tagal（またはCeriops candolleana Arn）の樹皮です。伝統的なバティックでよく使われる天然素材で、茶色や赤茶色を出すのに使います。"
   },
   {
     "id": "lasem",
     "istilah": "Lasem",
     "abjad": "L",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Kota kecil di pesisir utara Jawa Tengah, tak jauh dari Rembang. Sebelum Perang Dunia II, kota ini merupakan pusat produksi batik yang sibuk. Batik Lasem mudah dikenali lewat motif khas Tionghoa (phoenix, singa, peoni, merak, dan sebagainya) dan merah mengkudu."
+    "definisi": "Kota kecil di pesisir utara Jawa Tengah, tak jauh dari Rembang. Sebelum Perang Dunia II, kota ini merupakan pusat produksi batik yang sibuk. Batik Lasem mudah dikenali lewat motif khas Tionghoa (phoenix, singa, peoni, merak, dan sebagainya) dan merah mengkudu.",
+    "definisi_en": "A small town on the north coast of Central Java, near Rembang. Before World War II it was a busy batik center. Lasem batik is easy to recognize by its Chinese motifs (phoenix, lion, peony, peacock, and others) and its mengkudu red.",
+    "definisi_jp": "中部ジャワの北海岸、レンバンの近くにある小さな町です。第二次世界大戦前は、バティックづくりで栄えていました。ラスムのバティックは、鳳凰や獅子、牡丹、孔雀といった中国風の柄と、メンクドゥ（ノニ）で染めた赤が特徴です。"
   },
   {
     "id": "monstera-deliciosa",
     "istilah": "Monstera Deliciosa",
     "abjad": "M",
     "kategori": "Flora & Fauna",
-    "definisi": "Monstera deliciosa (sering disebut sebagai ceriman atau tanaman keju Swiss / Swiss cheese plant) adalah spesies tanaman berbunga dari famili Araceae yang berasal dari hutan tropis di Meksiko selatan hingga Panama."
+    "definisi": "Monstera deliciosa (sering disebut sebagai ceriman atau tanaman keju Swiss / Swiss cheese plant) adalah spesies tanaman berbunga dari famili Araceae yang berasal dari hutan tropis di Meksiko selatan hingga Panama.",
+    "definisi_en": "A flowering plant of the arum family (Araceae), often called ceriman or the Swiss cheese plant. It comes from the tropical forests of southern Mexico to Panama.",
+    "definisi_jp": "サトイモ科の植物で、インドネシアではチェリマン、英語ではスイスチーズプラントとも呼ばれます。南メキシコからパナマにかけての熱帯林が原産です。"
   },
   {
     "id": "motif-parang",
     "istilah": "Motif Parang",
     "abjad": "M",
     "kategori": "Motif",
-    "definisi": "Motif Parang adalah salah satu motif batik tertua dan paling khas dari Indonesia, yang berasal dari budaya Jawa di lingkungan Keraton (Surakarta dan Yogyakarta)."
+    "definisi": "Motif Parang adalah salah satu motif batik tertua dan paling khas dari Indonesia, yang berasal dari budaya Jawa di lingkungan Keraton (Surakarta dan Yogyakarta).",
+    "definisi_en": "One of Indonesia’s oldest and most distinctive batik motifs. It comes from Javanese palace culture in Surakarta and Yogyakarta.",
+    "definisi_jp": "インドネシアで最も古く、最も特徴的なバティック柄の一つです。スラカルタとジョグジャカルタの王宮のジャワ文化から生まれました。"
   },
   {
     "id": "motif-klasik",
     "istilah": "Motif Klasik",
     "abjad": "M",
     "kategori": "Motif",
-    "definisi": "Motif Klasik adalah corak atau pola tradisional pada kain batik yang berasal dari pakem atau aturan Keraton (terutama Yogyakarta dan Surakarta), dibuat dengan pakem dan pakem warna tertentu, serta sarat dengan nilai filosofi, simbolisme, dan makna transendental atau spiritual yang berkaitan dengan kehidupan manusia, alam, dan Sang Pencipta."
+    "definisi": "Motif Klasik adalah corak atau pola tradisional pada kain batik yang berasal dari pakem atau aturan Keraton (terutama Yogyakarta dan Surakarta), dibuat dengan pakem dan pakem warna tertentu, serta sarat dengan nilai filosofi, simbolisme, dan makna transendental atau spiritual yang berkaitan dengan kehidupan manusia, alam, dan Sang Pencipta.",
+    "definisi_en": "A traditional batik pattern that follows the rules (pakem) of the palaces, especially in Yogyakarta and Surakarta, including set rules for color. These patterns are rich in philosophy, symbolism, and spiritual meaning tied to human life, nature, and the Creator.",
+    "definisi_jp": "ジョグジャカルタやスラカルタの王宮の決まり（パケム）に従って作られる、バティックの伝統的な柄です。色にも決まりがあります。人の暮らしや自然、創造主にかかわる哲学や象徴、精神的な意味が深く込められています。"
   },
   {
     "id": "motif-liris",
     "istilah": "Motif Liris",
     "abjad": "M",
     "kategori": "Motif",
-    "definisi": "Motif liris (atau sering disebut Udan Liris / Udan Riris) adalah salah satu motif batik klasik khas Jawa yang menggambarkan garis-garis miring sejajar menyerupai rintik hujan."
+    "definisi": "Motif liris (atau sering disebut Udan Liris / Udan Riris) adalah salah satu motif batik klasik khas Jawa yang menggambarkan garis-garis miring sejajar menyerupai rintik hujan.",
+    "definisi_en": "A classic Javanese batik motif, also called Udan Liris or Udan Riris. It shows parallel diagonal lines that look like falling raindrops.",
+    "definisi_jp": "ウダン・リリス（Udan Liris／Udan Riris）とも呼ばれる、ジャワの古典的なバティック柄です。雨のしずくのように見える、斜めの平行線を描きます。"
   },
   {
     "id": "mberot",
     "istilah": "Mberot",
     "abjad": "M",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Mberot merupakan nama lain dari Bantengan yakni kesenian pertunjukan tradisional khas Jawa Timur terutama berkembang di daerah seperti Malang, Batu, Mojokerto, dan sekitarnya yang menampilkan tarian menirukan gerak-gerik hewan banteng."
+    "definisi": "Mberot merupakan nama lain dari Bantengan yakni kesenian pertunjukan tradisional khas Jawa Timur terutama berkembang di daerah seperti Malang, Batu, Mojokerto, dan sekitarnya yang menampilkan tarian menirukan gerak-gerik hewan banteng.",
+    "definisi_en": "Another name for Bantengan, a traditional performing art from East Java that developed mainly in Malang, Batu, Mojokerto, and nearby areas. The dance imitates the movements of a banteng, a wild bull.",
+    "definisi_jp": "バンテンガンの別名です。マランやバトゥ、モジョクルトなどを中心に栄えた東ジャワの伝統芸能で、バンテン（野生の牛）の動きをまねて踊ります。"
   },
   {
     "id": "perada",
     "istilah": "Perada (prada)",
     "abjad": "P",
     "kategori": "Bahan",
-    "definisi": "Lembar emas tipis yang direkatkan ke kain sebagai hiasan agar motif tampak lebih tegas."
+    "definisi": "Lembar emas tipis yang direkatkan ke kain sebagai hiasan agar motif tampak lebih tegas.",
+    "definisi_en": "A thin sheet of gold applied to cloth as decoration, to make a motif stand out.",
+    "definisi_jp": "飾りとして布に貼りつける薄い金の箔で、柄をはっきり見せるために使います。"
   },
   {
     "id": "plangi",
     "istilah": "Plangi",
     "abjad": "P",
     "kategori": "Teknik",
-    "definisi": "Kain bermotif warna-warni yang dibuat dengan teknik ikat-celup."
+    "definisi": "Kain bermotif warna-warni yang dibuat dengan teknik ikat-celup.",
+    "definisi_en": "Colorful patterned cloth made by tie-dyeing.",
+    "definisi_jp": "絞り染めで作る、色あざやかな柄の布です。"
   },
   {
     "id": "priyayi",
     "istilah": "Priyayi",
     "abjad": "P",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Sebutan untuk bangsawan Jawa dan keturunannya, yang dipandang memiliki selera serta kepekaan halus terhadap seni dan kehidupan sehari-hari."
+    "definisi": "Sebutan untuk bangsawan Jawa dan keturunannya, yang dipandang memiliki selera serta kepekaan halus terhadap seni dan kehidupan sehari-hari.",
+    "definisi_en": "A term for the Javanese nobility and their descendants, who are seen as having refined taste and a fine sensitivity to art and daily life.",
+    "definisi_jp": "ジャワの貴族とその子孫を指す言葉です。芸術や日々の暮らしに対して、洗練された趣味と繊細な感性をもつ人たちとされています。"
   },
   {
     "id": "panji-asmoro-bangun",
     "istilah": "Panji Asmoro Bangun",
     "abjad": "P",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Panji Asmoro Bangun (atau dikenal juga sebagai Raden Panji Inu Kertapati atau Raden Panji Asmarabangun) adalah tokoh pahlawan dan kesatria legendaris dari Jawa Timur yang berasal dari kisah rakyat Cerita Panji."
+    "definisi": "Panji Asmoro Bangun (atau dikenal juga sebagai Raden Panji Inu Kertapati atau Raden Panji Asmarabangun) adalah tokoh pahlawan dan kesatria legendaris dari Jawa Timur yang berasal dari kisah rakyat Cerita Panji.",
+    "definisi_en": "Also known as Raden Panji Inu Kertapati or Raden Panji Asmarabangun. A legendary hero and knight from East Java, and the hero of the Panji folk tales.",
+    "definisi_jp": "ラデン・パンジ・イヌ・クルタパティ、ラデン・パンジ・アスマラバングンとも呼ばれる、東ジャワの伝説の英雄で騎士です。民間に伝わる「パンジ物語」の主人公です。"
   },
   {
     "id": "pohon-heritage",
     "istilah": "Pohon Heritage",
     "abjad": "P",
     "kategori": "Flora & Fauna",
-    "definisi": "Pohon heritage adalah pohon berusia tua yang dilindungi karena memiliki nilai sejarah, ekologis, atau kultural yang tinggi bagi suatu wilayah, seperti di Kota Malang dan sekitarnya."
+    "definisi": "Pohon heritage adalah pohon berusia tua yang dilindungi karena memiliki nilai sejarah, ekologis, atau kultural yang tinggi bagi suatu wilayah, seperti di Kota Malang dan sekitarnya.",
+    "definisi_en": "An old tree that is protected because of its historical, ecological, or cultural value to an area, such as in Malang and its surroundings.",
+    "definisi_jp": "歴史や自然、文化の面で地域にとって価値が高いため、守られている古い木です。マラン市やその周辺にもあります。"
   },
   {
     "id": "ragil-kuning",
     "istilah": "Ragil Kuning",
     "abjad": "R",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Ragil Kuning adalah adik dari Panji Asmorobangun yang merupakan istri Raden Gunung Sari, saudara laki-laki dari Dewi Sekartaji putera mahkota dari Raja Panjalu Daha Kediri, Prabu Amijoyo."
+    "definisi": "Ragil Kuning adalah adik dari Panji Asmorobangun yang merupakan istri Raden Gunung Sari, saudara laki-laki dari Dewi Sekartaji putera mahkota dari Raja Panjalu Daha Kediri, Prabu Amijoyo.",
+    "definisi_en": "The younger sister of Panji Asmoro Bangun and the wife of Raden Gunung Sari. Gunung Sari is the brother of Dewi Sekartaji and the crown prince of King Prabu Amijoyo of Panjalu Daha, Kediri.",
+    "definisi_jp": "パンジ・アスモロ・バングンの妹で、ラデン・グヌン・サリの妻です。グヌン・サリは、デウィ・スカルタジの兄で、クディリのパンジャル・ダハ王国のアミジョヨ王の王太子です。"
   },
   {
     "id": "saren",
     "istilah": "Sarèn",
     "abjad": "S",
     "kategori": "Teknik",
-    "definisi": "Langkah penguat warna setelah pencelupan akhir dengan pewarna alam, guna mengukuhkan warna cokelat soga. Biasanya memakai larutan kapur bercampur sari tumbuhan."
+    "definisi": "Langkah penguat warna setelah pencelupan akhir dengan pewarna alam, guna mengukuhkan warna cokelat soga. Biasanya memakai larutan kapur bercampur sari tumbuhan.",
+    "definisi_en": "A step after the last natural-dye bath that sets the soga brown. It usually uses a lime solution mixed with plant juice.",
+    "definisi_jp": "天然染料での最後の染めのあとに、ソガの茶色を定着させる工程です。ふつうは石灰を溶かした液に、植物の汁を混ぜて使います。"
   },
   {
     "id": "sarung",
     "istilah": "Sarung",
     "abjad": "S",
     "kategori": "Bahan",
-    "definisi": "Kain yang bagian ujungnya dijahit hingga membentuk tabung. Banyak dipakai masyarakat Jawa dan Melayu, diduga berasal dari India. Sarung batik berukuran 110 × 225 cm, lebih kecil dari kain panjang."
+    "definisi": "Kain yang bagian ujungnya dijahit hingga membentuk tabung. Banyak dipakai masyarakat Jawa dan Melayu, diduga berasal dari India. Sarung batik berukuran 110 × 225 cm, lebih kecil dari kain panjang.",
+    "definisi_en": "A cloth sewn at the ends to form a tube, widely worn by Javanese and Malay people. It is thought to have come from India. A batik sarung measures 110 × 225 cm, smaller than a kain panjang.",
+    "definisi_jp": "両端を縫い合わせて筒の形にした布で、ジャワ人やマレー系の人々に広く着られています。インドが起源と考えられています。バティックのサロンは110×225cmで、長布（カイン・パンジャン）より小さめです。"
   },
   {
     "id": "sekar-jagad",
     "istilah": "Sekar Jagad",
     "abjad": "S",
     "kategori": "Motif",
-    "definisi": "Motif batik yang menggambarkan \"kembang sedunia\"."
+    "definisi": "Motif batik yang menggambarkan \"kembang sedunia\".",
+    "definisi_en": "A batik motif showing the “flowers of the world” (kembang sedunia).",
+    "definisi_jp": "「世界中の花」（kembang sedunia）を表すバティック柄です。"
   },
   {
     "id": "semen",
     "istilah": "Semen",
     "abjad": "S",
     "kategori": "Motif",
-    "definisi": "Dari kata Jawa semi (bertunas). Menggambarkan tunas yang tumbuh, dan termasuk golongan pola latar dalam desain batik."
+    "definisi": "Dari kata Jawa semi (bertunas). Menggambarkan tunas yang tumbuh, dan termasuk golongan pola latar dalam desain batik.",
+    "definisi_en": "From the Javanese semi, meaning to sprout. It shows new shoots growing and belongs to the background-pattern group in batik design.",
+    "definisi_jp": "ジャワ語のsemi（芽が出る）に由来します。育っていく新芽を表し、バティックの柄の中では、背景に使う柄のグループに入ります。"
   },
   {
     "id": "serimpi",
     "istilah": "Serimpi",
     "abjad": "S",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Tarian sakral putri dari keraton Yogyakarta yang dibawakan empat penari."
+    "definisi": "Tarian sakral putri dari keraton Yogyakarta yang dibawakan empat penari.",
+    "definisi_en": "A sacred women’s dance of the Yogyakarta Palace, performed by four dancers.",
+    "definisi_jp": "ジョグジャカルタ王宮に伝わる、4人の女性が踊る神聖な舞踊です。"
   },
   {
     "id": "soga",
     "istilah": "Soga",
     "abjad": "S",
     "kategori": "Bahan",
-    "definisi": "Pewarna alam dari kulit pohon soga (Peltophorum pterocarpum) yang melahirkan warna cokelat ciri batik Yogyakarta dan Surakarta. Nyogo artinya mencelup dengan pewarna ini."
+    "definisi": "Pewarna alam dari kulit pohon soga (Peltophorum pterocarpum) yang melahirkan warna cokelat ciri batik Yogyakarta dan Surakarta. Nyogo artinya mencelup dengan pewarna ini.",
+    "definisi_en": "A natural dye from the bark of the soga tree (Peltophorum pterocarpum). It gives the brown that characterizes Yogyakarta and Surakarta batik. Nyogo means dyeing with soga.",
+    "definisi_jp": "ソガの木（Peltophorum pterocarpum）の樹皮から取る天然染料で、ジョグジャカルタやスラカルタのバティックらしい茶色を生みます。ニョゴ（nyogo）は、この染料で染めることです。"
   },
   {
     "id": "sulur",
     "istilah": "Sulur",
     "abjad": "S",
     "kategori": "Flora & Fauna",
-    "definisi": "Sulur adalah batang, daun, atau tangkai daun khusus dengan bentuk seperti benang yang digunakan oleh tanaman memanjat untuk menopang dan menempel, serta invasi seluler oleh tanaman parasit. Contoh tanaman yang memiiki sulur antara lain anggur, mentimun, kacang polong, melon dan labu siam."
+    "definisi": "Sulur adalah batang, daun, atau tangkai daun khusus dengan bentuk seperti benang yang digunakan oleh tanaman memanjat untuk menopang dan menempel, serta invasi seluler oleh tanaman parasit. Contoh tanaman yang memiiki sulur antara lain anggur, mentimun, kacang polong, melon dan labu siam.",
+    "definisi_en": "A thread-like stem, leaf, or leaf stalk that climbing plants use to hold on and support themselves. Grapes, cucumbers, peas, melons, and chayote all have tendrils.",
+    "definisi_jp": "つる植物が、体を支えたり、ほかのものに絡みついたりするための、糸のような形をした茎や葉、葉柄です。ブドウやキュウリ、エンドウ、メロン、ハヤトウリなどにあります。"
   },
   {
     "id": "secang",
     "istilah": "Secang",
     "abjad": "S",
     "kategori": "Bahan",
-    "definisi": "Secang atau Kayu secang (Caesalpinia sappan) adalah tanaman perdu atau semak berduri asli Asia Tenggara yang batangnya keras dan berwarna merah tua. Tanaman ini sejak lama dimanfaatkan sebagai bahan pengobatan tradisional, pewarna alami makanan/kain, serta bahan utama minuman herbal."
+    "definisi": "Secang atau Kayu secang (Caesalpinia sappan) adalah tanaman perdu atau semak berduri asli Asia Tenggara yang batangnya keras dan berwarna merah tua. Tanaman ini sejak lama dimanfaatkan sebagai bahan pengobatan tradisional, pewarna alami makanan/kain, serta bahan utama minuman herbal.",
+    "definisi_en": "A thorny shrub native to Southeast Asia (Caesalpinia sappan) with a hard, dark red trunk. It has long been used in traditional medicine, as a natural dye for food and cloth, and as the main ingredient of herbal drinks.",
+    "definisi_jp": "東南アジア原産のとげのある低木（学名Caesalpinia sappan）で、インドネシア語ではsecangといいます。幹は硬くて濃い赤色をしています。昔から伝統的な薬や、食べ物や布の天然染料、ハーブ飲料の主な材料として使われてきました。"
   },
   {
     "id": "stagen",
     "istilah": "Stagen",
     "abjad": "S",
     "kategori": "Bahan",
-    "definisi": "Stagen adalah kain panjang tradisional (sekitar 5 hingga 15 meter dengan lebar kurang lebih 15 cm) yang dililitkan secara manual di bagian perut."
+    "definisi": "Stagen adalah kain panjang tradisional (sekitar 5 hingga 15 meter dengan lebar kurang lebih 15 cm) yang dililitkan secara manual di bagian perut.",
+    "definisi_en": "A long traditional cloth, about 5 to 15 meters long and roughly 15 cm wide, wrapped around the abdomen by hand.",
+    "definisi_jp": "長さ5〜15メートル、幅15cmほどの細長い伝統的な布で、お腹のまわりに手で巻いて使います。"
   },
   {
     "id": "shibori",
     "istilah": "Shibori",
     "abjad": "S",
     "kategori": "Teknik",
-    "definisi": "Shibori adalah teknik pewarnaan kain tradisional asal Jepang yang menggunakan metode merintang warna (resist-dyeing) melalui cara melipat, mengikat, memelintir, menjahit, atau menjepit kain sebelum dicelupkan ke dalam cairan pewarna."
+    "definisi": "Shibori adalah teknik pewarnaan kain tradisional asal Jepang yang menggunakan metode merintang warna (resist-dyeing) melalui cara melipat, mengikat, memelintir, menjahit, atau menjepit kain sebelum dicelupkan ke dalam cairan pewarna.",
+    "definisi_en": "A traditional Japanese dyeing technique. The cloth is folded, bound, twisted, stitched, or clamped before dipping, so the dye cannot reach some parts (resist dyeing).",
+    "definisi_jp": "日本発祥の伝統的な染めの技法です。布を折る、縛る、ねじる、縫う、挟むなどして、染料がしみこまない部分を作ってから染め液に浸します。"
   },
   {
     "id": "tagerang",
     "istilah": "Tagerang",
     "abjad": "T",
     "kategori": "Bahan",
-    "definisi": "Pohon Cudrania javanensis yang kulit batangnya diolah menjadi pewarna alam batik dengan hasil warna kuning berkilau."
+    "definisi": "Pohon Cudrania javanensis yang kulit batangnya diolah menjadi pewarna alam batik dengan hasil warna kuning berkilau.",
+    "definisi_en": "A tree (Cudrania javanensis) whose bark is made into a natural batik dye that gives a bright yellow.",
+    "definisi_jp": "樹皮がバティックの天然染料になる木（Cudrania javanensis）です。つやのある黄色に染まります。"
   },
   {
     "id": "tiga-negeri",
     "istilah": "Tiga Negeri",
     "abjad": "T",
     "kategori": "Teknik",
-    "definisi": "Desain batik yang menggabungkan ciri warna dari tiga kota atau wilayah yang masing-masing punya gaya batik berbeda."
+    "definisi": "Desain batik yang menggabungkan ciri warna dari tiga kota atau wilayah yang masing-masing punya gaya batik berbeda.",
+    "definisi_en": "A batik design that combines the colors typical of three cities or regions, each with its own batik style.",
+    "definisi_jp": "それぞれ違うバティックの様式をもつ3つの町（地域）の、特徴的な色を組み合わせた柄です。"
   },
   {
     "id": "tokwi",
     "istilah": "Tokwi",
     "abjad": "T",
     "kategori": "Bahan",
-    "definisi": "Kain untuk altar dalam tradisi Tionghoa."
+    "definisi": "Kain untuk altar dalam tradisi Tionghoa.",
+    "definisi_en": "A cloth for altars in Chinese tradition.",
+    "definisi_jp": "中国の伝統で、祭壇に掛ける布です。"
   },
   {
     "id": "tom",
     "istilah": "Tom",
     "abjad": "T",
     "kategori": "Bahan",
-    "definisi": "Sebutan lain untuk tarum (nila, indigo)."
+    "definisi": "Sebutan lain untuk tarum (nila, indigo).",
+    "definisi_en": "Another name for tarum (nila, indigo).",
+    "definisi_jp": "タルム（ニラ、藍）の別名です。"
   },
   {
     "id": "truntum",
     "istilah": "Truntum",
     "abjad": "T",
     "kategori": "Motif",
-    "definisi": "Kata Jawa yang secara harfiah berarti tumbuh bersemi dalam ukuran kecil-kecil. Motifnya berupa hiasan geometris mungil mirip bintang, bermakna \"kuncup\" atau “taburan bintang\". Kain truntum lazim dipakai kedua orang tua mempelai dalam upacara pernikahan adat Jawa."
+    "definisi": "Kata Jawa yang secara harfiah berarti tumbuh bersemi dalam ukuran kecil-kecil. Motifnya berupa hiasan geometris mungil mirip bintang, bermakna \"kuncup\" atau “taburan bintang\". Kain truntum lazim dipakai kedua orang tua mempelai dalam upacara pernikahan adat Jawa.",
+    "definisi_en": "A Javanese word meaning to bloom or sprout in small bits. The motif is made of tiny geometric ornaments like stars and stands for “buds” or “scattered stars.” Truntum cloth is traditionally worn by both sets of parents at a Javanese wedding.",
+    "definisi_jp": "ジャワ語で、小さな芽がたくさん出ることを意味します。小さな星のような幾何学模様で、「つぼみ」や「ちりばめた星」を表します。ジャワの伝統的な結婚式では、新郎新婦の両親が着る布とされています。"
   },
   {
     "id": "udan-liris",
     "istilah": "Udan liris",
     "abjad": "U",
     "kategori": "Motif",
-    "definisi": "Motif gerimis yang tersusun dari berbagai hiasan dengan garis diagonal sejajar. Termasuk pola larangan (laningan) di Keraton Surakarta, Jawa Tengah."
+    "definisi": "Motif gerimis yang tersusun dari berbagai hiasan dengan garis diagonal sejajar. Termasuk pola larangan (laningan) di Keraton Surakarta, Jawa Tengah.",
+    "definisi_en": "A drizzle motif made of various ornaments along parallel diagonal lines. It is one of the larangan (restricted) patterns at the Surakarta Palace in Central Java.",
+    "definisi_jp": "さまざまな飾りを平行な斜めの線に沿って並べた、小雨のような柄です。中部ジャワのスラカルタ王宮では、禁制の柄（ラランガン）の一つとされています。"
   },
   {
     "id": "topeng-panji",
     "istilah": "Topeng Panji",
     "abjad": "T",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Topeng Panji adalah karya seni topeng tradisional yang digunakan dalam pertunjukan tari dan wayang topeng untuk membawakan kisah percintaan dan kepahlawanan Panji."
+    "definisi": "Topeng Panji adalah karya seni topeng tradisional yang digunakan dalam pertunjukan tari dan wayang topeng untuk membawakan kisah percintaan dan kepahlawanan Panji.",
+    "definisi_en": "A traditional mask used in dance and mask theater (wayang topeng) to tell love stories.",
+    "definisi_jp": "舞踊や仮面劇（ワヤン・トペン）で、恋の物語を演じるときに使う、伝統的な仮面です。"
   },
   {
     "id": "tugu-malang",
     "istilah": "Tugu Malang",
     "abjad": "T",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Tugu Malang (atau secara resmi disebut Alun-Alun Tugu / Alun-Alun Bundar) adalah sebuah taman berbentuk lingkaran yang terletak di pusat Kota Malang, Jawa Timur, tepat di depan Balai Kota Malang."
+    "definisi": "Tugu Malang (atau secara resmi disebut Alun-Alun Tugu / Alun-Alun Bundar) adalah sebuah taman berbentuk lingkaran yang terletak di pusat Kota Malang, Jawa Timur, tepat di depan Balai Kota Malang.",
+    "definisi_en": "Officially called Alun-Alun Tugu or Alun-Alun Bundar, a round park in the center of Malang, East Java, right in front of Malang City Hall.",
+    "definisi_jp": "正式にはアルン・アルン・トゥグ（アルン・アルン・ブンダル）といいます。東ジャワ州マラン市の中心にある丸い公園で、マラン市庁舎の真ん前にあります。"
   },
   {
     "id": "trembesi",
     "istilah": "Trembesi",
     "abjad": "T",
     "kategori": "Flora & Fauna",
-    "definisi": "Trembesi adalah pohon yang besar dan tumbuh cepat, dengan mahkota daun menyerupai payung dan lebar, serta banyak ditanam karena memberi naungan. Kayunya tidak terlalu awet, daunnya digunakan sebagai pakan ternak, dan buahnya berupa polong yang tebal dan berdaging."
+    "definisi": "Trembesi adalah pohon yang besar dan tumbuh cepat, dengan mahkota daun menyerupai payung dan lebar, serta banyak ditanam karena memberi naungan. Kayunya tidak terlalu awet, daunnya digunakan sebagai pakan ternak, dan buahnya berupa polong yang tebal dan berdaging.",
+    "definisi_en": "A large, fast-growing tree with a wide, umbrella-shaped crown, widely planted for shade. Its wood is not very durable, its leaves are used as animal feed, and its fruit is a thick, fleshy pod.",
+    "definisi_jp": "傘のように大きく広がった枝葉をもつ、成長の早い大木で、日かげを作るためによく植えられます。材はあまり長持ちせず、葉は家畜のえさに使われ、実は厚みのある肉質のさやです。"
   },
   {
     "id": "topeng-malangan",
     "istilah": "Topeng Malangan",
     "abjad": "T",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Topeng Malang (atau Wayang Topeng Malangan) adalah seni pertunjukan tari drama dan ukiran topeng kayu khas dari Malang, Jawa Timur, yang telah ditetapkan sebagai Warisan Budaya Takbenda Indonesia pada tahun 2014."
+    "definisi": "Topeng Malang (atau Wayang Topeng Malangan) adalah seni pertunjukan tari drama dan ukiran topeng kayu khas dari Malang, Jawa Timur, yang telah ditetapkan sebagai Warisan Budaya Takbenda Indonesia pada tahun 2014.",
+    "definisi_en": "Topeng Malang (or Wayang Topeng Malangan) is a dance-drama and wooden mask carving tradition from Malang, East Java. It was named Indonesian Intangible Cultural Heritage in 2014.",
+    "definisi_jp": "東ジャワ州マランに伝わる舞踊劇と木彫りの仮面の芸能で、トペン・マラン、ワヤン・トペン・マランガンとも呼ばれます。2014年にインドネシアの無形文化遺産に指定されました。"
   },
   {
     "id": "topeng-sekartaji",
     "istilah": "Topeng Sekartaji",
     "abjad": "T",
     "kategori": "Filosofi & Budaya",
-    "definisi": "Topeng Dewi Sekartaji adalah topeng tradisional khas Jawa (terutama dikenal dalam Topeng Malangan) yang merepresentasikan sosok Dewi Sekartaji (Candra Kirana), kekasih dari Raden Panji Asmoro Bangun dari kisah legendaris Panji."
+    "definisi": "Topeng Dewi Sekartaji adalah topeng tradisional khas Jawa (terutama dikenal dalam Topeng Malangan) yang merepresentasikan sosok Dewi Sekartaji (Candra Kirana), kekasih dari Raden Panji Asmoro Bangun dari kisah legendaris Panji.",
+    "definisi_en": "A traditional Javanese mask, best known in Topeng Malangan, that represents Dewi Sekartaji (Candra Kirana), the beloved of Raden Panji Asmoro Bangun in the legendary Panji story.",
+    "definisi_jp": "ジャワの伝統的な仮面で、とくにトペン・マランガンで知られます。デウィ・スカルタジ（チャンドラ・キラナ）を表し、伝説の「パンジ物語」では、ラデン・パンジ・アスモロ・バングンの恋人です。"
   },
   {
     "id": "tumbuhan-pakis",
     "istilah": "Tumbuhan Pakis",
     "abjad": "T",
     "kategori": "Flora & Fauna",
-    "definisi": "Tumbuhan pakis (tumbuhan paku) adalah kelompok tumbuhan berpembuluh yang tidak menghasilkan bunga, buah, atau biji, melainkan bereproduksi menggunakan spora."
+    "definisi": "Tumbuhan pakis (tumbuhan paku) adalah kelompok tumbuhan berpembuluh yang tidak menghasilkan bunga, buah, atau biji, melainkan bereproduksi menggunakan spora.",
+    "definisi_en": "Vascular plants that have no flowers, fruit, or seeds and reproduce by spores instead.",
+    "definisi_jp": "花も実も種もつけず、胞子で増える植物です。"
   },
   {
     "id": "tanaman-sukulen",
     "istilah": "Tanaman Sukulen",
     "abjad": "T",
     "kategori": "Flora & Fauna",
-    "definisi": "Tanaman sukulen adalah kelompok tumbuhan yang memiliki bagian tubuh (seperti daun, batang, atau akar) yang menebal dan berdaging untuk menyimpan cadangan air."
+    "definisi": "Tanaman sukulen adalah kelompok tumbuhan yang memiliki bagian tubuh (seperti daun, batang, atau akar) yang menebal dan berdaging untuk menyimpan cadangan air.",
+    "definisi_en": "Plants whose leaves, stems, or roots are thick and fleshy and store water.",
+    "definisi_jp": "葉や茎、根が厚くて肉のようになり、水をたくわえている植物です。"
   },
   {
     "id": "wadhas",
     "istilah": "Wadhas",
     "abjad": "W",
     "kategori": "Motif",
-    "definisi": "Kata Jawa yang berarti batu padas atau karang. Motif stilasi batu karang ini sering muncul pada batik gaya Cirebon yang terpengaruh budaya Tionghoa."
+    "definisi": "Kata Jawa yang berarti batu padas atau karang. Motif stilasi batu karang ini sering muncul pada batik gaya Cirebon yang terpengaruh budaya Tionghoa.",
+    "definisi_en": "A Javanese word for padas rock or coral rock. This stylized rock motif often appears in Cirebon-style batik influenced by Chinese culture.",
+    "definisi_jp": "ジャワ語で、岩（パダス）や岩礁のことです。岩を図案化した柄で、中国文化の影響を受けたチルボン風のバティックによく見られます。"
   }
 ]
